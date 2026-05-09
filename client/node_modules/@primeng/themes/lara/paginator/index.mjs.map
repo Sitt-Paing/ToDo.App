@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/lara/paginator/index.ts"],"sourcesContent":["export * from '@primeuix/themes/lara/paginator';\nexport { default } from '@primeuix/themes/lara/paginator';\n"],"mappings":"AAAA,WAAc,kCACd,OAAS,WAAAA,MAAe","names":["default"]}

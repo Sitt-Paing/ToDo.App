@@ -1,0 +1,461 @@
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, forwardRef, inject, input, EventEmitter, computed, booleanAttribute, ContentChildren, ContentChild, Output, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { AutoFocus } from 'primeng/autofocus';
+import { BaseEditableHolder } from 'primeng/baseeditableholder';
+import { PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { InputText } from 'primeng/inputtext';
+import { style } from '@primeuix/styles/inputotp';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: 'p-inputotp p-component',
+    pcInputText: 'p-inputotp-input'
+};
+class InputOtpStyle extends BaseStyle {
+    name = 'inputotp';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtpStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtpStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtpStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * InputOtp is used to enter one time passwords.
+ *
+ * [Live Demo](https://www.primeng.org/inputotp/)
+ *
+ * @module inputotpstyle
+ *
+ */
+var InputOtpClasses;
+(function (InputOtpClasses) {
+    /**
+     * Class name of the root element
+     */
+    InputOtpClasses["root"] = "p-inputotp";
+    /**
+     * Class name of the input element
+     */
+    InputOtpClasses["pcInputText"] = "p-inputotp-input";
+})(InputOtpClasses || (InputOtpClasses = {}));
+
+const INPUTOTP_INSTANCE = new InjectionToken('INPUTOTP_INSTANCE');
+const INPUT_OTP_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => InputOtp),
+    multi: true
+};
+/**
+ * Input Otp is used to enter one time passwords.
+ * @group Components
+ */
+class InputOtp extends BaseEditableHolder {
+    _componentStyle = inject(InputOtpStyle);
+    $pcInputOtp = inject(INPUTOTP_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * When present, it specifies that an input field is read-only.
+     * @group Props
+     */
+    readonly;
+    /**
+     * Index of the element in tabbing order.
+     * @group Props
+     */
+    tabindex = null;
+    /**
+     * Number of characters to initiate.
+     * @group Props
+     */
+    length = 4;
+    /**
+     * Style class of the input element.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Mask pattern.
+     * @group Props
+     */
+    mask = false;
+    /**
+     * When present, it specifies that an input field is integer-only.
+     * @group Props
+     */
+    integerOnly = false;
+    /**
+     * When present, it specifies that the component should automatically get focus on load.
+     * @group Props
+     */
+    autofocus;
+    /**
+     * Specifies the input variant of the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    variant = input(...(ngDevMode ? [undefined, { debugName: "variant" }] : []));
+    /**
+     * Specifies the size of the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    size = input(...(ngDevMode ? [undefined, { debugName: "size" }] : []));
+    /**
+     * Callback to invoke on value change.
+     * @group Emits
+     */
+    onChange = new EventEmitter();
+    /**
+     * Callback to invoke when the component receives focus.
+     * @param {Event} event - Browser event.
+     * @group Emits
+     */
+    onFocus = new EventEmitter();
+    /**
+     * Callback to invoke when the component loses focus.
+     * @param {Event} event - Browser event.
+     * @group Emits
+     */
+    onBlur = new EventEmitter();
+    /**
+     * Input template.
+     * @param {InputOtpInputTemplateContext} context - Context of the template
+     * @see {@link InputOtpInputTemplateContext}
+     * @group Templates
+     */
+    inputTemplate;
+    templates;
+    _inputTemplate;
+    tokens = [];
+    value;
+    $variant = computed(() => this.variant() || this.config.inputStyle() || this.config.inputVariant(), ...(ngDevMode ? [{ debugName: "$variant" }] : []));
+    get inputMode() {
+        return this.integerOnly ? 'numeric' : 'text';
+    }
+    get inputType() {
+        return this.mask ? 'password' : 'text';
+    }
+    onAfterContentInit() {
+        this.templates.forEach((item) => {
+            switch (item.getType()) {
+                case 'input':
+                    this._inputTemplate = item.template;
+                    break;
+                default:
+                    this._inputTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    getToken(index) {
+        return this.tokens[index];
+    }
+    getTemplateEvents(index) {
+        return {
+            input: (event) => this.onInput(event, index),
+            keydown: (event) => this.onKeyDown(event),
+            focus: (event) => this.onFocus.emit(event),
+            blur: (event) => this.onBlur.emit(event),
+            paste: (event) => this.onPaste(event)
+        };
+    }
+    onInput(event, index) {
+        const value = event.target.value;
+        if (index === 0 && value.length > 1) {
+            this.handleOnPaste(value, event);
+            event.stopPropagation();
+            return;
+        }
+        this.tokens[index] = value;
+        this.updateModel(event);
+        if (event.inputType === 'deleteContentBackward') {
+            this.moveToPrev(event);
+        }
+        else if (event.inputType === 'insertText' || event.inputType === 'deleteContentForward') {
+            this.moveToNext(event);
+        }
+    }
+    updateModel(event) {
+        const newValue = this.tokens.join('');
+        this.writeModelValue(newValue);
+        this.onModelChange(newValue);
+        this.onChange.emit({
+            originalEvent: event,
+            value: newValue
+        });
+    }
+    updateTokens() {
+        if (this.value !== null && this.value !== undefined) {
+            if (Array.isArray(this.value)) {
+                this.tokens = [...this.value];
+            }
+            else {
+                this.tokens = this.value.toString().split('');
+            }
+        }
+        else {
+            this.tokens = [];
+        }
+    }
+    getModelValue(i) {
+        return this.tokens[i - 1] || '';
+    }
+    getAutofocus(i) {
+        if (i === 1) {
+            return this.autofocus || false;
+        }
+        return false;
+    }
+    moveToPrev(event) {
+        let prevInput = this.findPrevInput(event.target);
+        if (prevInput) {
+            prevInput.focus();
+            prevInput.select();
+        }
+    }
+    moveToNext(event) {
+        let nextInput = this.findNextInput(event.target);
+        if (nextInput) {
+            nextInput.focus();
+            nextInput.select();
+        }
+    }
+    findNextInput(element) {
+        let nextElement = element.nextElementSibling;
+        if (!nextElement)
+            return;
+        return nextElement.nodeName === 'INPUT' ? nextElement : this.findNextInput(nextElement);
+    }
+    findPrevInput(element) {
+        let prevElement = element.previousElementSibling;
+        if (!prevElement)
+            return;
+        return prevElement.nodeName === 'INPUT' ? prevElement : this.findPrevInput(prevElement);
+    }
+    onInputFocus(event) {
+        event.target.select();
+        this.onFocus.emit(event);
+    }
+    onInputBlur(event) {
+        this.onBlur.emit(event);
+    }
+    onKeyDown(event) {
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+            return;
+        }
+        switch (event.key) {
+            case 'ArrowLeft':
+                this.moveToPrev(event);
+                event.preventDefault();
+                break;
+            case 'ArrowUp':
+            case 'ArrowDown':
+                event.preventDefault();
+                break;
+            case 'Backspace':
+                if (event.target.value.length === 0) {
+                    this.moveToPrev(event);
+                    event.preventDefault();
+                }
+                break;
+            case 'ArrowRight':
+                this.moveToNext(event);
+                event.preventDefault();
+                break;
+            default:
+                const target = event.target;
+                const hasSelection = target.selectionStart !== target.selectionEnd;
+                const isAtMaxLength = this.tokens.join('').length >= this.length;
+                const isValidKey = this.integerOnly ? /^[0-9]$/.test(event.key) : true;
+                if (!isValidKey || (isAtMaxLength && event.key !== 'Delete' && !hasSelection)) {
+                    event.preventDefault();
+                }
+                break;
+        }
+    }
+    onPaste(event) {
+        if (!this.$disabled() && !this.readonly) {
+            let paste = event.clipboardData.getData('text');
+            if (paste.length) {
+                this.handleOnPaste(paste, event);
+            }
+            event.preventDefault();
+        }
+    }
+    handleOnPaste(paste, event) {
+        let pastedCode = paste.substring(0, this.length + 1);
+        if (!this.integerOnly || !isNaN(pastedCode)) {
+            this.tokens = pastedCode.split('');
+            this.updateModel(event);
+        }
+    }
+    getRange(n) {
+        return Array.from({ length: n }, (_, index) => index + 1);
+    }
+    trackByFn(index) {
+        return index;
+    }
+    /**
+     * @override
+     *
+     * @see {@link BaseEditableHolder.writeControlValue}
+     * Writes the value to the control.
+     */
+    writeControlValue(value, setModelValue) {
+        if (value) {
+            if (Array.isArray(value) && value.length > 0) {
+                this.value = value.slice(0, this.length);
+            }
+            else {
+                this.value = value.toString().split('').slice(0, this.length);
+            }
+        }
+        else {
+            this.value = value;
+        }
+        setModelValue(this.value);
+        this.updateTokens();
+        this.cd.markForCheck();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtp, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "20.3.15", type: InputOtp, isStandalone: true, selector: "p-inputOtp, p-inputotp, p-input-otp", inputs: { readonly: { classPropertyName: "readonly", publicName: "readonly", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, tabindex: { classPropertyName: "tabindex", publicName: "tabindex", isSignal: false, isRequired: false, transformFunction: null }, length: { classPropertyName: "length", publicName: "length", isSignal: false, isRequired: false, transformFunction: null }, styleClass: { classPropertyName: "styleClass", publicName: "styleClass", isSignal: false, isRequired: false, transformFunction: null }, mask: { classPropertyName: "mask", publicName: "mask", isSignal: false, isRequired: false, transformFunction: null }, integerOnly: { classPropertyName: "integerOnly", publicName: "integerOnly", isSignal: false, isRequired: false, transformFunction: null }, autofocus: { classPropertyName: "autofocus", publicName: "autofocus", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, variant: { classPropertyName: "variant", publicName: "variant", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { onChange: "onChange", onFocus: "onFocus", onBlur: "onBlur" }, host: { properties: { "class": "cx('root')" } }, providers: [INPUT_OTP_VALUE_ACCESSOR, InputOtpStyle, { provide: INPUTOTP_INSTANCE, useExisting: InputOtp }, { provide: PARENT_INSTANCE, useExisting: InputOtp }], queries: [{ propertyName: "inputTemplate", first: true, predicate: ["input"] }, { propertyName: "templates", predicate: PrimeTemplate }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <ng-container *ngFor="let i of getRange(length); trackBy: trackByFn">
+            <ng-container *ngIf="!inputTemplate && !_inputTemplate">
+                <input
+                    type="text"
+                    pInputText
+                    [value]="getModelValue(i)"
+                    [attr.maxlength]="i === 1 ? length : 1"
+                    [attr.type]="inputType"
+                    [class]="cn(cx('pcInputText'), styleClass)"
+                    [pSize]="size()"
+                    [variant]="$variant()"
+                    [invalid]="invalid()"
+                    [attr.inputmode]="inputMode"
+                    [attr.name]="name()"
+                    [attr.tabindex]="tabindex"
+                    [attr.required]="required() ? '' : undefined"
+                    [attr.readonly]="readonly ? '' : undefined"
+                    [attr.disabled]="$disabled() ? '' : undefined"
+                    (input)="onInput($event, i - 1)"
+                    (focus)="onInputFocus($event)"
+                    (blur)="onInputBlur($event)"
+                    (paste)="onPaste($event)"
+                    (keydown)="onKeyDown($event)"
+                    [pAutoFocus]="getAutofocus(i)"
+                    [pt]="ptm('pcInputText')"
+                />
+            </ng-container>
+            <ng-container *ngIf="inputTemplate || _inputTemplate">
+                <ng-container *ngTemplateOutlet="inputTemplate || _inputTemplate; context: { $implicit: getToken(i - 1), events: getTemplateEvents(i - 1), index: i }"> </ng-container>
+            </ng-container>
+        </ng-container>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "directive", type: InputText, selector: "[pInputText]", inputs: ["hostName", "ptInputText", "pSize", "variant", "fluid", "invalid"] }, { kind: "directive", type: AutoFocus, selector: "[pAutoFocus]", inputs: ["pAutoFocus"] }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtp, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inputOtp, p-inputotp, p-input-otp',
+                    standalone: true,
+                    imports: [CommonModule, InputText, AutoFocus, SharedModule, BindModule],
+                    template: `
+        <ng-container *ngFor="let i of getRange(length); trackBy: trackByFn">
+            <ng-container *ngIf="!inputTemplate && !_inputTemplate">
+                <input
+                    type="text"
+                    pInputText
+                    [value]="getModelValue(i)"
+                    [attr.maxlength]="i === 1 ? length : 1"
+                    [attr.type]="inputType"
+                    [class]="cn(cx('pcInputText'), styleClass)"
+                    [pSize]="size()"
+                    [variant]="$variant()"
+                    [invalid]="invalid()"
+                    [attr.inputmode]="inputMode"
+                    [attr.name]="name()"
+                    [attr.tabindex]="tabindex"
+                    [attr.required]="required() ? '' : undefined"
+                    [attr.readonly]="readonly ? '' : undefined"
+                    [attr.disabled]="$disabled() ? '' : undefined"
+                    (input)="onInput($event, i - 1)"
+                    (focus)="onInputFocus($event)"
+                    (blur)="onInputBlur($event)"
+                    (paste)="onPaste($event)"
+                    (keydown)="onKeyDown($event)"
+                    [pAutoFocus]="getAutofocus(i)"
+                    [pt]="ptm('pcInputText')"
+                />
+            </ng-container>
+            <ng-container *ngIf="inputTemplate || _inputTemplate">
+                <ng-container *ngTemplateOutlet="inputTemplate || _inputTemplate; context: { $implicit: getToken(i - 1), events: getTemplateEvents(i - 1), index: i }"> </ng-container>
+            </ng-container>
+        </ng-container>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [INPUT_OTP_VALUE_ACCESSOR, InputOtpStyle, { provide: INPUTOTP_INSTANCE, useExisting: InputOtp }, { provide: PARENT_INSTANCE, useExisting: InputOtp }],
+                    hostDirectives: [Bind],
+                    host: {
+                        '[class]': "cx('root')"
+                    }
+                }]
+        }], propDecorators: { readonly: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], tabindex: [{
+                type: Input
+            }], length: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], mask: [{
+                type: Input
+            }], integerOnly: [{
+                type: Input
+            }], autofocus: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], variant: [{ type: i0.Input, args: [{ isSignal: true, alias: "variant", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], onChange: [{
+                type: Output
+            }], onFocus: [{
+                type: Output
+            }], onBlur: [{
+                type: Output
+            }], inputTemplate: [{
+                type: ContentChild,
+                args: ['input', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class InputOtpModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtpModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: InputOtpModule, imports: [InputOtp, SharedModule], exports: [InputOtp, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtpModule, imports: [InputOtp, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputOtpModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [InputOtp, SharedModule],
+                    exports: [InputOtp, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { INPUT_OTP_VALUE_ACCESSOR, InputOtp, InputOtpClasses, InputOtpModule, InputOtpStyle };
+//# sourceMappingURL=primeng-inputotp.mjs.map

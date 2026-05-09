@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/lara/tabs/index.ts"],"sourcesContent":["export * from '@primeuix/themes/lara/tabs';\nexport { default } from '@primeuix/themes/lara/tabs';\n"],"mappings":"AAAA,WAAc,6BACd,OAAS,WAAAA,MAAe","names":["default"]}

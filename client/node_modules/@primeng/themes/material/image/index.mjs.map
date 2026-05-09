@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/material/image/index.ts"],"sourcesContent":["export * from '@primeuix/themes/material/image';\nexport { default } from '@primeuix/themes/material/image';\n"],"mappings":"AAAA,WAAc,kCACd,OAAS,WAAAA,MAAe","names":["default"]}

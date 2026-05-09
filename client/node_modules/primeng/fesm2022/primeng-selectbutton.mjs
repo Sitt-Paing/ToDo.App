@@ -1,0 +1,424 @@
+export * from 'primeng/types/selectbutton';
+import * as i3 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, forwardRef, input, booleanAttribute, EventEmitter, inject, numberAttribute, ContentChildren, ContentChild, Output, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import * as i2 from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+import { resolveFieldData, equals } from '@primeuix/utils';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { PARENT_INSTANCE } from 'primeng/basecomponent';
+import { BaseEditableHolder } from 'primeng/baseeditableholder';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { ToggleButton } from 'primeng/togglebutton';
+import { style as style$1 } from '@primeuix/styles/selectbutton';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /* For PrimeNG */
+    .p-selectbutton.ng-invalid.ng-dirty {
+        outline: 1px solid dt('selectbutton.invalid.border.color');
+        outline-offset: 0;
+    }
+`;
+const classes = {
+    root: ({ instance }) => [
+        'p-selectbutton p-component',
+        {
+            'p-invalid': instance.invalid(),
+            'p-selectbutton-fluid': instance.fluid()
+        }
+    ]
+};
+class SelectButtonStyle extends BaseStyle {
+    name = 'selectbutton';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * SelectButton is used to choose single or multiple items from a list using buttons.
+ *
+ * [Live Demo](https://www.primeng.org/selectbutton/)
+ *
+ * @module selectbuttonstyle
+ *
+ */
+var SelectButtonClasses;
+(function (SelectButtonClasses) {
+    /**
+     * Class name of the root element
+     */
+    SelectButtonClasses["root"] = "p-selectbutton";
+})(SelectButtonClasses || (SelectButtonClasses = {}));
+
+const SELECTBUTTON_INSTANCE = new InjectionToken('SELECTBUTTON_INSTANCE');
+const SELECTBUTTON_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => SelectButton),
+    multi: true
+};
+/**
+ * SelectButton is used to choose single or multiple items from a list using buttons.
+ * @group Components
+ */
+class SelectButton extends BaseEditableHolder {
+    /**
+     * An array of selectitems to display as the available options.
+     * @group Props
+     */
+    options;
+    /**
+     * Name of the label field of an option.
+     * @group Props
+     */
+    optionLabel;
+    /**
+     * Name of the value field of an option.
+     * @group Props
+     */
+    optionValue;
+    /**
+     * Name of the disabled field of an option.
+     * @group Props
+     */
+    optionDisabled;
+    /**
+     * Whether selection can be cleared.
+     * @group Props
+     */
+    get unselectable() {
+        return this._unselectable;
+    }
+    _unselectable = false;
+    set unselectable(value) {
+        this._unselectable = value;
+        this.allowEmpty = !value;
+    }
+    /**
+     * Index of the element in tabbing order.
+     * @group Props
+     */
+    tabindex = 0;
+    /**
+     * When specified, allows selecting multiple values.
+     * @group Props
+     */
+    multiple;
+    /**
+     * Whether selection can not be cleared.
+     * @group Props
+     */
+    allowEmpty = true;
+    /**
+     * Style class of the component.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Establishes relationships between the component and label(s) where its value should be one or more element IDs.
+     * @group Props
+     */
+    ariaLabelledBy;
+    /**
+     * A property to uniquely identify a value in options.
+     * @group Props
+     */
+    dataKey;
+    /**
+     * When present, it specifies that the component should automatically get focus on load.
+     * @group Props
+     */
+    autofocus;
+    /**
+     * Specifies the size of the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    size = input(...(ngDevMode ? [undefined, { debugName: "size" }] : []));
+    /**
+     * Spans 100% width of the container when enabled.
+     * @defaultValue undefined
+     * @group Props
+     */
+    fluid = input(undefined, ...(ngDevMode ? [{ debugName: "fluid", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * Callback to invoke on input click.
+     * @param {SelectButtonOptionClickEvent} event - Custom click event.
+     * @group Emits
+     */
+    onOptionClick = new EventEmitter();
+    /**
+     * Callback to invoke on selection change.
+     * @param {SelectButtonChangeEvent} event - Custom change event.
+     * @group Emits
+     */
+    onChange = new EventEmitter();
+    /**
+     * Template of an item in the list.
+     * @group Templates
+     */
+    itemTemplate;
+    _itemTemplate;
+    get equalityKey() {
+        return this.optionValue ? null : this.dataKey;
+    }
+    value;
+    focusedIndex = 0;
+    _componentStyle = inject(SelectButtonStyle);
+    $pcSelectButton = inject(SELECTBUTTON_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    getAllowEmpty() {
+        if (this.multiple) {
+            return this.allowEmpty || this.value?.length !== 1;
+        }
+        return this.allowEmpty;
+    }
+    getOptionLabel(option) {
+        return this.optionLabel ? resolveFieldData(option, this.optionLabel) : option.label != undefined ? option.label : option;
+    }
+    getOptionValue(option) {
+        return this.optionValue ? resolveFieldData(option, this.optionValue) : this.optionLabel || option.value === undefined ? option : option.value;
+    }
+    isOptionDisabled(option) {
+        return this.optionDisabled ? resolveFieldData(option, this.optionDisabled) : option.disabled !== undefined ? option.disabled : false;
+    }
+    onOptionSelect(event, option, index) {
+        if (this.$disabled() || this.isOptionDisabled(option)) {
+            return;
+        }
+        let selected = this.isSelected(option);
+        if (selected && this.unselectable) {
+            return;
+        }
+        let optionValue = this.getOptionValue(option);
+        let newValue;
+        if (this.multiple) {
+            if (selected)
+                newValue = this.value.filter((val) => !equals(val, optionValue, this.equalityKey || undefined));
+            else
+                newValue = this.value ? [...this.value, optionValue] : [optionValue];
+        }
+        else {
+            if (selected && !this.allowEmpty) {
+                return;
+            }
+            newValue = selected ? null : optionValue;
+        }
+        this.focusedIndex = index;
+        this.value = newValue;
+        this.writeModelValue(this.value);
+        this.onModelChange(this.value);
+        this.onChange.emit({
+            originalEvent: event,
+            value: this.value
+        });
+        this.onOptionClick.emit({
+            originalEvent: event,
+            option: option,
+            index: index
+        });
+    }
+    changeTabIndexes(event, direction) {
+        let firstTabableChild, index;
+        for (let i = 0; i <= this.el.nativeElement.children.length - 1; i++) {
+            if (this.el.nativeElement.children[i].getAttribute('tabindex') === '0')
+                firstTabableChild = { elem: this.el.nativeElement.children[i], index: i };
+        }
+        if (direction === 'prev') {
+            if (firstTabableChild.index === 0)
+                index = this.el.nativeElement.children.length - 1;
+            else
+                index = firstTabableChild.index - 1;
+        }
+        else {
+            if (firstTabableChild.index === this.el.nativeElement.children.length - 1)
+                index = 0;
+            else
+                index = firstTabableChild.index + 1;
+        }
+        this.focusedIndex = index;
+        this.el.nativeElement.children[index].focus();
+    }
+    onFocus(event, index) {
+        this.focusedIndex = index;
+    }
+    onBlur() {
+        this.onModelTouched();
+    }
+    removeOption(option) {
+        this.value = this.value.filter((val) => !equals(val, this.getOptionValue(option), this.dataKey));
+    }
+    isSelected(option) {
+        let selected = false;
+        const optionValue = this.getOptionValue(option);
+        if (this.multiple) {
+            if (this.value && Array.isArray(this.value)) {
+                for (let val of this.value) {
+                    if (equals(val, optionValue, this.dataKey)) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            selected = equals(this.getOptionValue(option), this.value, this.equalityKey || undefined);
+        }
+        return selected;
+    }
+    templates;
+    onAfterContentInit() {
+        this.templates.forEach((item) => {
+            switch (item.getType()) {
+                case 'item':
+                    this._itemTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    /**
+     * @override
+     *
+     * @see {@link BaseEditableHolder.writeControlValue}
+     * Writes the value to the control.
+     */
+    writeControlValue(value, setModelValue) {
+        this.value = value;
+        setModelValue(this.value);
+        this.cd.markForCheck();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButton, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: SelectButton, isStandalone: true, selector: "p-selectButton, p-selectbutton, p-select-button", inputs: { options: { classPropertyName: "options", publicName: "options", isSignal: false, isRequired: false, transformFunction: null }, optionLabel: { classPropertyName: "optionLabel", publicName: "optionLabel", isSignal: false, isRequired: false, transformFunction: null }, optionValue: { classPropertyName: "optionValue", publicName: "optionValue", isSignal: false, isRequired: false, transformFunction: null }, optionDisabled: { classPropertyName: "optionDisabled", publicName: "optionDisabled", isSignal: false, isRequired: false, transformFunction: null }, unselectable: { classPropertyName: "unselectable", publicName: "unselectable", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, tabindex: { classPropertyName: "tabindex", publicName: "tabindex", isSignal: false, isRequired: false, transformFunction: numberAttribute }, multiple: { classPropertyName: "multiple", publicName: "multiple", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, allowEmpty: { classPropertyName: "allowEmpty", publicName: "allowEmpty", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, styleClass: { classPropertyName: "styleClass", publicName: "styleClass", isSignal: false, isRequired: false, transformFunction: null }, ariaLabelledBy: { classPropertyName: "ariaLabelledBy", publicName: "ariaLabelledBy", isSignal: false, isRequired: false, transformFunction: null }, dataKey: { classPropertyName: "dataKey", publicName: "dataKey", isSignal: false, isRequired: false, transformFunction: null }, autofocus: { classPropertyName: "autofocus", publicName: "autofocus", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, fluid: { classPropertyName: "fluid", publicName: "fluid", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { onOptionClick: "onOptionClick", onChange: "onChange" }, host: { properties: { "class": "cx('root')", "attr.role": "\"group\"", "attr.aria-labelledby": "ariaLabelledBy" } }, providers: [SELECTBUTTON_VALUE_ACCESSOR, SelectButtonStyle, { provide: SELECTBUTTON_INSTANCE, useExisting: SelectButton }, { provide: PARENT_INSTANCE, useExisting: SelectButton }], queries: [{ propertyName: "itemTemplate", first: true, predicate: ["item"] }, { propertyName: "templates", predicate: PrimeTemplate }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        @for (option of options; track getOptionLabel(option); let i = $index) {
+            <p-togglebutton
+                [autofocus]="autofocus"
+                [styleClass]="styleClass"
+                [ngModel]="isSelected(option)"
+                [onLabel]="this.getOptionLabel(option)"
+                [offLabel]="this.getOptionLabel(option)"
+                [disabled]="$disabled() || isOptionDisabled(option)"
+                (onChange)="onOptionSelect($event, option, i)"
+                [allowEmpty]="getAllowEmpty()"
+                [size]="size()"
+                [fluid]="fluid()"
+                [pt]="ptm('pcToggleButton')"
+            >
+                @if (itemTemplate || _itemTemplate) {
+                    <ng-template #content>
+                        <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: option, index: i }"></ng-container>
+                    </ng-template>
+                }
+            </p-togglebutton>
+        }
+    `, isInline: true, dependencies: [{ kind: "component", type: ToggleButton, selector: "p-toggleButton, p-togglebutton, p-toggle-button", inputs: ["onLabel", "offLabel", "onIcon", "offIcon", "ariaLabel", "ariaLabelledBy", "styleClass", "inputId", "tabindex", "iconPos", "autofocus", "size", "allowEmpty", "fluid"], outputs: ["onChange"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i3.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButton, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-selectButton, p-selectbutton, p-select-button',
+                    standalone: true,
+                    imports: [ToggleButton, FormsModule, CommonModule, SharedModule, BindModule],
+                    template: `
+        @for (option of options; track getOptionLabel(option); let i = $index) {
+            <p-togglebutton
+                [autofocus]="autofocus"
+                [styleClass]="styleClass"
+                [ngModel]="isSelected(option)"
+                [onLabel]="this.getOptionLabel(option)"
+                [offLabel]="this.getOptionLabel(option)"
+                [disabled]="$disabled() || isOptionDisabled(option)"
+                (onChange)="onOptionSelect($event, option, i)"
+                [allowEmpty]="getAllowEmpty()"
+                [size]="size()"
+                [fluid]="fluid()"
+                [pt]="ptm('pcToggleButton')"
+            >
+                @if (itemTemplate || _itemTemplate) {
+                    <ng-template #content>
+                        <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: option, index: i }"></ng-container>
+                    </ng-template>
+                }
+            </p-togglebutton>
+        }
+    `,
+                    providers: [SELECTBUTTON_VALUE_ACCESSOR, SelectButtonStyle, { provide: SELECTBUTTON_INSTANCE, useExisting: SelectButton }, { provide: PARENT_INSTANCE, useExisting: SelectButton }],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': "cx('root')",
+                        '[attr.role]': '"group"',
+                        '[attr.aria-labelledby]': 'ariaLabelledBy'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { options: [{
+                type: Input
+            }], optionLabel: [{
+                type: Input
+            }], optionValue: [{
+                type: Input
+            }], optionDisabled: [{
+                type: Input
+            }], unselectable: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], tabindex: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], multiple: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], allowEmpty: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], styleClass: [{
+                type: Input
+            }], ariaLabelledBy: [{
+                type: Input
+            }], dataKey: [{
+                type: Input
+            }], autofocus: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], fluid: [{ type: i0.Input, args: [{ isSignal: true, alias: "fluid", required: false }] }], onOptionClick: [{
+                type: Output
+            }], onChange: [{
+                type: Output
+            }], itemTemplate: [{
+                type: ContentChild,
+                args: ['item', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class SelectButtonModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonModule, imports: [SelectButton, SharedModule], exports: [SelectButton, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonModule, imports: [SelectButton, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SelectButtonModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [SelectButton, SharedModule],
+                    exports: [SelectButton, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { SELECTBUTTON_VALUE_ACCESSOR, SelectButton, SelectButtonClasses, SelectButtonModule, SelectButtonStyle };
+//# sourceMappingURL=primeng-selectbutton.mjs.map

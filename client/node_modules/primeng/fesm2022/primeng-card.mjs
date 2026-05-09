@@ -1,0 +1,291 @@
+export * from 'primeng/types/card';
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, signal, ContentChildren, ContentChild, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { equals } from '@primeuix/utils';
+import { SharedModule, Header, Footer, PrimeTemplate } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style as style$1 } from '@primeuix/styles/card';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    .p-card {
+        display: block;
+    }
+`;
+const classes = {
+    root: 'p-card p-component',
+    header: 'p-card-header',
+    body: 'p-card-body',
+    caption: 'p-card-caption',
+    title: 'p-card-title',
+    subtitle: 'p-card-subtitle',
+    content: 'p-card-content',
+    footer: 'p-card-footer'
+};
+class CardStyle extends BaseStyle {
+    name = 'card';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: CardStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: CardStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: CardStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Card is a flexible container component.
+ *
+ * [Live Demo](https://www.primeng.org/card/)
+ *
+ * @module cardstyle
+ *
+ */
+var CardClasses;
+(function (CardClasses) {
+    /**
+     * Class name of the root element
+     */
+    CardClasses["root"] = "p-card";
+    /**
+     * Class name of the header element
+     */
+    CardClasses["header"] = "p-card-header";
+    /**
+     * Class name of the body element
+     */
+    CardClasses["body"] = "p-card-body";
+    /**
+     * Class name of the caption element
+     */
+    CardClasses["caption"] = "p-card-caption";
+    /**
+     * Class name of the title element
+     */
+    CardClasses["title"] = "p-card-title";
+    /**
+     * Class name of the subtitle element
+     */
+    CardClasses["subtitle"] = "p-card-subtitle";
+    /**
+     * Class name of the content element
+     */
+    CardClasses["content"] = "p-card-content";
+    /**
+     * Class name of the footer element
+     */
+    CardClasses["footer"] = "p-card-footer";
+})(CardClasses || (CardClasses = {}));
+
+const CARD_INSTANCE = new InjectionToken('CARD_INSTANCE');
+/**
+ * Card is a flexible container component.
+ * @group Components
+ */
+class Card extends BaseComponent {
+    $pcCard = inject(CARD_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    _componentStyle = inject(CardStyle);
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Header of the card.
+     * @group Props
+     */
+    header;
+    /**
+     * Subheader of the card.
+     * @group Props
+     */
+    subheader;
+    /**
+     * Inline style of the element.
+     * @group Props
+     */
+    set style(value) {
+        if (!equals(this._style(), value)) {
+            this._style.set(value);
+            // Apply style directly to avoid infinite loop in host binding
+            if (this.el?.nativeElement) {
+                if (value) {
+                    Object.keys(value).forEach((key) => {
+                        this.el.nativeElement.style[key] = value[key];
+                    });
+                }
+            }
+        }
+    }
+    get style() {
+        return this._style();
+    }
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    headerFacet;
+    footerFacet;
+    headerTemplate;
+    titleTemplate;
+    subtitleTemplate;
+    contentTemplate;
+    footerTemplate;
+    _headerTemplate;
+    _titleTemplate;
+    _subtitleTemplate;
+    _contentTemplate;
+    _footerTemplate;
+    _style = signal(null, ...(ngDevMode ? [{ debugName: "_style" }] : []));
+    getBlockableElement() {
+        return this.el.nativeElement.children[0];
+    }
+    templates;
+    onAfterContentInit() {
+        this.templates.forEach((item) => {
+            switch (item.getType()) {
+                case 'header':
+                    this._headerTemplate = item.template;
+                    break;
+                case 'title':
+                    this._titleTemplate = item.template;
+                    break;
+                case 'subtitle':
+                    this._subtitleTemplate = item.template;
+                    break;
+                case 'content':
+                    this._contentTemplate = item.template;
+                    break;
+                case 'footer':
+                    this._footerTemplate = item.template;
+                    break;
+                default:
+                    this._contentTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Card, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: Card, isStandalone: true, selector: "p-card", inputs: { header: "header", subheader: "subheader", style: "style", styleClass: "styleClass" }, host: { properties: { "class": "cn(cx('root'), styleClass)", "style": "_style()" } }, providers: [CardStyle, { provide: CARD_INSTANCE, useExisting: Card }, { provide: PARENT_INSTANCE, useExisting: Card }], queries: [{ propertyName: "headerFacet", first: true, predicate: Header, descendants: true }, { propertyName: "footerFacet", first: true, predicate: Footer, descendants: true }, { propertyName: "headerTemplate", first: true, predicate: ["header"] }, { propertyName: "titleTemplate", first: true, predicate: ["title"] }, { propertyName: "subtitleTemplate", first: true, predicate: ["subtitle"] }, { propertyName: "contentTemplate", first: true, predicate: ["content"] }, { propertyName: "footerTemplate", first: true, predicate: ["footer"] }, { propertyName: "templates", predicate: PrimeTemplate }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <div [pBind]="ptm('header')" [class]="cx('header')" *ngIf="headerFacet || headerTemplate || _headerTemplate">
+            <ng-content select="p-header"></ng-content>
+            <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
+        </div>
+        <div [pBind]="ptm('body')" [class]="cx('body')">
+            <div [pBind]="ptm('title')" [class]="cx('title')" *ngIf="header || titleTemplate || _titleTemplate">
+                <ng-container *ngIf="header && !_titleTemplate && !titleTemplate">{{ header }}</ng-container>
+                <ng-container *ngTemplateOutlet="titleTemplate || _titleTemplate"></ng-container>
+            </div>
+            <div [pBind]="ptm('subtitle')" [class]="cx('subtitle')" *ngIf="subheader || subtitleTemplate || _subtitleTemplate">
+                <ng-container *ngIf="subheader && !_subtitleTemplate && !subtitleTemplate">{{ subheader }}</ng-container>
+                <ng-container *ngTemplateOutlet="subtitleTemplate || _subtitleTemplate"></ng-container>
+            </div>
+            <div [pBind]="ptm('content')" [class]="cx('content')">
+                <ng-content></ng-content>
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+            </div>
+            <div [pBind]="ptm('footer')" [class]="cx('footer')" *ngIf="footerFacet || footerTemplate || _footerTemplate">
+                <ng-content select="p-footer"></ng-content>
+                <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
+            </div>
+        </div>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }, { kind: "directive", type: i1.Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Card, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-card',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    template: `
+        <div [pBind]="ptm('header')" [class]="cx('header')" *ngIf="headerFacet || headerTemplate || _headerTemplate">
+            <ng-content select="p-header"></ng-content>
+            <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
+        </div>
+        <div [pBind]="ptm('body')" [class]="cx('body')">
+            <div [pBind]="ptm('title')" [class]="cx('title')" *ngIf="header || titleTemplate || _titleTemplate">
+                <ng-container *ngIf="header && !_titleTemplate && !titleTemplate">{{ header }}</ng-container>
+                <ng-container *ngTemplateOutlet="titleTemplate || _titleTemplate"></ng-container>
+            </div>
+            <div [pBind]="ptm('subtitle')" [class]="cx('subtitle')" *ngIf="subheader || subtitleTemplate || _subtitleTemplate">
+                <ng-container *ngIf="subheader && !_subtitleTemplate && !subtitleTemplate">{{ subheader }}</ng-container>
+                <ng-container *ngTemplateOutlet="subtitleTemplate || _subtitleTemplate"></ng-container>
+            </div>
+            <div [pBind]="ptm('content')" [class]="cx('content')">
+                <ng-content></ng-content>
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+            </div>
+            <div [pBind]="ptm('footer')" [class]="cx('footer')" *ngIf="footerFacet || footerTemplate || _footerTemplate">
+                <ng-content select="p-footer"></ng-content>
+                <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
+            </div>
+        </div>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [CardStyle, { provide: CARD_INSTANCE, useExisting: Card }, { provide: PARENT_INSTANCE, useExisting: Card }],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)",
+                        '[style]': '_style()'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { header: [{
+                type: Input
+            }], subheader: [{
+                type: Input
+            }], style: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], headerFacet: [{
+                type: ContentChild,
+                args: [Header]
+            }], footerFacet: [{
+                type: ContentChild,
+                args: [Footer]
+            }], headerTemplate: [{
+                type: ContentChild,
+                args: ['header', { descendants: false }]
+            }], titleTemplate: [{
+                type: ContentChild,
+                args: ['title', { descendants: false }]
+            }], subtitleTemplate: [{
+                type: ContentChild,
+                args: ['subtitle', { descendants: false }]
+            }], contentTemplate: [{
+                type: ContentChild,
+                args: ['content', { descendants: false }]
+            }], footerTemplate: [{
+                type: ContentChild,
+                args: ['footer', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class CardModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: CardModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: CardModule, imports: [Card, SharedModule, BindModule], exports: [Card, SharedModule, BindModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: CardModule, imports: [Card, SharedModule, BindModule, SharedModule, BindModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: CardModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Card, SharedModule, BindModule],
+                    exports: [Card, SharedModule, BindModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Card, CardClasses, CardModule, CardStyle };
+//# sourceMappingURL=primeng-card.mjs.map

@@ -1,0 +1,83 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, Input, ChangeDetectionStrategy, ViewEncapsulation, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: 'p-inputicon'
+};
+class InputIconStyle extends BaseStyle {
+    name = 'inputicon';
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIconStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIconStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIconStyle, decorators: [{
+            type: Injectable
+        }] });
+
+const INPUTICON_INSTANCE = new InjectionToken('INPUTICON_INSTANCE');
+/**
+ * InputIcon displays an icon.
+ * @group Components
+ */
+class InputIcon extends BaseComponent {
+    hostName = '';
+    /**
+     * Style class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    _componentStyle = inject(InputIconStyle);
+    $pcInputIcon = inject(INPUTICON_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIcon, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: InputIcon, isStandalone: true, selector: "p-inputicon, p-inputIcon", inputs: { hostName: "hostName", styleClass: "styleClass" }, host: { properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [InputIconStyle, { provide: INPUTICON_INSTANCE, useExisting: InputIcon }, { provide: PARENT_INSTANCE, useExisting: InputIcon }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `<ng-content></ng-content>`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIcon, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inputicon, p-inputIcon',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    template: `<ng-content></ng-content>`,
+                    encapsulation: ViewEncapsulation.None,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    providers: [InputIconStyle, { provide: INPUTICON_INSTANCE, useExisting: InputIcon }, { provide: PARENT_INSTANCE, useExisting: InputIcon }],
+                    hostDirectives: [Bind],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    }
+                }]
+        }], propDecorators: { hostName: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }] } });
+class InputIconModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIconModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: InputIconModule, imports: [InputIcon, SharedModule], exports: [InputIcon, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIconModule, imports: [InputIcon, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputIconModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [InputIcon, SharedModule],
+                    exports: [InputIcon, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { InputIcon, InputIconModule, InputIconStyle };
+//# sourceMappingURL=primeng-inputicon.mjs.map

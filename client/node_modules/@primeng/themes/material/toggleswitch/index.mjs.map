@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/material/toggleswitch/index.ts"],"sourcesContent":["export * from '@primeuix/themes/material/toggleswitch';\nexport { default } from '@primeuix/themes/material/toggleswitch';\n"],"mappings":"AAAA,WAAc,yCACd,OAAS,WAAAA,MAAe","names":["default"]}

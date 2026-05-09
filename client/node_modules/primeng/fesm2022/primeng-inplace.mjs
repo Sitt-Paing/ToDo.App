@@ -1,0 +1,329 @@
+export * from 'primeng/types/inplace';
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, Component, inject, EventEmitter, booleanAttribute, ContentChildren, ContentChild, Output, Input, ViewEncapsulation, ChangeDetectionStrategy, NgModule } from '@angular/core';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import * as i3 from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
+import { TimesIcon } from 'primeng/icons';
+import { Ripple } from 'primeng/ripple';
+import { style } from '@primeuix/styles/inplace';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: () => ['p-inplace p-component'],
+    display: ({ instance }) => ['p-inplace-display', { 'p-disabled': instance.disabled }],
+    content: 'p-inplace-content'
+};
+class InplaceStyle extends BaseStyle {
+    name = 'inplace';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Inplace provides an easy to do editing and display at the same time where clicking the output displays the actual content.
+ *
+ * [Live Demo](https://www.primeng.org/inplace)
+ *
+ * @module inplacestyle
+ *
+ */
+var InplaceClasses;
+(function (InplaceClasses) {
+    /**
+     * Class name of the root element
+     */
+    InplaceClasses["root"] = "p-inplace";
+    /**
+     * Class name of the display element
+     */
+    InplaceClasses["display"] = "p-inplace-display";
+    /**
+     * Class name of the content element
+     */
+    InplaceClasses["content"] = "p-inplace-content";
+})(InplaceClasses || (InplaceClasses = {}));
+
+const INPLACE_INSTANCE = new InjectionToken('INPLACE_INSTANCE');
+class InplaceDisplay extends BaseComponent {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceDisplay, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: InplaceDisplay, isStandalone: true, selector: "p-inplacedisplay, p-inplaceDisplay", usesInheritance: true, ngImport: i0, template: '<ng-content></ng-content>', isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceDisplay, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inplacedisplay, p-inplaceDisplay',
+                    standalone: true,
+                    imports: [CommonModule],
+                    template: '<ng-content></ng-content>'
+                }]
+        }] });
+class InplaceContent extends BaseComponent {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceContent, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: InplaceContent, isStandalone: true, selector: "p-inplacecontent, p-inplaceContent", usesInheritance: true, ngImport: i0, template: '<ng-content></ng-content>', isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceContent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inplacecontent, p-inplaceContent',
+                    standalone: true,
+                    imports: [CommonModule],
+                    template: '<ng-content></ng-content>'
+                }]
+        }] });
+/**
+ * Inplace provides an easy to do editing and display at the same time where clicking the output displays the actual content.
+ * @group Components
+ */
+class Inplace extends BaseComponent {
+    $pcInplace = inject(INPLACE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Whether the content is displayed or not.
+     * @group Props
+     */
+    active = false;
+    /**
+     * Displays a button to switch back to display mode.
+     * @deprecated since v20.0.0, use `closeCallback` within content template.
+     * @group Props
+     */
+    closable = false;
+    /**
+     * When present, it specifies that the element should be disabled.
+     * @group Props
+     */
+    disabled = false;
+    /**
+     * Allows to prevent clicking.
+     * @group Props
+     */
+    preventClick;
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Icon to display in the close button.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    closeIcon;
+    /**
+     * Establishes a string value that labels the close button.
+     * @group Props
+     */
+    closeAriaLabel;
+    /**
+     * Callback to invoke when inplace is opened.
+     * @param {Event} event - Browser event.
+     * @group Emits
+     */
+    onActivate = new EventEmitter();
+    /**
+     * Callback to invoke when inplace is closed.
+     * @param {Event} event - Browser event.
+     * @group Emits
+     */
+    onDeactivate = new EventEmitter();
+    hover;
+    /**
+     * Display template of the element.
+     * @group Templates
+     */
+    displayTemplate;
+    /**
+     * Content template of the element.
+     * @group Templates
+     */
+    contentTemplate;
+    /**
+     * Close icon template of the element.
+     * @group Templates
+     */
+    closeIconTemplate;
+    _componentStyle = inject(InplaceStyle);
+    onActivateClick(event) {
+        if (!this.preventClick)
+            this.activate(event);
+    }
+    onDeactivateClick(event) {
+        if (!this.preventClick)
+            this.deactivate(event);
+    }
+    /**
+     * Activates the content.
+     * @param {Event} event - Browser event.
+     * @group Method
+     */
+    activate(event) {
+        if (!this.disabled) {
+            this.active = true;
+            this.onActivate.emit(event);
+            this.cd.markForCheck();
+        }
+    }
+    /**
+     * Deactivates the content.
+     * @param {Event} event - Browser event.
+     * @group Method
+     */
+    deactivate(event) {
+        if (!this.disabled) {
+            this.active = false;
+            this.hover = false;
+            this.onDeactivate.emit(event);
+            this.cd.markForCheck();
+        }
+    }
+    onKeydown(event) {
+        if (event.code === 'Enter') {
+            this.activate(event);
+            event.preventDefault();
+        }
+    }
+    templates;
+    _displayTemplate;
+    _closeIconTemplate;
+    _contentTemplate;
+    onAfterContentInit() {
+        this.templates?.forEach((item) => {
+            switch (item.getType()) {
+                case 'display':
+                    this._displayTemplate = item.template;
+                    break;
+                case 'closeicon':
+                    this._closeIconTemplate = item.template;
+                    break;
+                case 'content':
+                    this._contentTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Inplace, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "16.1.0", version: "20.3.15", type: Inplace, isStandalone: true, selector: "p-inplace", inputs: { active: ["active", "active", booleanAttribute], closable: ["closable", "closable", booleanAttribute], disabled: ["disabled", "disabled", booleanAttribute], preventClick: ["preventClick", "preventClick", booleanAttribute], styleClass: "styleClass", closeIcon: "closeIcon", closeAriaLabel: "closeAriaLabel" }, outputs: { onActivate: "onActivate", onDeactivate: "onDeactivate" }, host: { properties: { "attr.aria-live": "'polite'", "class": "cn(cx('root'), styleClass)" } }, providers: [InplaceStyle, { provide: INPLACE_INSTANCE, useExisting: Inplace }, { provide: PARENT_INSTANCE, useExisting: Inplace }], queries: [{ propertyName: "displayTemplate", first: true, predicate: ["display"] }, { propertyName: "contentTemplate", first: true, predicate: ["content"] }, { propertyName: "closeIconTemplate", first: true, predicate: ["closeicon"] }, { propertyName: "templates", predicate: PrimeTemplate }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <div [class]="cx('display')" [pBind]="ptm('display')" (click)="onActivateClick($event)" tabindex="0" role="button" (keydown)="onKeydown($event)" [ngClass]="{ 'p-disabled': disabled }" *ngIf="!active">
+            <ng-content select="[pInplaceDisplay]"></ng-content>
+            <ng-container *ngTemplateOutlet="displayTemplate || _displayTemplate"></ng-container>
+        </div>
+        <div [class]="cx('content')" [pBind]="ptm('content')" *ngIf="active">
+            <ng-content select="[pInplaceContent]"></ng-content>
+            <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { closeCallback: onDeactivateClick.bind(this) }"></ng-container>
+
+            <ng-container *ngIf="closable">
+                <p-button *ngIf="closeIcon" [pt]="ptm('pcButton')" type="button" [icon]="closeIcon" pRipple (click)="onDeactivateClick($event)" [attr.aria-label]="closeAriaLabel"></p-button>
+                <p-button *ngIf="!closeIcon" [pt]="ptm('pcButton')" type="button" pRipple (click)="onDeactivateClick($event)" [attr.aria-label]="closeAriaLabel">
+                    <ng-template #icon>
+                        <svg data-p-icon="times" *ngIf="!closeIconTemplate && !_closeIconTemplate" />
+                    </ng-template>
+                    <ng-template *ngTemplateOutlet="closeIconTemplate || _closeIconTemplate"></ng-template>
+                </p-button>
+            </ng-container>
+        </div>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: ButtonModule }, { kind: "component", type: i3.Button, selector: "p-button", inputs: ["hostName", "type", "badge", "disabled", "raised", "rounded", "text", "plain", "outlined", "link", "tabindex", "size", "variant", "style", "styleClass", "badgeClass", "badgeSeverity", "ariaLabel", "autofocus", "iconPos", "icon", "label", "loading", "loadingIcon", "severity", "buttonProps", "fluid"], outputs: ["onClick", "onFocus", "onBlur"] }, { kind: "component", type: TimesIcon, selector: "[data-p-icon=\"times\"]" }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Ripple, selector: "[pRipple]" }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Inplace, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inplace',
+                    standalone: true,
+                    imports: [CommonModule, ButtonModule, TimesIcon, SharedModule, Ripple, Bind],
+                    template: `
+        <div [class]="cx('display')" [pBind]="ptm('display')" (click)="onActivateClick($event)" tabindex="0" role="button" (keydown)="onKeydown($event)" [ngClass]="{ 'p-disabled': disabled }" *ngIf="!active">
+            <ng-content select="[pInplaceDisplay]"></ng-content>
+            <ng-container *ngTemplateOutlet="displayTemplate || _displayTemplate"></ng-container>
+        </div>
+        <div [class]="cx('content')" [pBind]="ptm('content')" *ngIf="active">
+            <ng-content select="[pInplaceContent]"></ng-content>
+            <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { closeCallback: onDeactivateClick.bind(this) }"></ng-container>
+
+            <ng-container *ngIf="closable">
+                <p-button *ngIf="closeIcon" [pt]="ptm('pcButton')" type="button" [icon]="closeIcon" pRipple (click)="onDeactivateClick($event)" [attr.aria-label]="closeAriaLabel"></p-button>
+                <p-button *ngIf="!closeIcon" [pt]="ptm('pcButton')" type="button" pRipple (click)="onDeactivateClick($event)" [attr.aria-label]="closeAriaLabel">
+                    <ng-template #icon>
+                        <svg data-p-icon="times" *ngIf="!closeIconTemplate && !_closeIconTemplate" />
+                    </ng-template>
+                    <ng-template *ngTemplateOutlet="closeIconTemplate || _closeIconTemplate"></ng-template>
+                </p-button>
+            </ng-container>
+        </div>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [InplaceStyle, { provide: INPLACE_INSTANCE, useExisting: Inplace }, { provide: PARENT_INSTANCE, useExisting: Inplace }],
+                    host: {
+                        '[attr.aria-live]': "'polite'",
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { active: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], closable: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], disabled: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], preventClick: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], styleClass: [{
+                type: Input
+            }], closeIcon: [{
+                type: Input
+            }], closeAriaLabel: [{
+                type: Input
+            }], onActivate: [{
+                type: Output
+            }], onDeactivate: [{
+                type: Output
+            }], displayTemplate: [{
+                type: ContentChild,
+                args: ['display', { descendants: false }]
+            }], contentTemplate: [{
+                type: ContentChild,
+                args: ['content', { descendants: false }]
+            }], closeIconTemplate: [{
+                type: ContentChild,
+                args: ['closeicon', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class InplaceModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: InplaceModule, imports: [Inplace, InplaceContent, InplaceDisplay, SharedModule], exports: [Inplace, InplaceContent, InplaceDisplay, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceModule, imports: [Inplace, InplaceContent, InplaceDisplay, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InplaceModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Inplace, InplaceContent, InplaceDisplay, SharedModule],
+                    exports: [Inplace, InplaceContent, InplaceDisplay, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Inplace, InplaceClasses, InplaceContent, InplaceDisplay, InplaceModule, InplaceStyle };
+//# sourceMappingURL=primeng-inplace.mjs.map

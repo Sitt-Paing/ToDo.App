@@ -1,0 +1,186 @@
+export * from 'primeng/types/tag';
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, booleanAttribute, ContentChildren, ContentChild, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { style } from '@primeuix/styles/tag';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: ({ instance }) => [
+        'p-tag p-component',
+        {
+            'p-tag-info': instance.severity === 'info',
+            'p-tag-success': instance.severity === 'success',
+            'p-tag-warn': instance.severity === 'warn',
+            'p-tag-danger': instance.severity === 'danger',
+            'p-tag-secondary': instance.severity === 'secondary',
+            'p-tag-contrast': instance.severity === 'contrast',
+            'p-tag-rounded': instance.rounded
+        }
+    ],
+    icon: 'p-tag-icon',
+    label: 'p-tag-label'
+};
+class TagStyle extends BaseStyle {
+    name = 'tag';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TagStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TagStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TagStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tag component is used to categorize content.
+ *
+ * [Live Demo](https://www.primeng.org/tag)
+ *
+ * @module tagstyle
+ *
+ */
+var TagClasses;
+(function (TagClasses) {
+    /**
+     * Class name of the root element
+     */
+    TagClasses["root"] = "p-tag";
+    /**
+     * Class name of the icon element
+     */
+    TagClasses["icon"] = "p-tag-icon";
+    /**
+     * Class name of the label element
+     */
+    TagClasses["label"] = "p-tag-label";
+})(TagClasses || (TagClasses = {}));
+
+const TAG_INSTANCE = new InjectionToken('TAG_INSTANCE');
+/**
+ * Tag component is used to categorize content.
+ * @group Components
+ */
+class Tag extends BaseComponent {
+    $pcTag = inject(TAG_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Style class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Severity type of the tag.
+     * @group Props
+     */
+    severity;
+    /**
+     * Value to display inside the tag.
+     * @group Props
+     */
+    value;
+    /**
+     * Icon of the tag to display next to the value.
+     * @group Props
+     */
+    icon;
+    /**
+     * Whether the corners of the tag are rounded.
+     * @group Props
+     */
+    rounded;
+    iconTemplate;
+    templates;
+    _iconTemplate;
+    _componentStyle = inject(TagStyle);
+    onAfterContentInit() {
+        this.templates?.forEach((item) => {
+            switch (item.getType()) {
+                case 'icon':
+                    this._iconTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tag, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "16.1.0", version: "20.3.15", type: Tag, isStandalone: true, selector: "p-tag", inputs: { styleClass: "styleClass", severity: "severity", value: "value", icon: "icon", rounded: ["rounded", "rounded", booleanAttribute] }, host: { properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [TagStyle, { provide: TAG_INSTANCE, useExisting: Tag }, { provide: PARENT_INSTANCE, useExisting: Tag }], queries: [{ propertyName: "iconTemplate", first: true, predicate: ["icon"] }, { propertyName: "templates", predicate: PrimeTemplate }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <ng-content></ng-content>
+        <ng-container *ngIf="!iconTemplate && !_iconTemplate">
+            <span [class]="cx('icon')" [ngClass]="icon" [pBind]="ptm('icon')" *ngIf="icon"></span>
+        </ng-container>
+        <span [class]="cx('icon')" [pBind]="ptm('icon')" *ngIf="iconTemplate || _iconTemplate">
+            <ng-template *ngTemplateOutlet="iconTemplate || _iconTemplate"></ng-template>
+        </span>
+        <span [class]="cx('label')" [pBind]="ptm('label')">{{ value }}</span>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tag, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tag',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, Bind],
+                    template: `
+        <ng-content></ng-content>
+        <ng-container *ngIf="!iconTemplate && !_iconTemplate">
+            <span [class]="cx('icon')" [ngClass]="icon" [pBind]="ptm('icon')" *ngIf="icon"></span>
+        </ng-container>
+        <span [class]="cx('icon')" [pBind]="ptm('icon')" *ngIf="iconTemplate || _iconTemplate">
+            <ng-template *ngTemplateOutlet="iconTemplate || _iconTemplate"></ng-template>
+        </span>
+        <span [class]="cx('label')" [pBind]="ptm('label')">{{ value }}</span>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TagStyle, { provide: TAG_INSTANCE, useExisting: Tag }, { provide: PARENT_INSTANCE, useExisting: Tag }],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { styleClass: [{
+                type: Input
+            }], severity: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], rounded: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], iconTemplate: [{
+                type: ContentChild,
+                args: ['icon', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class TagModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TagModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: TagModule, imports: [Tag, SharedModule], exports: [Tag, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TagModule, imports: [Tag, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TagModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Tag, SharedModule],
+                    exports: [Tag, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Tag, TagClasses, TagModule, TagStyle };
+//# sourceMappingURL=primeng-tag.mjs.map

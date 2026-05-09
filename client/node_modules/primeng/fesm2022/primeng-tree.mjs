@@ -1,0 +1,2278 @@
+export * from 'primeng/types/tree';
+import * as i1 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, forwardRef, signal, computed, numberAttribute, booleanAttribute, Input, ViewEncapsulation, Component, model, EventEmitter, HostListener, ContentChildren, ViewChild, ContentChild, Output, Optional, ChangeDetectionStrategy, NgModule } from '@angular/core';
+import * as i2 from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { getOuterWidth, getOuterHeight, find, findSingle, focus, removeAccents, resolveFieldData } from '@primeuix/utils';
+import * as i4 from 'primeng/api';
+import { SharedModule, TranslationKeys, PrimeTemplate } from 'primeng/api';
+import * as i5 from 'primeng/autofocus';
+import { AutoFocusModule } from 'primeng/autofocus';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i3 from 'primeng/bind';
+import { BindModule, Bind } from 'primeng/bind';
+import { Checkbox } from 'primeng/checkbox';
+import { IconField } from 'primeng/iconfield';
+import { ChevronRightIcon, ChevronDownIcon, SpinnerIcon, SearchIcon } from 'primeng/icons';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
+import { Ripple } from 'primeng/ripple';
+import { Scroller } from 'primeng/scroller';
+import { style } from '@primeuix/styles/tree';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: ({ instance }) => [
+        'p-tree p-component',
+        {
+            'p-tree-selectable': instance.selectionMode != null,
+            'p-tree-loading': instance.loading,
+            'p-tree-flex-scrollable': instance.scrollHeight === 'flex',
+            'p-tree-node-dragover': instance.dragHover
+        }
+    ],
+    mask: 'p-tree-mask p-overlay-mask',
+    loadingIcon: 'p-tree-loading-icon',
+    pcFilterInput: 'p-tree-filter-input',
+    wrapper: 'p-tree-root',
+    rootChildren: 'p-tree-root-children',
+    node: ({ instance }) => ({ 'p-tree-node': true, 'p-tree-node-leaf': instance.isLeaf() }),
+    nodeContent: ({ instance }) => ({
+        'p-tree-node-content': true,
+        'p-tree-node-selectable': instance.selectable,
+        'p-tree-node-dragover': instance.isNodeDropActive(),
+        'p-tree-node-selected': instance.selectionMode === 'checkbox' && instance.tree.highlightOnSelect ? instance.checked : instance.selected
+    }),
+    nodeToggleButton: 'p-tree-node-toggle-button',
+    nodeToggleIcon: 'p-tree-node-toggle-icon',
+    nodeCheckbox: 'p-tree-node-checkbox',
+    nodeIcon: 'p-tree-node-icon',
+    nodeLabel: 'p-tree-node-label',
+    nodeChildren: 'p-tree-node-children',
+    emptyMessage: 'p-tree-empty-message',
+    dropPoint: 'p-tree-node-drop-point'
+};
+class TreeStyle extends BaseStyle {
+    name = 'tree';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TreeStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TreeStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TreeStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tree is used to display hierarchical data.
+ *
+ * [Live Demo](https://www.primeng.org/tree/)
+ *
+ * @module treestyle
+ *
+ */
+var TreeClasses;
+(function (TreeClasses) {
+    /**
+     * Class name of the root element
+     */
+    TreeClasses["root"] = "p-tree";
+    /**
+     * Class name of the mask element
+     */
+    TreeClasses["mask"] = "p-tree-mask";
+    /**
+     * Class name of the loading icon element
+     */
+    TreeClasses["loadingIcon"] = "p-tree-loading-icon";
+    /**
+     * Class name of the filter input element
+     */
+    TreeClasses["pcFilterInput"] = "p-tree-filter-input";
+    /**
+     * Class name of the wrapper element
+     */
+    TreeClasses["wrapper"] = "p-tree-root";
+    /**
+     * Class name of the root children element
+     */
+    TreeClasses["rootChildren"] = "p-tree-root-children";
+    /**
+     * Class name of the node element
+     */
+    TreeClasses["node"] = "p-tree-node";
+    /**
+     * Class name of the node content element
+     */
+    TreeClasses["nodeContent"] = "p-tree-node-content";
+    /**
+     * Class name of the node toggle button element
+     */
+    TreeClasses["nodeToggleButton"] = "p-tree-node-toggle-button";
+    /**
+     * Class name of the node toggle icon element
+     */
+    TreeClasses["nodeToggleIcon"] = "p-tree-node-toggle-icon";
+    /**
+     * Class name of the node checkbox element
+     */
+    TreeClasses["nodeCheckbox"] = "p-tree-node-checkbox";
+    /**
+     * Class name of the node icon element
+     */
+    TreeClasses["nodeIcon"] = "p-tree-node-icon";
+    /**
+     * Class name of the node label element
+     */
+    TreeClasses["nodeLabel"] = "p-tree-node-label";
+    /**
+     * Class name of the node children element
+     */
+    TreeClasses["nodeChildren"] = "p-tree-node-children";
+    /**
+     * Class name of the empty message element
+     */
+    TreeClasses["emptyMessage"] = "p-tree-empty-message";
+    /**
+     * Class name of the drop point element
+     */
+    TreeClasses["dropPoint"] = "p-tree-node-droppoint";
+})(TreeClasses || (TreeClasses = {}));
+
+const TREE_INSTANCE = new InjectionToken('TREE_INSTANCE');
+const TREENODE_INSTANCE = new InjectionToken('TREENODE_INSTANCE');
+class UITreeNode extends BaseComponent {
+    $pcTreeNode = inject(TREENODE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    static ICON_CLASS = 'p-tree-node-icon ';
+    rowNode;
+    node;
+    parentNode;
+    root;
+    index;
+    firstChild;
+    lastChild;
+    level;
+    indentation;
+    itemSize;
+    loadingMode;
+    tree = inject(forwardRef(() => Tree));
+    timeout;
+    isPrevDropPointHovered = signal(false, ...(ngDevMode ? [{ debugName: "isPrevDropPointHovered" }] : []));
+    isNextDropPointHovered = signal(false, ...(ngDevMode ? [{ debugName: "isNextDropPointHovered" }] : []));
+    isNodeDropHovered = signal(false, ...(ngDevMode ? [{ debugName: "isNodeDropHovered" }] : []));
+    isPrevDropPointActive = computed(() => this.isPrevDropPointHovered() && this.isDroppable(), ...(ngDevMode ? [{ debugName: "isPrevDropPointActive" }] : []));
+    isNextDropPointActive = computed(() => this.isNextDropPointHovered() && this.isDroppable(), ...(ngDevMode ? [{ debugName: "isNextDropPointActive" }] : []));
+    isNodeDropActive = computed(() => this.isNodeDropHovered() && this.isNodeDroppable(), ...(ngDevMode ? [{ debugName: "isNodeDropActive" }] : []));
+    dropPosition = computed(() => (this.isPrevDropPointActive() ? -1 : this.isNextDropPointActive() ? 1 : 0), ...(ngDevMode ? [{ debugName: "dropPosition" }] : []));
+    _componentStyle = inject(TreeStyle);
+    /**
+     * Computed signal that reactively tracks selection state.
+     */
+    _selected = computed(() => {
+        // Reading selection() makes this computed reactive to selection changes
+        this.tree.selection();
+        return this.tree.isSelected(this.node);
+    }, ...(ngDevMode ? [{ debugName: "_selected" }] : []));
+    /**
+     * Computed signal that reactively tracks context menu selection state.
+     */
+    _contextMenuSelected = computed(() => {
+        const selection = this.tree.contextMenuSelection();
+        if (!selection || !this.node) {
+            return false;
+        }
+        return selection === this.node || (selection.key && selection.key === this.node.key);
+    }, ...(ngDevMode ? [{ debugName: "_contextMenuSelected" }] : []));
+    get selected() {
+        return this.tree.selectionMode === 'single' || this.tree.selectionMode === 'multiple' ? this._selected() : undefined;
+    }
+    get checked() {
+        return this.tree.selectionMode === 'checkbox' ? this._selected() : undefined;
+    }
+    get contextMenuSelected() {
+        return this._contextMenuSelected();
+    }
+    get nodeClass() {
+        return this.tree._componentStyle.classes.node({ instance: this });
+    }
+    get selectable() {
+        return this.node?.selectable === false ? false : this.tree?.selectionMode != null;
+    }
+    get subNodes() {
+        return this.node?.parent ? this.node.parent.children : this.tree.value;
+    }
+    getPTOptions(key) {
+        return this.ptm(key, {
+            context: {
+                node: this.node,
+                index: this.index,
+                expanded: this.node?.expanded,
+                selected: this.selected,
+                checked: this.checked,
+                partialChecked: this.node?.partialSelected,
+                contextMenuSelected: this.contextMenuSelected,
+                leaf: this.isLeaf()
+            }
+        });
+    }
+    onInit() {
+        this.node.parent = this.parentNode;
+        const nativeElement = this.tree.el.nativeElement;
+        const pDialogWrapper = nativeElement.closest('p-dialog');
+        if (this.parentNode && !pDialogWrapper) {
+            this.setAllNodesTabIndexes();
+            this.tree.syncNodeOption(this.node, this.tree.value, 'parent', this.tree.getNodeWithKey(this.parentNode.key, this.tree.value));
+        }
+    }
+    getIcon() {
+        let icon;
+        if (this.node.icon)
+            icon = this.node.icon;
+        else
+            icon = this.node.expanded && this.node.children && this.node.children?.length ? this.node.expandedIcon : this.node.collapsedIcon;
+        return UITreeNode.ICON_CLASS + ' ' + icon + ' p-tree-node-icon';
+    }
+    isLeaf() {
+        return this.tree.isNodeLeaf(this.node);
+    }
+    isSelected() {
+        return this._selected();
+    }
+    isContextMenuSelected() {
+        return this._contextMenuSelected();
+    }
+    isSameNode(event) {
+        return event.currentTarget && (event.currentTarget.isSameNode(event.target) || event.currentTarget.isSameNode(event.target.closest('[role="treeitem"]')));
+    }
+    isDraggable() {
+        return this.tree.draggableNodes;
+    }
+    isDroppable() {
+        return this.tree.droppableNodes && this.tree.allowDrop(this.tree.dragNode, this.node, this.tree.dragNodeScope);
+    }
+    isNodeDroppable() {
+        return this.node?.droppable !== false && this.isDroppable();
+    }
+    isNodeDraggable() {
+        return this.node?.draggable !== false && this.isDraggable();
+    }
+    toggle(event) {
+        if (this.node.expanded)
+            this.collapse(event);
+        else
+            this.expand(event);
+        event.stopPropagation();
+    }
+    expand(event) {
+        this.node.expanded = true;
+        if (this.tree.virtualScroll) {
+            this.tree.updateSerializedValue();
+            this.focusVirtualNode();
+        }
+        this.tree.onNodeExpand.emit({ originalEvent: event, node: this.node });
+    }
+    collapse(event) {
+        this.node.expanded = false;
+        if (this.tree.virtualScroll) {
+            this.tree.updateSerializedValue();
+            this.focusVirtualNode();
+        }
+        this.tree.onNodeCollapse.emit({ originalEvent: event, node: this.node });
+    }
+    onNodeClick(event) {
+        this.tree.onNodeClick(event, this.node);
+    }
+    onNodeKeydown(event) {
+        if (event.key === 'Enter') {
+            this.tree.onNodeClick(event, this.node);
+        }
+    }
+    onNodeTouchEnd() {
+        this.tree.onNodeTouchEnd();
+    }
+    onNodeRightClick(event) {
+        this.tree.onNodeRightClick(event, this.node);
+    }
+    onNodeDblClick(event) {
+        this.tree.onNodeDblClick(event, this.node);
+    }
+    insertNodeOnDrop() {
+        const { dragNode, dragNodeIndex, dragNodeSubNodes } = this.tree;
+        if (!this.node || dragNodeIndex == null || !dragNode || !dragNodeSubNodes) {
+            return;
+        }
+        const position = this.dropPosition();
+        const subNodes = this.subNodes || [];
+        const index = this.index || 0;
+        const dropIndex = dragNodeSubNodes === subNodes ? (dragNodeIndex > index ? index : index - 1) : index;
+        dragNodeSubNodes.splice(dragNodeIndex, 1);
+        if (position < 0) {
+            // insert before a Node
+            subNodes.splice(dropIndex, 0, dragNode);
+        }
+        else if (position > 0) {
+            // insert after a Node
+            subNodes.splice(dropIndex + 1, 0, dragNode);
+        }
+        else {
+            // insert as child of a Node
+            this.node.children = this.node.children || [];
+            this.node.children.push(dragNode);
+        }
+        this.tree.dragDropService.stopDrag({
+            node: dragNode,
+            subNodes,
+            index: dragNodeIndex
+        });
+    }
+    onNodeDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.isDroppable()) {
+            const { dragNode } = this.tree;
+            const position = this.dropPosition();
+            const isValidDrop = position !== 0 || (position === 0 && this.isNodeDroppable());
+            if (isValidDrop) {
+                if (this.tree.validateDrop) {
+                    this.tree.onNodeDrop.emit({
+                        originalEvent: event,
+                        dragNode: dragNode,
+                        dropNode: this.node,
+                        index: this.index,
+                        accept: () => {
+                            this.insertNodeOnDrop();
+                        }
+                    });
+                }
+                else {
+                    this.insertNodeOnDrop();
+                    this.tree.onNodeDrop.emit({
+                        originalEvent: event,
+                        dragNode: dragNode,
+                        dropNode: this.node,
+                        index: this.index
+                    });
+                }
+            }
+        }
+        this.isPrevDropPointHovered.set(false);
+        this.isNextDropPointHovered.set(false);
+        this.isNodeDropHovered.set(false);
+    }
+    onNodeDragStart(event) {
+        if (this.isNodeDraggable()) {
+            event.dataTransfer.effectAllowed = 'all';
+            event.dataTransfer?.setData('text', 'data');
+            const target = event.currentTarget;
+            const dragEl = target.cloneNode(true);
+            const toggler = dragEl.querySelector('[data-pc-section="nodetogglebutton"]');
+            const checkbox = dragEl.querySelector('[data-pc-name="pcnodecheckbox"]');
+            target.setAttribute('data-p-dragging', 'true');
+            dragEl.style.width = getOuterWidth(target) + 'px';
+            dragEl.style.height = getOuterHeight(target) + 'px';
+            dragEl.setAttribute('data-pc-section', 'drag-image');
+            toggler.style.visibility = 'hidden';
+            checkbox?.remove();
+            document.body.appendChild(dragEl);
+            event.dataTransfer?.setDragImage(dragEl, 0, 0);
+            setTimeout(() => document.body.removeChild(dragEl), 0);
+            this.tree.dragDropService.startDrag({
+                tree: this,
+                node: this.node,
+                subNodes: this.subNodes,
+                index: this.index,
+                scope: this.tree.draggableScope
+            });
+        }
+        else {
+            event.preventDefault();
+        }
+    }
+    onNodeDragOver(event) {
+        if (this.isDroppable()) {
+            event.dataTransfer.dropEffect = 'copy';
+            const nodeElement = event.currentTarget;
+            const rect = nodeElement.getBoundingClientRect();
+            const y = event.clientY - parseInt(rect.top);
+            this.isPrevDropPointHovered.set(false);
+            this.isNextDropPointHovered.set(false);
+            this.isNodeDropHovered.set(false);
+            if (y < rect.height * 0.25) {
+                this.isPrevDropPointHovered.set(true);
+            }
+            else if (y > rect.height * 0.75) {
+                this.isNextDropPointHovered.set(true);
+            }
+            else if (this.isNodeDroppable()) {
+                this.isNodeDropHovered.set(true);
+            }
+        }
+        else {
+            event.dataTransfer.dropEffect = 'none';
+        }
+        if (this.tree.droppableNodes) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }
+    onNodeDragLeave() {
+        this.isPrevDropPointHovered.set(false);
+        this.isNextDropPointHovered.set(false);
+        this.isNodeDropHovered.set(false);
+    }
+    onNodeDragEnd(event) {
+        event.currentTarget?.removeAttribute('data-p-dragging');
+        this.tree.dragDropService.stopDrag({
+            node: this.node,
+            subNodes: this.subNodes,
+            index: this.index
+        });
+    }
+    onKeyDown(event) {
+        if (!this.isSameNode(event) || (this.tree.contextMenu && this.tree.contextMenu.containerViewChild?.nativeElement.style.display === 'block')) {
+            return;
+        }
+        switch (event.code) {
+            //down arrow
+            case 'ArrowDown':
+                this.onArrowDown(event);
+                break;
+            //up arrow
+            case 'ArrowUp':
+                this.onArrowUp(event);
+                break;
+            //right arrow
+            case 'ArrowRight':
+                this.onArrowRight(event);
+                break;
+            //left arrow
+            case 'ArrowLeft':
+                this.onArrowLeft(event);
+                break;
+            //enter
+            case 'Enter':
+            case 'Space':
+            case 'NumpadEnter':
+                this.onEnter(event);
+                break;
+            //tab
+            case 'Tab':
+                this.setAllNodesTabIndexes();
+                break;
+            default:
+                //no op
+                break;
+        }
+    }
+    onArrowUp(event) {
+        const nodeElement = event.target.getAttribute('data-pc-section') === 'nodetogglebutton' ? event.target.closest('[role="treeitem"]') : event.target.parentElement;
+        if (nodeElement?.previousElementSibling) {
+            this.focusRowChange(nodeElement, nodeElement.previousElementSibling, this.findLastVisibleDescendant(nodeElement.previousElementSibling));
+        }
+        else {
+            let parentNodeElement = this.getParentNodeElement(nodeElement);
+            if (parentNodeElement) {
+                this.focusRowChange(nodeElement, parentNodeElement);
+            }
+        }
+        event.preventDefault();
+    }
+    onArrowDown(event) {
+        const nodeElement = event.target.getAttribute('data-pc-section') === 'nodetogglebutton' ? event.target.closest('[role="treeitem"]') : event.target;
+        const listElement = nodeElement?.children[1];
+        if (listElement && listElement.children.length > 0) {
+            this.focusRowChange(nodeElement, listElement.children[0]);
+        }
+        else {
+            if (nodeElement?.parentElement?.nextElementSibling) {
+                this.focusRowChange(nodeElement, nodeElement.parentElement.nextElementSibling);
+            }
+            else {
+                let nextSiblingAncestor = this.findNextSiblingOfAncestor(nodeElement?.parentElement);
+                if (nextSiblingAncestor) {
+                    this.focusRowChange(nodeElement, nextSiblingAncestor);
+                }
+            }
+        }
+        event.preventDefault();
+    }
+    onArrowRight(event) {
+        if (!this.node?.expanded && !this.tree.isNodeLeaf(this.node)) {
+            this.expand(event);
+            event.currentTarget.tabIndex = -1;
+            setTimeout(() => {
+                this.onArrowDown(event);
+            }, 1);
+        }
+        event.preventDefault();
+    }
+    onArrowLeft(event) {
+        const nodeElement = event.target.getAttribute('data-pc-section') === 'nodetogglebutton' ? event.target.closest('[role="treeitem"]') : event.target;
+        if (this.level === 0 && !this.node?.expanded) {
+            return false;
+        }
+        if (this.node?.expanded) {
+            this.collapse(event);
+            return;
+        }
+        let parentNodeElement = this.getParentNodeElement(nodeElement?.parentElement);
+        if (parentNodeElement) {
+            this.focusRowChange(event.currentTarget, parentNodeElement);
+        }
+        event.preventDefault();
+    }
+    onEnter(event) {
+        this.tree.onNodeClick(event, this.node);
+        this.setTabIndexForSelectionMode(event, this.tree.nodeTouched);
+        event.preventDefault();
+    }
+    setAllNodesTabIndexes() {
+        const nodes = find(this.tree.el.nativeElement, '[data-pc-section="node"]');
+        const hasSelectedNode = [...nodes].some((node) => node.getAttribute('aria-selected') === 'true' || node.getAttribute('aria-checked') === 'true');
+        [...nodes].forEach((node) => {
+            node.tabIndex = -1;
+        });
+        if (hasSelectedNode) {
+            const selectedNodes = [...nodes].filter((node) => node.getAttribute('aria-selected') === 'true' || node.getAttribute('aria-checked') === 'true');
+            selectedNodes[0].tabIndex = 0;
+            return;
+        }
+        if (nodes.length) {
+            [...nodes][0].tabIndex = 0;
+        }
+    }
+    setTabIndexForSelectionMode(event, nodeTouched) {
+        if (this.tree.selectionMode !== null) {
+            const elements = [...find(this.tree.el.nativeElement, '[role="treeitem"]')];
+            event.currentTarget.tabIndex = nodeTouched === false ? -1 : 0;
+            if (elements.every((element) => element.tabIndex === -1)) {
+                elements[0].tabIndex = 0;
+            }
+        }
+    }
+    findNextSiblingOfAncestor(nodeElement) {
+        let parentNodeElement = this.getParentNodeElement(nodeElement);
+        if (parentNodeElement) {
+            if (parentNodeElement.nextElementSibling)
+                return parentNodeElement.nextElementSibling;
+            else
+                return this.findNextSiblingOfAncestor(parentNodeElement);
+        }
+        else {
+            return null;
+        }
+    }
+    findLastVisibleDescendant(nodeElement) {
+        const listElement = Array.from(nodeElement.children).find((el) => el.getAttribute('data-pc-section') === 'node');
+        const childrenListElement = listElement?.children[1];
+        if (childrenListElement && childrenListElement.children.length > 0) {
+            const lastChildElement = childrenListElement.children[childrenListElement.children.length - 1];
+            return this.findLastVisibleDescendant(lastChildElement);
+        }
+        else {
+            return nodeElement;
+        }
+    }
+    getParentNodeElement(nodeElement) {
+        const parentNodeElement = nodeElement.parentElement?.parentElement?.parentElement;
+        return parentNodeElement?.tagName === 'P-TREENODE' ? parentNodeElement : null;
+    }
+    focusNode(element) {
+        if (this.tree.droppableNodes)
+            element.children[1].focus();
+        else
+            element.children[0].focus();
+    }
+    focusRowChange(firstFocusableRow, currentFocusedRow, lastVisibleDescendant) {
+        firstFocusableRow.tabIndex = '-1';
+        currentFocusedRow.children[0].tabIndex = '0';
+        this.focusNode(lastVisibleDescendant || currentFocusedRow);
+    }
+    focusVirtualNode() {
+        this.timeout = setTimeout(() => {
+            let node = findSingle(this.tree?.contentViewChild?.nativeElement, `[data-id="${this.node?.key ?? this.node?.data}"]`);
+            focus(node);
+        }, 1);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: UITreeNode, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: UITreeNode, isStandalone: true, selector: "p-treeNode", inputs: { rowNode: "rowNode", node: "node", parentNode: "parentNode", root: ["root", "root", booleanAttribute], index: ["index", "index", numberAttribute], firstChild: ["firstChild", "firstChild", booleanAttribute], lastChild: ["lastChild", "lastChild", booleanAttribute], level: ["level", "level", numberAttribute], indentation: ["indentation", "indentation", numberAttribute], itemSize: ["itemSize", "itemSize", numberAttribute], loadingMode: "loadingMode" }, providers: [TreeStyle, { provide: TREENODE_INSTANCE, useExisting: UITreeNode }, { provide: PARENT_INSTANCE, useExisting: UITreeNode }], usesInheritance: true, ngImport: i0, template: `
+        @if (node) {
+            <li
+                [class]="cn(cx('node'), node.styleClass)"
+                [ngStyle]="{ height: itemSize + 'px' }"
+                [style]="node.style"
+                [attr.aria-label]="node.label"
+                [attr.aria-checked]="checked"
+                [attr.aria-setsize]="node.children ? node.children.length : 0"
+                [attr.aria-selected]="selected"
+                [attr.aria-expanded]="node.expanded"
+                [attr.aria-posinset]="index + 1"
+                [attr.aria-level]="level + 1"
+                [attr.tabindex]="index === 0 ? 0 : -1"
+                [attr.data-id]="node.key"
+                role="treeitem"
+                (keydown)="onKeyDown($event)"
+                [pBind]="getPTOptions('node')"
+            >
+                @if (isPrevDropPointActive()) {
+                    <div [class]="cx('dropPoint')" [attr.aria-hidden]="true" [pBind]="getPTOptions('dropPoint')"></div>
+                }
+                <div
+                    [class]="cx('nodeContent')"
+                    [style.paddingLeft]="level * indentation + 'rem'"
+                    (click)="onNodeClick($event)"
+                    (contextmenu)="onNodeRightClick($event)"
+                    (dblclick)="onNodeDblClick($event)"
+                    (touchend)="onNodeTouchEnd()"
+                    (drop)="onNodeDrop($event)"
+                    (dragstart)="onNodeDragStart($event)"
+                    (dragover)="onNodeDragOver($event)"
+                    (dragleave)="onNodeDragLeave($event)"
+                    (dragend)="onNodeDragEnd($event)"
+                    [draggable]="tree.draggableNodes"
+                    [pBind]="getPTOptions('nodeContent')"
+                >
+                    <button type="button" [class]="cx('nodeToggleButton')" (click)="toggle($event)" pRipple tabindex="-1" [pBind]="getPTOptions('nodeToggleButton')">
+                        <ng-container *ngIf="!tree.togglerIconTemplate && !tree._togglerIconTemplate">
+                            <ng-container *ngIf="!node.loading">
+                                <svg data-p-icon="chevron-right" *ngIf="!node.expanded" [class]="cx('nodeToggleIcon')" [pBind]="getPTOptions('nodeToggleIcon')" />
+                                <svg data-p-icon="chevron-down" *ngIf="node.expanded" [class]="cx('nodeToggleIcon')" [pBind]="getPTOptions('nodeToggleIcon')" />
+                            </ng-container>
+                            <ng-container *ngIf="loadingMode === 'icon' && node.loading">
+                                <svg data-p-icon="spinner" [class]="cx('nodeToggleIcon')" spin [pBind]="getPTOptions('nodeToggleIcon')" />
+                            </ng-container>
+                        </ng-container>
+                        <span *ngIf="tree.togglerIconTemplate || tree._togglerIconTemplate" [class]="cx('nodeToggleIcon')" [pBind]="getPTOptions('nodeToggleIcon')">
+                            <ng-template *ngTemplateOutlet="tree.togglerIconTemplate || tree._togglerIconTemplate; context: { $implicit: node.expanded, loading: node.loading }"></ng-template>
+                        </span>
+                    </button>
+
+                    <p-checkbox
+                        [ngModel]="isSelected()"
+                        [styleClass]="cx('nodeCheckbox')"
+                        [binary]="true"
+                        [indeterminate]="node.partialSelected"
+                        *ngIf="tree.selectionMode == 'checkbox'"
+                        [disabled]="node.selectable === false"
+                        [variant]="tree?.config.inputStyle() === 'filled' || tree?.config.inputVariant() === 'filled' ? 'filled' : 'outlined'"
+                        [attr.data-p-partialchecked]="node.partialSelected"
+                        [tabindex]="-1"
+                        (click)="$event.preventDefault()"
+                        [pt]="getPTOptions('pcNodeCheckbox')"
+                    >
+                        <ng-container *ngIf="tree.checkboxIconTemplate || tree._checkboxIconTemplate">
+                            <ng-template #icon>
+                                <ng-template
+                                    *ngTemplateOutlet="
+                                        tree.checkboxIconTemplate || tree._checkboxIconTemplate;
+                                        context: {
+                                            $implicit: isSelected(),
+                                            partialSelected: node.partialSelected,
+                                            class: cx('nodeCheckbox')
+                                        }
+                                    "
+                                ></ng-template>
+                            </ng-template>
+                        </ng-container>
+                    </p-checkbox>
+
+                    <span [class]="getIcon()" *ngIf="node.icon || node.expandedIcon || node.collapsedIcon" [pBind]="getPTOptions('nodeIcon')"></span>
+                    <span [class]="cx('nodeLabel')" [pBind]="getPTOptions('nodeLabel')">
+                        <span *ngIf="!tree.getTemplateForNode(node)">{{ node.label }}</span>
+                        <span *ngIf="tree.getTemplateForNode(node)">
+                            <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node); context: { $implicit: node }"></ng-container>
+                        </span>
+                    </span>
+                </div>
+                @if (isNextDropPointActive()) {
+                    <div [class]="cx('dropPoint')" [attr.aria-hidden]="true" [pBind]="getPTOptions('dropPoint')"></div>
+                }
+                <ul [class]="cx('nodeChildren')" *ngIf="!tree.virtualScroll && node.children && node.expanded" role="group" [pBind]="ptm('nodeChildren')">
+                    <p-treeNode
+                        *ngFor="let childNode of node.children; let firstChild = first; let lastChild = last; let index = index; trackBy: tree.trackBy.bind(this)"
+                        [node]="childNode"
+                        [parentNode]="node"
+                        [firstChild]="firstChild"
+                        [lastChild]="lastChild"
+                        [index]="index"
+                        [itemSize]="itemSize"
+                        [level]="level + 1"
+                        [loadingMode]="loadingMode"
+                        [pt]="pt"
+                        [unstyled]="unstyled()"
+                    ></p-treeNode>
+                </ul>
+            </li>
+        }
+    `, isInline: true, dependencies: [{ kind: "component", type: UITreeNode, selector: "p-treeNode", inputs: ["rowNode", "node", "parentNode", "root", "index", "firstChild", "lastChild", "level", "indentation", "itemSize", "loadingMode"] }, { kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i1.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "directive", type: i1.NgStyle, selector: "[ngStyle]", inputs: ["ngStyle"] }, { kind: "directive", type: Ripple, selector: "[pRipple]" }, { kind: "component", type: Checkbox, selector: "p-checkbox, p-checkBox, p-check-box", inputs: ["hostName", "value", "binary", "ariaLabelledBy", "ariaLabel", "tabindex", "inputId", "inputStyle", "styleClass", "inputClass", "indeterminate", "formControl", "checkboxIcon", "readonly", "autofocus", "trueValue", "falseValue", "variant", "size"], outputs: ["onChange", "onFocus", "onBlur"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i2.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i2.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "component", type: ChevronRightIcon, selector: "[data-p-icon=\"chevron-right\"]" }, { kind: "component", type: ChevronDownIcon, selector: "[data-p-icon=\"chevron-down\"]" }, { kind: "component", type: SpinnerIcon, selector: "[data-p-icon=\"spinner\"]" }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }, { kind: "directive", type: i3.Bind, selector: "[pBind]", inputs: ["pBind"] }], encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: UITreeNode, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-treeNode',
+                    standalone: true,
+                    imports: [CommonModule, Ripple, Checkbox, FormsModule, ChevronRightIcon, ChevronDownIcon, SpinnerIcon, SharedModule, BindModule],
+                    template: `
+        @if (node) {
+            <li
+                [class]="cn(cx('node'), node.styleClass)"
+                [ngStyle]="{ height: itemSize + 'px' }"
+                [style]="node.style"
+                [attr.aria-label]="node.label"
+                [attr.aria-checked]="checked"
+                [attr.aria-setsize]="node.children ? node.children.length : 0"
+                [attr.aria-selected]="selected"
+                [attr.aria-expanded]="node.expanded"
+                [attr.aria-posinset]="index + 1"
+                [attr.aria-level]="level + 1"
+                [attr.tabindex]="index === 0 ? 0 : -1"
+                [attr.data-id]="node.key"
+                role="treeitem"
+                (keydown)="onKeyDown($event)"
+                [pBind]="getPTOptions('node')"
+            >
+                @if (isPrevDropPointActive()) {
+                    <div [class]="cx('dropPoint')" [attr.aria-hidden]="true" [pBind]="getPTOptions('dropPoint')"></div>
+                }
+                <div
+                    [class]="cx('nodeContent')"
+                    [style.paddingLeft]="level * indentation + 'rem'"
+                    (click)="onNodeClick($event)"
+                    (contextmenu)="onNodeRightClick($event)"
+                    (dblclick)="onNodeDblClick($event)"
+                    (touchend)="onNodeTouchEnd()"
+                    (drop)="onNodeDrop($event)"
+                    (dragstart)="onNodeDragStart($event)"
+                    (dragover)="onNodeDragOver($event)"
+                    (dragleave)="onNodeDragLeave($event)"
+                    (dragend)="onNodeDragEnd($event)"
+                    [draggable]="tree.draggableNodes"
+                    [pBind]="getPTOptions('nodeContent')"
+                >
+                    <button type="button" [class]="cx('nodeToggleButton')" (click)="toggle($event)" pRipple tabindex="-1" [pBind]="getPTOptions('nodeToggleButton')">
+                        <ng-container *ngIf="!tree.togglerIconTemplate && !tree._togglerIconTemplate">
+                            <ng-container *ngIf="!node.loading">
+                                <svg data-p-icon="chevron-right" *ngIf="!node.expanded" [class]="cx('nodeToggleIcon')" [pBind]="getPTOptions('nodeToggleIcon')" />
+                                <svg data-p-icon="chevron-down" *ngIf="node.expanded" [class]="cx('nodeToggleIcon')" [pBind]="getPTOptions('nodeToggleIcon')" />
+                            </ng-container>
+                            <ng-container *ngIf="loadingMode === 'icon' && node.loading">
+                                <svg data-p-icon="spinner" [class]="cx('nodeToggleIcon')" spin [pBind]="getPTOptions('nodeToggleIcon')" />
+                            </ng-container>
+                        </ng-container>
+                        <span *ngIf="tree.togglerIconTemplate || tree._togglerIconTemplate" [class]="cx('nodeToggleIcon')" [pBind]="getPTOptions('nodeToggleIcon')">
+                            <ng-template *ngTemplateOutlet="tree.togglerIconTemplate || tree._togglerIconTemplate; context: { $implicit: node.expanded, loading: node.loading }"></ng-template>
+                        </span>
+                    </button>
+
+                    <p-checkbox
+                        [ngModel]="isSelected()"
+                        [styleClass]="cx('nodeCheckbox')"
+                        [binary]="true"
+                        [indeterminate]="node.partialSelected"
+                        *ngIf="tree.selectionMode == 'checkbox'"
+                        [disabled]="node.selectable === false"
+                        [variant]="tree?.config.inputStyle() === 'filled' || tree?.config.inputVariant() === 'filled' ? 'filled' : 'outlined'"
+                        [attr.data-p-partialchecked]="node.partialSelected"
+                        [tabindex]="-1"
+                        (click)="$event.preventDefault()"
+                        [pt]="getPTOptions('pcNodeCheckbox')"
+                    >
+                        <ng-container *ngIf="tree.checkboxIconTemplate || tree._checkboxIconTemplate">
+                            <ng-template #icon>
+                                <ng-template
+                                    *ngTemplateOutlet="
+                                        tree.checkboxIconTemplate || tree._checkboxIconTemplate;
+                                        context: {
+                                            $implicit: isSelected(),
+                                            partialSelected: node.partialSelected,
+                                            class: cx('nodeCheckbox')
+                                        }
+                                    "
+                                ></ng-template>
+                            </ng-template>
+                        </ng-container>
+                    </p-checkbox>
+
+                    <span [class]="getIcon()" *ngIf="node.icon || node.expandedIcon || node.collapsedIcon" [pBind]="getPTOptions('nodeIcon')"></span>
+                    <span [class]="cx('nodeLabel')" [pBind]="getPTOptions('nodeLabel')">
+                        <span *ngIf="!tree.getTemplateForNode(node)">{{ node.label }}</span>
+                        <span *ngIf="tree.getTemplateForNode(node)">
+                            <ng-container *ngTemplateOutlet="tree.getTemplateForNode(node); context: { $implicit: node }"></ng-container>
+                        </span>
+                    </span>
+                </div>
+                @if (isNextDropPointActive()) {
+                    <div [class]="cx('dropPoint')" [attr.aria-hidden]="true" [pBind]="getPTOptions('dropPoint')"></div>
+                }
+                <ul [class]="cx('nodeChildren')" *ngIf="!tree.virtualScroll && node.children && node.expanded" role="group" [pBind]="ptm('nodeChildren')">
+                    <p-treeNode
+                        *ngFor="let childNode of node.children; let firstChild = first; let lastChild = last; let index = index; trackBy: tree.trackBy.bind(this)"
+                        [node]="childNode"
+                        [parentNode]="node"
+                        [firstChild]="firstChild"
+                        [lastChild]="lastChild"
+                        [index]="index"
+                        [itemSize]="itemSize"
+                        [level]="level + 1"
+                        [loadingMode]="loadingMode"
+                        [pt]="pt"
+                        [unstyled]="unstyled()"
+                    ></p-treeNode>
+                </ul>
+            </li>
+        }
+    `,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TreeStyle, { provide: TREENODE_INSTANCE, useExisting: UITreeNode }, { provide: PARENT_INSTANCE, useExisting: UITreeNode }]
+                }]
+        }], propDecorators: { rowNode: [{
+                type: Input
+            }], node: [{
+                type: Input
+            }], parentNode: [{
+                type: Input
+            }], root: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], index: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], firstChild: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], lastChild: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], level: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], indentation: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], itemSize: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], loadingMode: [{
+                type: Input
+            }] } });
+/**
+ * Tree is used to display hierarchical data.
+ * @group Components
+ */
+class Tree extends BaseComponent {
+    dragDropService;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    $pcTree = inject(TREE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * An array of treenodes.
+     * @group Props
+     */
+    value;
+    /**
+     * Defines the selection mode.
+     * @group Props
+     */
+    selectionMode;
+    /**
+     * Loading mode display.
+     * @group Props
+     */
+    loadingMode = 'mask';
+    /**
+     * A single treenode instance or an array to refer to the selections.
+     * @group Props
+     */
+    selection = model(null, ...(ngDevMode ? [{ debugName: "selection" }] : []));
+    /**
+     * Style class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Context menu instance.
+     * @group Props
+     */
+    contextMenu;
+    /**
+     * Defines how the context menu selection behaves.
+     * When set to 'separate', context menu selection is handled independently from the main selection.
+     * When set to 'joint', context menu selection also updates the main selection.
+     * @group Props
+     */
+    contextMenuSelectionMode = 'separate';
+    /**
+     * A single treenode instance to refer to the context menu selection.
+     * @group Props
+     */
+    contextMenuSelection = model(null, ...(ngDevMode ? [{ debugName: "contextMenuSelection" }] : []));
+    /**
+     * Scope of the draggable nodes to match a droppableScope.
+     * @group Props
+     */
+    draggableScope;
+    /**
+     * Scope of the droppable nodes to match a draggableScope.
+     * @group Props
+     */
+    droppableScope;
+    /**
+     * Whether the nodes are draggable.
+     * @group Props
+     */
+    draggableNodes;
+    /**
+     * Whether the nodes are droppable.
+     * @group Props
+     */
+    droppableNodes;
+    /**
+     * Defines how multiple items can be selected, when true metaKey needs to be pressed to select or unselect an item and when set to false selection of each item can be toggled individually. On touch enabled devices, metaKeySelection is turned off automatically.
+     * @group Props
+     */
+    metaKeySelection = false;
+    /**
+     * Whether checkbox selections propagate to ancestor nodes.
+     * @group Props
+     */
+    propagateSelectionUp = true;
+    /**
+     * Whether checkbox selections propagate to descendant nodes.
+     * @group Props
+     */
+    propagateSelectionDown = true;
+    /**
+     * Displays a loader to indicate data load is in progress.
+     * @group Props
+     */
+    loading;
+    /**
+     * The icon to show while indicating data load is in progress.
+     * @group Props
+     */
+    loadingIcon;
+    /**
+     * Text to display when there is no data.
+     * @group Props
+     */
+    emptyMessage = '';
+    /**
+     * Used to define a string that labels the tree.
+     * @group Props
+     */
+    ariaLabel;
+    /**
+     * Defines a string that labels the toggler icon for accessibility.
+     * @group Props
+     */
+    togglerAriaLabel;
+    /**
+     * Establishes relationships between the component and label(s) where its value should be one or more element IDs.
+     * @group Props
+     */
+    ariaLabelledBy;
+    /**
+     * When enabled, drop can be accepted or rejected based on condition defined at onNodeDrop.
+     * @group Props
+     */
+    validateDrop;
+    /**
+     * When specified, displays an input field to filter the items.
+     * @group Props
+     */
+    filter;
+    /**
+     * Determines whether the filter input should be automatically focused when the component is rendered.
+     * @group Props
+     */
+    filterInputAutoFocus = false;
+    /**
+     * When filtering is enabled, filterBy decides which field or fields (comma separated) to search against.
+     * @group Props
+     */
+    filterBy = 'label';
+    /**
+     * Mode for filtering valid values are "lenient" and "strict". Default is lenient.
+     * @group Props
+     */
+    filterMode = 'lenient';
+    /**
+     * Mode for filtering valid values are "lenient" and "strict". Default is lenient.
+     * @group Props
+     */
+    filterOptions;
+    /**
+     * Placeholder text to show when filter input is empty.
+     * @group Props
+     */
+    filterPlaceholder;
+    /**
+     * Values after the tree nodes are filtered.
+     * @group Props
+     */
+    filteredNodes;
+    /**
+     * Locale to use in filtering. The default locale is the host environment's current locale.
+     * @group Props
+     */
+    filterLocale;
+    /**
+     * Height of the scrollable viewport.
+     * @group Props
+     */
+    scrollHeight;
+    /**
+     * Defines if data is loaded and interacted with in lazy manner.
+     * @group Props
+     */
+    lazy = false;
+    /**
+     * Whether the data should be loaded on demand during scroll.
+     * @group Props
+     */
+    virtualScroll;
+    /**
+     * Height of an item in the list for VirtualScrolling.
+     * @group Props
+     */
+    virtualScrollItemSize;
+    /**
+     * Whether to use the scroller feature. The properties of scroller component can be used like an object in it.
+     * @group Props
+     */
+    virtualScrollOptions;
+    /**
+     * Indentation factor for spacing of the nested node when virtual scrolling is enabled.
+     * @group Props
+     */
+    indentation = 1.5;
+    /**
+     * Custom templates of the component.
+     * @group Props
+     */
+    _templateMap;
+    /**
+     * Function to optimize the node list rendering, default algorithm checks for object identity.
+     * @group Props
+     */
+    trackBy = (index, item) => item;
+    /**
+     * Highlights the node on select.
+     * @group Props
+     */
+    highlightOnSelect = false;
+    /**
+     * Callback to invoke when a node is selected.
+     * @param {TreeNodeSelectEvent} event - Node select event.
+     * @group Emits
+     */
+    onNodeSelect = new EventEmitter();
+    /**
+     * Callback to invoke when a node is unselected.
+     * @param {TreeNodeUnSelectEvent} event - Node unselect event.
+     * @group Emits
+     */
+    onNodeUnselect = new EventEmitter();
+    /**
+     * Callback to invoke when a node is expanded.
+     * @param {TreeNodeExpandEvent} event - Node expand event.
+     * @group Emits
+     */
+    onNodeExpand = new EventEmitter();
+    /**
+     * Callback to invoke when a node is collapsed.
+     * @param {TreeNodeCollapseEvent} event - Node collapse event.
+     * @group Emits
+     */
+    onNodeCollapse = new EventEmitter();
+    /**
+     * Callback to invoke when a node is selected with right click.
+     * @param {onNodeContextMenuSelect} event - Node context menu select event.
+     * @group Emits
+     */
+    onNodeContextMenuSelect = new EventEmitter();
+    /**
+     * Callback to invoke when a node is double clicked.
+     * @param {TreeNodeDoubleClickEvent} event - Node double click event.
+     * @group Emits
+     */
+    onNodeDoubleClick = new EventEmitter();
+    /**
+     * Callback to invoke when a node is dropped.
+     * @param {TreeNodeDropEvent} event - Node drop event.
+     * @group Emits
+     */
+    onNodeDrop = new EventEmitter();
+    /**
+     * Callback to invoke in lazy mode to load new data.
+     * @param {TreeLazyLoadEvent} event - Custom lazy load event.
+     * @group Emits
+     */
+    onLazyLoad = new EventEmitter();
+    /**
+     * Callback to invoke in virtual scroll mode when scroll position changes.
+     * @param {TreeScrollEvent} event - Custom scroll event.
+     * @group Emits
+     */
+    onScroll = new EventEmitter();
+    /**
+     * Callback to invoke in virtual scroll mode when scroll position and item's range in view changes.
+     * @param {TreeScrollIndexChangeEvent} event - Scroll index change event.
+     * @group Emits
+     */
+    onScrollIndexChange = new EventEmitter();
+    /**
+     * Callback to invoke when data is filtered.
+     * @param {TreeFilterEvent} event - Custom filter event.
+     * @group Emits
+     */
+    onFilter = new EventEmitter();
+    /**
+     * Filter template.
+     * @group Templates
+     */
+    filterTemplate;
+    /**
+     * Node template.
+     * @group Templates
+     */
+    nodeTemplate;
+    /**
+     * Header template.
+     * @group Templates
+     */
+    headerTemplate;
+    /**
+     * Footer template.
+     * @group Templates
+     */
+    footerTemplate;
+    /**
+     * Loader template.
+     * @group Templates
+     */
+    loaderTemplate;
+    /**
+     * Empty message template.
+     * @group Templates
+     */
+    emptyTemplate;
+    /**
+     * Toggler icon template.
+     * @group Templates
+     */
+    togglerIconTemplate;
+    /**
+     * Checkbox icon template.
+     * @group Templates
+     */
+    checkboxIconTemplate;
+    /**
+     * Loading icon template.
+     * @group Templates
+     */
+    loadingIconTemplate;
+    /**
+     * Filter icon template.
+     * @group Templates
+     */
+    filterIconTemplate;
+    filterViewChild;
+    scroller;
+    wrapperViewChild;
+    contentViewChild;
+    templates;
+    _headerTemplate;
+    _emptyTemplate;
+    _footerTemplate;
+    _loaderTemplate;
+    _togglerIconTemplate;
+    _checkboxIconTemplate;
+    _loadingIconTemplate;
+    _filterIconTemplate;
+    _filterTemplate;
+    onAfterContentInit() {
+        if (this.templates.length) {
+            this._templateMap = {};
+        }
+        this.templates.forEach((item) => {
+            switch (item.getType()) {
+                case 'header':
+                    this._headerTemplate = item.template;
+                    break;
+                case 'empty':
+                    this._emptyTemplate = item.template;
+                    break;
+                case 'footer':
+                    this._footerTemplate = item.template;
+                    break;
+                case 'loader':
+                    this._loaderTemplate = item.template;
+                    break;
+                case 'togglericon':
+                    this._togglerIconTemplate = item.template;
+                    break;
+                case 'checkboxicon':
+                    this._checkboxIconTemplate = item.template;
+                    break;
+                case 'loadingicon':
+                    this._loadingIconTemplate = item.template;
+                    break;
+                case 'filtericon':
+                    this._filterIconTemplate = item.template;
+                    break;
+                case 'filter':
+                    this._filterTemplate = item.template;
+                    break;
+                default:
+                    this._templateMap[item.name] = item.template;
+                    break;
+            }
+        });
+    }
+    serializedValue;
+    nodeTouched;
+    dragNodeTree;
+    dragNode;
+    dragNodeSubNodes;
+    dragNodeIndex;
+    dragNodeScope;
+    dragHover;
+    dragStartSubscription;
+    dragStopSubscription;
+    _componentStyle = inject(TreeStyle);
+    handleDropEvent(event) {
+        this.onDrop(event);
+    }
+    handleDragOverEvent(event) {
+        this.onDragOver(event);
+    }
+    handleDragEnterEvent() {
+        this.onDragEnter();
+    }
+    handleDragLeaveEvent(event) {
+        this.onDragLeave(event);
+    }
+    constructor(dragDropService) {
+        super();
+        this.dragDropService = dragDropService;
+    }
+    onInit() {
+        if (this.filterBy) {
+            this.filterOptions = {
+                filter: (value) => this._filter(value),
+                reset: () => this.resetFilter()
+            };
+        }
+        if (this.droppableNodes) {
+            this.dragStartSubscription = this.dragDropService.dragStart$.subscribe((event) => {
+                this.dragNodeTree = event.tree;
+                this.dragNode = event.node;
+                this.dragNodeSubNodes = event.subNodes;
+                this.dragNodeIndex = event.index;
+                this.dragNodeScope = event.scope;
+            });
+            this.dragStopSubscription = this.dragDropService.dragStop$.subscribe((event) => {
+                this.dragNodeTree = null;
+                this.dragNode = null;
+                this.dragNodeSubNodes = null;
+                this.dragNodeIndex = null;
+                this.dragNodeScope = null;
+                this.dragHover = false;
+            });
+        }
+    }
+    onChanges(simpleChange) {
+        if (simpleChange.value) {
+            this.updateSerializedValue();
+            if (this.hasFilterActive()) {
+                this._filter(this.filterViewChild?.nativeElement?.value);
+            }
+        }
+    }
+    get emptyMessageLabel() {
+        return this.emptyMessage || this.config.getTranslation(TranslationKeys.EMPTY_MESSAGE);
+    }
+    updateSerializedValue() {
+        this.serializedValue = [];
+        this.serializeNodes(null, this.getRootNode(), 0, true);
+    }
+    serializeNodes(parent, nodes, level, visible) {
+        if (nodes && nodes.length) {
+            for (let node of nodes) {
+                node.parent = parent;
+                const rowNode = {
+                    node: node,
+                    parent: parent,
+                    level: level,
+                    visible: visible && (parent ? parent.expanded : true)
+                };
+                this.serializedValue.push(rowNode);
+                if (rowNode.visible && node.expanded) {
+                    this.serializeNodes(node, node.children, level + 1, rowNode.visible);
+                }
+            }
+        }
+    }
+    onNodeClick(event, node) {
+        let eventTarget = event.target;
+        const section = eventTarget?.getAttribute?.('data-pc-section');
+        if (section === 'nodetogglebutton' || section === 'nodetoggleicon') {
+            return;
+        }
+        if (this.selectionMode) {
+            if (node.selectable === false) {
+                node.style = '--p-focus-ring-color: none;';
+                return;
+            }
+            else {
+                if (!node.style?.includes('--p-focus-ring-color')) {
+                    node.style = node.style ? `${node.style}--p-focus-ring-color: var(--primary-color)` : '--p-focus-ring-color: var(--primary-color)';
+                }
+            }
+            if (this.hasFilteredNodes()) {
+                node = this.getNodeWithKey(node.key, this.filteredNodes);
+                if (!node) {
+                    return;
+                }
+            }
+            let index = this.findIndexInSelection(node);
+            let selected = index >= 0;
+            const currentSelection = this.selection();
+            if (this.isCheckboxSelectionMode()) {
+                if (selected) {
+                    if (this.propagateSelectionDown)
+                        this.propagateDown(node, false);
+                    else
+                        this.selection.set(currentSelection.filter((_val, i) => i != index));
+                    if (this.propagateSelectionUp && node.parent) {
+                        this.propagateUp(node.parent, false);
+                    }
+                    this.onNodeUnselect.emit({ originalEvent: event, node: node });
+                }
+                else {
+                    if (this.propagateSelectionDown)
+                        this.propagateDown(node, true);
+                    else
+                        this.selection.set([...(currentSelection || []), node]);
+                    if (this.propagateSelectionUp && node.parent) {
+                        this.propagateUp(node.parent, true);
+                    }
+                    this.onNodeSelect.emit({ originalEvent: event, node: node });
+                }
+            }
+            else {
+                let metaSelection = this.nodeTouched ? false : this.metaKeySelection;
+                if (metaSelection) {
+                    let metaKey = event.metaKey || event.ctrlKey;
+                    if (selected && metaKey) {
+                        if (this.isSingleSelectionMode()) {
+                            this.selection.set(null);
+                        }
+                        else {
+                            this.selection.set(currentSelection.filter((_val, i) => i != index));
+                        }
+                        this.onNodeUnselect.emit({ originalEvent: event, node: node });
+                    }
+                    else {
+                        if (this.isSingleSelectionMode()) {
+                            this.selection.set(node);
+                        }
+                        else if (this.isMultipleSelectionMode()) {
+                            const base = !metaKey ? [] : currentSelection || [];
+                            this.selection.set([...base, node]);
+                        }
+                        this.onNodeSelect.emit({ originalEvent: event, node: node });
+                    }
+                }
+                else {
+                    if (this.isSingleSelectionMode()) {
+                        if (selected) {
+                            this.selection.set(null);
+                            this.onNodeUnselect.emit({ originalEvent: event, node: node });
+                        }
+                        else {
+                            this.selection.set(node);
+                            setTimeout(() => {
+                                this.onNodeSelect.emit({ originalEvent: event, node: node });
+                            });
+                        }
+                    }
+                    else {
+                        if (selected) {
+                            this.selection.set(currentSelection.filter((_val, i) => i != index));
+                            this.onNodeUnselect.emit({ originalEvent: event, node: node });
+                        }
+                        else {
+                            this.selection.set([...(currentSelection || []), node]);
+                            setTimeout(() => {
+                                this.onNodeSelect.emit({ originalEvent: event, node: node });
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        this.nodeTouched = false;
+    }
+    onNodeTouchEnd() {
+        this.nodeTouched = true;
+    }
+    onNodeRightClick(event, node) {
+        if (this.contextMenu) {
+            let eventTarget = event.target;
+            const section = eventTarget.getAttribute('data-pc-section');
+            if (section === 'nodetogglebutton' || section === 'nodetoggleicon') {
+                return;
+            }
+            let index = this.findIndexInSelection(node);
+            let isNodeSelected = index >= 0;
+            const onContextMenuCallback = () => {
+                this.contextMenu.show(event);
+                this.contextMenu.hideCallback = () => {
+                    this.contextMenuSelection.set(null);
+                };
+                this.onNodeContextMenuSelect.emit({ originalEvent: event, node: node });
+            };
+            if (this.contextMenuSelectionMode === 'separate') {
+                // In 'separate' mode: Update contextMenuSelection with clicked node, don't modify selection
+                this.contextMenuSelection.set(node);
+                onContextMenuCallback();
+            }
+            else if (this.contextMenuSelectionMode === 'joint') {
+                // In 'joint' mode: Update only selection, don't touch contextMenuSelection
+                if (!isNodeSelected) {
+                    if (this.isSingleSelectionMode()) {
+                        this.selection.set(node);
+                    }
+                    else {
+                        this.selection.set([node]);
+                    }
+                }
+                // If already selected, keep current selection as is
+                onContextMenuCallback();
+            }
+        }
+    }
+    onNodeDblClick(event, node) {
+        this.onNodeDoubleClick.emit({ originalEvent: event, node: node });
+    }
+    findIndexInSelection(node) {
+        let index = -1;
+        const currentSelection = this.selection();
+        if (this.selectionMode && currentSelection) {
+            if (this.isSingleSelectionMode()) {
+                const sel = currentSelection;
+                let areNodesEqual = (sel.key && sel.key === node.key) || sel == node;
+                index = areNodesEqual ? 0 : -1;
+            }
+            else {
+                const selArray = currentSelection;
+                for (let i = 0; i < selArray.length; i++) {
+                    let selectedNode = selArray[i];
+                    let areNodesEqual = (selectedNode.key && selectedNode.key === node.key) || selectedNode == node;
+                    if (areNodesEqual) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+        return index;
+    }
+    syncNodeOption(node, parentNodes, option, value) {
+        // to synchronize the node option between the filtered nodes and the original nodes(this.value)
+        const _node = this.hasFilteredNodes() ? this.getNodeWithKey(node.key, parentNodes) : null;
+        if (_node) {
+            _node[option] = value || node[option];
+        }
+    }
+    hasFilteredNodes() {
+        return this.filter && this.filteredNodes && this.filteredNodes.length;
+    }
+    hasFilterActive() {
+        return this.filter && this.filterViewChild?.nativeElement?.value.length > 0;
+    }
+    getNodeWithKey(key, nodes) {
+        for (let node of nodes) {
+            if (node.key === key) {
+                return node;
+            }
+            if (node.children) {
+                let matchedNode = this.getNodeWithKey(key, node.children);
+                if (matchedNode) {
+                    return matchedNode;
+                }
+            }
+        }
+    }
+    propagateUp(node, select) {
+        if (node.children && node.children.length) {
+            let selectedCount = 0;
+            let childPartialSelected = false;
+            for (let child of node.children) {
+                if (this.isSelected(child)) {
+                    selectedCount++;
+                }
+                else if (child.partialSelected) {
+                    childPartialSelected = true;
+                }
+            }
+            const currentSelection = this.selection() || [];
+            if (select && selectedCount == node.children.length) {
+                this.selection.set([...currentSelection, node]);
+                node.partialSelected = false;
+            }
+            else {
+                if (!select) {
+                    let index = this.findIndexInSelection(node);
+                    if (index >= 0) {
+                        this.selection.set(currentSelection.filter((_val, i) => i != index));
+                    }
+                }
+                if (childPartialSelected || (selectedCount > 0 && selectedCount != node.children.length))
+                    node.partialSelected = true;
+                else
+                    node.partialSelected = false;
+            }
+            this.syncNodeOption(node, this.filteredNodes, 'partialSelected');
+        }
+        let parent = node.parent;
+        if (parent) {
+            this.propagateUp(parent, select);
+        }
+    }
+    propagateDown(node, select) {
+        let index = this.findIndexInSelection(node);
+        const currentSelection = this.selection() || [];
+        if (select && index == -1) {
+            this.selection.set([...currentSelection, node]);
+        }
+        else if (!select && index > -1) {
+            this.selection.set(currentSelection.filter((_val, i) => i != index));
+        }
+        node.partialSelected = false;
+        this.syncNodeOption(node, this.filteredNodes, 'partialSelected');
+        if (node.children && node.children.length) {
+            for (let child of node.children) {
+                this.propagateDown(child, select);
+            }
+        }
+    }
+    isSelected(node) {
+        return this.findIndexInSelection(node) != -1;
+    }
+    isSingleSelectionMode() {
+        return this.selectionMode && this.selectionMode == 'single';
+    }
+    isMultipleSelectionMode() {
+        return this.selectionMode && this.selectionMode == 'multiple';
+    }
+    isCheckboxSelectionMode() {
+        return this.selectionMode && this.selectionMode == 'checkbox';
+    }
+    isNodeLeaf(node) {
+        return node.leaf == false ? false : !(node.children && node.children.length);
+    }
+    getRootNode() {
+        return this.filteredNodes ? this.filteredNodes : this.value;
+    }
+    getTemplateForNode(node) {
+        if (this._templateMap)
+            return node.type ? this._templateMap[node.type] : this._templateMap['default'];
+        else
+            return null;
+    }
+    onDragOver(event) {
+        if (this.droppableNodes && this.allowDrop(this.dragNode, null, this.dragNodeScope)) {
+            event.dataTransfer.dropEffect = 'copy';
+            event.preventDefault();
+        }
+    }
+    onDrop(event) {
+        if (this.droppableNodes) {
+            event.preventDefault();
+            let dragNode = this.dragNode;
+            if (this.isSameTreeScope(this.dragNodeScope)) {
+                return;
+            }
+            if (this.allowDrop(dragNode, null, this.dragNodeScope)) {
+                let dragNodeIndex = this.dragNodeIndex;
+                this.value = this.value || [];
+                if (this.validateDrop) {
+                    this.onNodeDrop.emit({
+                        originalEvent: event,
+                        dragNode: dragNode,
+                        dropNode: null,
+                        index: dragNodeIndex,
+                        accept: () => {
+                            this.processTreeDrop(dragNode, dragNodeIndex);
+                        }
+                    });
+                }
+                else {
+                    this.onNodeDrop.emit({
+                        originalEvent: event,
+                        dragNode: dragNode,
+                        dropNode: null,
+                        index: dragNodeIndex
+                    });
+                    this.processTreeDrop(dragNode, dragNodeIndex);
+                }
+            }
+        }
+    }
+    processTreeDrop(dragNode, dragNodeIndex) {
+        this.dragNodeSubNodes.splice(dragNodeIndex, 1);
+        this.value.push(dragNode);
+        this.dragDropService.stopDrag({
+            node: dragNode
+        });
+    }
+    onDragEnter() {
+        if (this.droppableNodes && this.allowDrop(this.dragNode, null, this.dragNodeScope)) {
+            this.dragHover = true;
+        }
+    }
+    onDragLeave(event) {
+        if (this.droppableNodes) {
+            let rect = event.currentTarget.getBoundingClientRect();
+            if (event.x > parseInt(rect.left) + rect.width || event.x < parseInt(rect.left) || event.y > parseInt(rect.top) + rect.height || event.y < parseInt(rect.top)) {
+                this.dragHover = false;
+            }
+        }
+    }
+    allowDrop(dragNode, dropNode, dragNodeScope) {
+        if (!dragNode) {
+            //prevent random html elements to be dragged
+            return false;
+        }
+        else if (this.isValidDragScope(dragNodeScope)) {
+            let allow = true;
+            if (dropNode) {
+                if (dragNode === dropNode) {
+                    allow = false;
+                }
+                else {
+                    let parent = dropNode.parent;
+                    while (parent != null) {
+                        if (parent === dragNode) {
+                            allow = false;
+                            break;
+                        }
+                        parent = parent.parent;
+                    }
+                }
+            }
+            return allow;
+        }
+        else {
+            return false;
+        }
+    }
+    hasCommonScope(dragScope, dropScope) {
+        if (typeof dropScope === 'string') {
+            if (typeof dragScope === 'string')
+                return dropScope === dragScope;
+            else if (Array.isArray(dragScope))
+                return dragScope.indexOf(dropScope) != -1;
+        }
+        else if (Array.isArray(dropScope)) {
+            if (typeof dragScope === 'string') {
+                return dropScope.indexOf(dragScope) != -1;
+            }
+            else if (Array.isArray(dragScope)) {
+                for (let s of dropScope) {
+                    for (let ds of dragScope) {
+                        if (s === ds) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    isSameTreeScope(dragScope) {
+        return this.hasCommonScope(dragScope, this.draggableScope);
+    }
+    isValidDragScope(dragScope) {
+        let dropScope = this.droppableScope;
+        if (dropScope) {
+            return this.hasCommonScope(dragScope, dropScope);
+        }
+        else {
+            return true;
+        }
+    }
+    _filter(value) {
+        let filterValue = value;
+        if (filterValue === '') {
+            this.filteredNodes = null;
+        }
+        else {
+            this.filteredNodes = [];
+            const searchFields = this.filterBy.split(',');
+            const filterText = removeAccents(filterValue).toLocaleLowerCase(this.filterLocale);
+            const isStrictMode = this.filterMode === 'strict';
+            for (let node of this.value) {
+                let copyNode = { ...node };
+                let paramsWithoutNode = { searchFields, filterText, isStrictMode };
+                if ((isStrictMode && (this.findFilteredNodes(copyNode, paramsWithoutNode) || this.isFilterMatched(copyNode, paramsWithoutNode))) ||
+                    (!isStrictMode && (this.isFilterMatched(copyNode, paramsWithoutNode) || this.findFilteredNodes(copyNode, paramsWithoutNode)))) {
+                    this.filteredNodes.push(copyNode);
+                }
+            }
+        }
+        this.updateSerializedValue();
+        this.onFilter.emit({
+            filter: filterValue,
+            filteredValue: this.filteredNodes
+        });
+    }
+    /**
+     * Resets filter.
+     * @group Method
+     */
+    resetFilter() {
+        this.filteredNodes = null;
+        if (this.filterViewChild && this.filterViewChild.nativeElement) {
+            this.filterViewChild.nativeElement.value = '';
+        }
+    }
+    /**
+     * Scrolls to virtual index.
+     * @param {number} number - Index to be scrolled.
+     * @group Method
+     */
+    scrollToVirtualIndex(index) {
+        this.virtualScroll && this.scroller?.scrollToIndex(index);
+    }
+    /**
+     * Scrolls to virtual index.
+     * @param {ScrollToOptions} options - Scroll options.
+     * @group Method
+     */
+    scrollTo(options) {
+        if (this.virtualScroll) {
+            this.scroller?.scrollTo(options);
+        }
+        else if (this.wrapperViewChild && this.wrapperViewChild.nativeElement) {
+            if (this.wrapperViewChild.nativeElement.scrollTo) {
+                this.wrapperViewChild.nativeElement.scrollTo(options);
+            }
+            else {
+                this.wrapperViewChild.nativeElement.scrollLeft = options.left;
+                this.wrapperViewChild.nativeElement.scrollTop = options.top;
+            }
+        }
+    }
+    findFilteredNodes(node, paramsWithoutNode) {
+        if (node) {
+            let matched = false;
+            if (node.children) {
+                let childNodes = [...node.children];
+                node.children = [];
+                for (let childNode of childNodes) {
+                    let copyChildNode = { ...childNode };
+                    if (this.isFilterMatched(copyChildNode, paramsWithoutNode)) {
+                        matched = true;
+                        node.children.push(copyChildNode);
+                    }
+                }
+            }
+            if (matched) {
+                node.expanded = true;
+                return true;
+            }
+        }
+    }
+    isFilterMatched(node, params) {
+        let { searchFields, filterText, isStrictMode } = params;
+        let matched = false;
+        for (let field of searchFields) {
+            let fieldValue = removeAccents(String(resolveFieldData(node, field))).toLocaleLowerCase(this.filterLocale);
+            if (fieldValue.indexOf(filterText) > -1) {
+                matched = true;
+            }
+        }
+        if (!matched || (isStrictMode && !this.isNodeLeaf(node))) {
+            matched = this.findFilteredNodes(node, { searchFields, filterText, isStrictMode }) || matched;
+        }
+        return matched;
+    }
+    getIndex(options, index) {
+        const getItemOptions = options['getItemOptions'];
+        return getItemOptions ? getItemOptions(index).index : index;
+    }
+    getBlockableElement() {
+        return this.el.nativeElement.children[0];
+    }
+    onDestroy() {
+        if (this.dragStartSubscription) {
+            this.dragStartSubscription.unsubscribe();
+        }
+        if (this.dragStopSubscription) {
+            this.dragStopSubscription.unsubscribe();
+        }
+    }
+    get containerDataP() {
+        return this.cn({
+            loading: this.loading,
+            scrollable: this.scrollHeight === 'flex'
+        });
+    }
+    get wrapperDataP() {
+        return this.cn({
+            scrollable: this.scrollHeight === 'flex'
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tree, deps: [{ token: i4.TreeDragDropService, optional: true }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: Tree, isStandalone: true, selector: "p-tree", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: false, isRequired: false, transformFunction: null }, selectionMode: { classPropertyName: "selectionMode", publicName: "selectionMode", isSignal: false, isRequired: false, transformFunction: null }, loadingMode: { classPropertyName: "loadingMode", publicName: "loadingMode", isSignal: false, isRequired: false, transformFunction: null }, selection: { classPropertyName: "selection", publicName: "selection", isSignal: true, isRequired: false, transformFunction: null }, styleClass: { classPropertyName: "styleClass", publicName: "styleClass", isSignal: false, isRequired: false, transformFunction: null }, contextMenu: { classPropertyName: "contextMenu", publicName: "contextMenu", isSignal: false, isRequired: false, transformFunction: null }, contextMenuSelectionMode: { classPropertyName: "contextMenuSelectionMode", publicName: "contextMenuSelectionMode", isSignal: false, isRequired: false, transformFunction: null }, contextMenuSelection: { classPropertyName: "contextMenuSelection", publicName: "contextMenuSelection", isSignal: true, isRequired: false, transformFunction: null }, draggableScope: { classPropertyName: "draggableScope", publicName: "draggableScope", isSignal: false, isRequired: false, transformFunction: null }, droppableScope: { classPropertyName: "droppableScope", publicName: "droppableScope", isSignal: false, isRequired: false, transformFunction: null }, draggableNodes: { classPropertyName: "draggableNodes", publicName: "draggableNodes", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, droppableNodes: { classPropertyName: "droppableNodes", publicName: "droppableNodes", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, metaKeySelection: { classPropertyName: "metaKeySelection", publicName: "metaKeySelection", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, propagateSelectionUp: { classPropertyName: "propagateSelectionUp", publicName: "propagateSelectionUp", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, propagateSelectionDown: { classPropertyName: "propagateSelectionDown", publicName: "propagateSelectionDown", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, loading: { classPropertyName: "loading", publicName: "loading", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, loadingIcon: { classPropertyName: "loadingIcon", publicName: "loadingIcon", isSignal: false, isRequired: false, transformFunction: null }, emptyMessage: { classPropertyName: "emptyMessage", publicName: "emptyMessage", isSignal: false, isRequired: false, transformFunction: null }, ariaLabel: { classPropertyName: "ariaLabel", publicName: "ariaLabel", isSignal: false, isRequired: false, transformFunction: null }, togglerAriaLabel: { classPropertyName: "togglerAriaLabel", publicName: "togglerAriaLabel", isSignal: false, isRequired: false, transformFunction: null }, ariaLabelledBy: { classPropertyName: "ariaLabelledBy", publicName: "ariaLabelledBy", isSignal: false, isRequired: false, transformFunction: null }, validateDrop: { classPropertyName: "validateDrop", publicName: "validateDrop", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, filter: { classPropertyName: "filter", publicName: "filter", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, filterInputAutoFocus: { classPropertyName: "filterInputAutoFocus", publicName: "filterInputAutoFocus", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, filterBy: { classPropertyName: "filterBy", publicName: "filterBy", isSignal: false, isRequired: false, transformFunction: null }, filterMode: { classPropertyName: "filterMode", publicName: "filterMode", isSignal: false, isRequired: false, transformFunction: null }, filterOptions: { classPropertyName: "filterOptions", publicName: "filterOptions", isSignal: false, isRequired: false, transformFunction: null }, filterPlaceholder: { classPropertyName: "filterPlaceholder", publicName: "filterPlaceholder", isSignal: false, isRequired: false, transformFunction: null }, filteredNodes: { classPropertyName: "filteredNodes", publicName: "filteredNodes", isSignal: false, isRequired: false, transformFunction: null }, filterLocale: { classPropertyName: "filterLocale", publicName: "filterLocale", isSignal: false, isRequired: false, transformFunction: null }, scrollHeight: { classPropertyName: "scrollHeight", publicName: "scrollHeight", isSignal: false, isRequired: false, transformFunction: null }, lazy: { classPropertyName: "lazy", publicName: "lazy", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, virtualScroll: { classPropertyName: "virtualScroll", publicName: "virtualScroll", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, virtualScrollItemSize: { classPropertyName: "virtualScrollItemSize", publicName: "virtualScrollItemSize", isSignal: false, isRequired: false, transformFunction: numberAttribute }, virtualScrollOptions: { classPropertyName: "virtualScrollOptions", publicName: "virtualScrollOptions", isSignal: false, isRequired: false, transformFunction: null }, indentation: { classPropertyName: "indentation", publicName: "indentation", isSignal: false, isRequired: false, transformFunction: numberAttribute }, _templateMap: { classPropertyName: "_templateMap", publicName: "_templateMap", isSignal: false, isRequired: false, transformFunction: null }, trackBy: { classPropertyName: "trackBy", publicName: "trackBy", isSignal: false, isRequired: false, transformFunction: null }, highlightOnSelect: { classPropertyName: "highlightOnSelect", publicName: "highlightOnSelect", isSignal: false, isRequired: false, transformFunction: booleanAttribute } }, outputs: { selection: "selectionChange", contextMenuSelection: "contextMenuSelectionChange", onNodeSelect: "onNodeSelect", onNodeUnselect: "onNodeUnselect", onNodeExpand: "onNodeExpand", onNodeCollapse: "onNodeCollapse", onNodeContextMenuSelect: "onNodeContextMenuSelect", onNodeDoubleClick: "onNodeDoubleClick", onNodeDrop: "onNodeDrop", onLazyLoad: "onLazyLoad", onScroll: "onScroll", onScrollIndexChange: "onScrollIndexChange", onFilter: "onFilter" }, host: { listeners: { "drop": "handleDropEvent($event)", "dragover": "handleDragOverEvent($event)", "dragenter": "handleDragEnterEvent()", "dragleave": "handleDragLeaveEvent($event)" }, properties: { "class": "cn(cx('root'), styleClass)", "attr.data-p": "containerDataP" } }, providers: [TreeStyle, { provide: TREE_INSTANCE, useExisting: Tree }, { provide: PARENT_INSTANCE, useExisting: Tree }], queries: [{ propertyName: "filterTemplate", first: true, predicate: ["filter"] }, { propertyName: "nodeTemplate", first: true, predicate: ["node"] }, { propertyName: "headerTemplate", first: true, predicate: ["header"] }, { propertyName: "footerTemplate", first: true, predicate: ["footer"] }, { propertyName: "loaderTemplate", first: true, predicate: ["loader"] }, { propertyName: "emptyTemplate", first: true, predicate: ["empty"] }, { propertyName: "togglerIconTemplate", first: true, predicate: ["togglericon"] }, { propertyName: "checkboxIconTemplate", first: true, predicate: ["checkboxicon"] }, { propertyName: "loadingIconTemplate", first: true, predicate: ["loadingicon"] }, { propertyName: "filterIconTemplate", first: true, predicate: ["filtericon"] }, { propertyName: "templates", predicate: PrimeTemplate }], viewQueries: [{ propertyName: "filterViewChild", first: true, predicate: ["filter"], descendants: true }, { propertyName: "scroller", first: true, predicate: ["scroller"], descendants: true }, { propertyName: "wrapperViewChild", first: true, predicate: ["wrapper"], descendants: true }, { propertyName: "contentViewChild", first: true, predicate: ["content"], descendants: true }], usesInheritance: true, hostDirectives: [{ directive: i3.Bind }], ngImport: i0, template: `
+        <div [class]="cx('mask')" *ngIf="loading && loadingMode === 'mask'" [pBind]="ptm('mask')" animate.enter="p-overlay-mask-enter-active" animate.leave="p-overlay-mask-leave-active">
+            <i *ngIf="loadingIcon" [class]="cn(cx('loadingIcon'), 'pi-spin' + loadingIcon)" [pBind]="ptm('loadingIcon')"></i>
+            <ng-container *ngIf="!loadingIcon">
+                <svg data-p-icon="spinner" *ngIf="!loadingIconTemplate && !_loadingIconTemplate" spin [class]="cx('loadingIcon')" [pBind]="ptm('loadingIcon')" />
+                <span *ngIf="loadingIconTemplate || _loadingIconTemplate" [class]="cx('loadingIcon')" [pBind]="ptm('loadingIcon')">
+                    <ng-template *ngTemplateOutlet="loadingIconTemplate || _loadingIconTemplate"></ng-template>
+                </span>
+            </ng-container>
+        </div>
+        <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
+        @if (filterTemplate || _filterTemplate) {
+            <ng-container *ngTemplateOutlet="filterTemplate || _filterTemplate; context: { $implicit: filterOptions }"></ng-container>
+        } @else {
+            <p-iconfield *ngIf="filter" [class]="cx('pcFilterContainer')" [pt]="ptm('pcFilterContainer')" [unstyled]="unstyled()">
+                <input
+                    #filter
+                    [pAutoFocus]="filterInputAutoFocus"
+                    pInputText
+                    type="search"
+                    autocomplete="off"
+                    [class]="cx('pcFilterInput')"
+                    [attr.placeholder]="filterPlaceholder"
+                    (keydown.enter)="$event.preventDefault()"
+                    (input)="_filter($event.target?.value)"
+                    [pt]="ptm('pcFilterInput')"
+                    [unstyled]="unstyled()"
+                />
+                <p-inputicon [pt]="ptm('pcFilterIconContainer')" [unstyled]="unstyled()">
+                    <svg data-p-icon="search" *ngIf="!filterIconTemplate && !_filterIconTemplate" [class]="cx('filterIcon')" [pBind]="ptm('filterIcon')" />
+                    <span *ngIf="filterIconTemplate || _filterIconTemplate" [class]="cx('filterIcon')" [pBind]="ptm('filterIcon')">
+                        <ng-template *ngTemplateOutlet="filterIconTemplate || _filterIconTemplate"></ng-template>
+                    </span>
+                </p-inputicon>
+            </p-iconfield>
+        }
+
+        <ng-container *ngIf="getRootNode()?.length">
+            <p-scroller
+                #scroller
+                *ngIf="virtualScroll"
+                [items]="serializedValue"
+                [tabindex]="-1"
+                [styleClass]="cx('wrapper')"
+                [style]="{ height: scrollHeight !== 'flex' ? scrollHeight : undefined }"
+                [scrollHeight]="scrollHeight !== 'flex' ? undefined : '100%'"
+                [itemSize]="virtualScrollItemSize"
+                [lazy]="lazy"
+                (onScroll)="onScroll.emit($event)"
+                (onScrollIndexChange)="onScrollIndexChange.emit($event)"
+                (onLazyLoad)="onLazyLoad.emit($event)"
+                [options]="virtualScrollOptions"
+                [pt]="ptm('virtualScroller')"
+                hostName="tree"
+                [attr.data-p]="wrapperDataP"
+            >
+                <ng-template #content let-items let-scrollerOptions="options">
+                    <ul
+                        *ngIf="items"
+                        #content
+                        [class]="cx('rootChildren')"
+                        [ngClass]="scrollerOptions.contentStyleClass"
+                        [style]="scrollerOptions.contentStyle"
+                        role="tree"
+                        [attr.aria-label]="ariaLabel"
+                        [attr.aria-labelledby]="ariaLabelledBy"
+                        [pBind]="ptm('rootChildren')"
+                    >
+                        <p-treeNode
+                            #treeNode
+                            *ngFor="let rowNode of items; let firstChild = first; let lastChild = last; let index = index; trackBy: trackBy"
+                            [level]="rowNode.level"
+                            [rowNode]="rowNode"
+                            [node]="rowNode.node"
+                            [parentNode]="rowNode.parent"
+                            [firstChild]="firstChild"
+                            [lastChild]="lastChild"
+                            [index]="getIndex(scrollerOptions, index)"
+                            [itemSize]="scrollerOptions.itemSize"
+                            [indentation]="indentation"
+                            [loadingMode]="loadingMode"
+                            [pt]="pt"
+                            [unstyled]="unstyled()"
+                        ></p-treeNode>
+                    </ul>
+                </ng-template>
+                <ng-container *ngIf="loaderTemplate || _loaderTemplate">
+                    <ng-template #loader let-scrollerOptions="options">
+                        <ng-container *ngTemplateOutlet="loaderTemplate || _loaderTemplate; context: { options: scrollerOptions }"></ng-container>
+                    </ng-template>
+                </ng-container>
+            </p-scroller>
+            <ng-container *ngIf="!virtualScroll">
+                <div #wrapper [class]="cx('wrapper')" [style.max-height]="scrollHeight" [pBind]="ptm('wrapper')" [attr.data-p]="wrapperDataP">
+                    <ul #content [class]="cx('rootChildren')" *ngIf="getRootNode()" role="tree" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="ariaLabelledBy" [pBind]="ptm('rootChildren')">
+                        <p-treeNode
+                            *ngFor="let node of getRootNode(); let firstChild = first; let lastChild = last; let index = index; trackBy: trackBy.bind(this)"
+                            [node]="node"
+                            [firstChild]="firstChild"
+                            [lastChild]="lastChild"
+                            [index]="index"
+                            [level]="0"
+                            [loadingMode]="loadingMode"
+                            [pt]="pt"
+                            [unstyled]="unstyled()"
+                        ></p-treeNode>
+                    </ul>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <div [class]="cx('emptyMessage')" *ngIf="!loading && (getRootNode() == null || getRootNode().length === 0)" [pBind]="ptm('emptyMessage')">
+            <ng-container *ngIf="!emptyTemplate && !_emptyTemplate; else emptyFilter">
+                {{ emptyMessageLabel }}
+            </ng-container>
+            <ng-template #emptyFilter *ngTemplateOutlet="emptyTemplate || _emptyTemplate"></ng-template>
+        </div>
+        <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i1.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i1.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i1.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i1.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "component", type: Scroller, selector: "p-scroller, p-virtualscroller, p-virtual-scroller, p-virtualScroller", inputs: ["hostName", "id", "style", "styleClass", "tabindex", "items", "itemSize", "scrollHeight", "scrollWidth", "orientation", "step", "delay", "resizeDelay", "appendOnly", "inline", "lazy", "disabled", "loaderDisabled", "columns", "showSpacer", "showLoader", "numToleratedItems", "loading", "autoSize", "trackBy", "options"], outputs: ["onLazyLoad", "onScroll", "onScrollIndexChange"] }, { kind: "ngmodule", type: SharedModule }, { kind: "component", type: SearchIcon, selector: "[data-p-icon=\"search\"]" }, { kind: "component", type: SpinnerIcon, selector: "[data-p-icon=\"spinner\"]" }, { kind: "directive", type: InputText, selector: "[pInputText]", inputs: ["hostName", "ptInputText", "pSize", "variant", "fluid", "invalid"] }, { kind: "ngmodule", type: FormsModule }, { kind: "component", type: IconField, selector: "p-iconfield, p-iconField, p-icon-field", inputs: ["hostName", "iconPosition", "styleClass"] }, { kind: "component", type: InputIcon, selector: "p-inputicon, p-inputIcon", inputs: ["hostName", "styleClass"] }, { kind: "component", type: UITreeNode, selector: "p-treeNode", inputs: ["rowNode", "node", "parentNode", "root", "index", "firstChild", "lastChild", "level", "indentation", "itemSize", "loadingMode"] }, { kind: "ngmodule", type: AutoFocusModule }, { kind: "directive", type: i5.AutoFocus, selector: "[pAutoFocus]", inputs: ["pAutoFocus"] }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tree, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tree',
+                    standalone: true,
+                    imports: [CommonModule, Scroller, SharedModule, SearchIcon, SpinnerIcon, InputText, FormsModule, IconField, InputIcon, UITreeNode, AutoFocusModule, Bind],
+                    template: `
+        <div [class]="cx('mask')" *ngIf="loading && loadingMode === 'mask'" [pBind]="ptm('mask')" animate.enter="p-overlay-mask-enter-active" animate.leave="p-overlay-mask-leave-active">
+            <i *ngIf="loadingIcon" [class]="cn(cx('loadingIcon'), 'pi-spin' + loadingIcon)" [pBind]="ptm('loadingIcon')"></i>
+            <ng-container *ngIf="!loadingIcon">
+                <svg data-p-icon="spinner" *ngIf="!loadingIconTemplate && !_loadingIconTemplate" spin [class]="cx('loadingIcon')" [pBind]="ptm('loadingIcon')" />
+                <span *ngIf="loadingIconTemplate || _loadingIconTemplate" [class]="cx('loadingIcon')" [pBind]="ptm('loadingIcon')">
+                    <ng-template *ngTemplateOutlet="loadingIconTemplate || _loadingIconTemplate"></ng-template>
+                </span>
+            </ng-container>
+        </div>
+        <ng-container *ngTemplateOutlet="headerTemplate || _headerTemplate"></ng-container>
+        @if (filterTemplate || _filterTemplate) {
+            <ng-container *ngTemplateOutlet="filterTemplate || _filterTemplate; context: { $implicit: filterOptions }"></ng-container>
+        } @else {
+            <p-iconfield *ngIf="filter" [class]="cx('pcFilterContainer')" [pt]="ptm('pcFilterContainer')" [unstyled]="unstyled()">
+                <input
+                    #filter
+                    [pAutoFocus]="filterInputAutoFocus"
+                    pInputText
+                    type="search"
+                    autocomplete="off"
+                    [class]="cx('pcFilterInput')"
+                    [attr.placeholder]="filterPlaceholder"
+                    (keydown.enter)="$event.preventDefault()"
+                    (input)="_filter($event.target?.value)"
+                    [pt]="ptm('pcFilterInput')"
+                    [unstyled]="unstyled()"
+                />
+                <p-inputicon [pt]="ptm('pcFilterIconContainer')" [unstyled]="unstyled()">
+                    <svg data-p-icon="search" *ngIf="!filterIconTemplate && !_filterIconTemplate" [class]="cx('filterIcon')" [pBind]="ptm('filterIcon')" />
+                    <span *ngIf="filterIconTemplate || _filterIconTemplate" [class]="cx('filterIcon')" [pBind]="ptm('filterIcon')">
+                        <ng-template *ngTemplateOutlet="filterIconTemplate || _filterIconTemplate"></ng-template>
+                    </span>
+                </p-inputicon>
+            </p-iconfield>
+        }
+
+        <ng-container *ngIf="getRootNode()?.length">
+            <p-scroller
+                #scroller
+                *ngIf="virtualScroll"
+                [items]="serializedValue"
+                [tabindex]="-1"
+                [styleClass]="cx('wrapper')"
+                [style]="{ height: scrollHeight !== 'flex' ? scrollHeight : undefined }"
+                [scrollHeight]="scrollHeight !== 'flex' ? undefined : '100%'"
+                [itemSize]="virtualScrollItemSize"
+                [lazy]="lazy"
+                (onScroll)="onScroll.emit($event)"
+                (onScrollIndexChange)="onScrollIndexChange.emit($event)"
+                (onLazyLoad)="onLazyLoad.emit($event)"
+                [options]="virtualScrollOptions"
+                [pt]="ptm('virtualScroller')"
+                hostName="tree"
+                [attr.data-p]="wrapperDataP"
+            >
+                <ng-template #content let-items let-scrollerOptions="options">
+                    <ul
+                        *ngIf="items"
+                        #content
+                        [class]="cx('rootChildren')"
+                        [ngClass]="scrollerOptions.contentStyleClass"
+                        [style]="scrollerOptions.contentStyle"
+                        role="tree"
+                        [attr.aria-label]="ariaLabel"
+                        [attr.aria-labelledby]="ariaLabelledBy"
+                        [pBind]="ptm('rootChildren')"
+                    >
+                        <p-treeNode
+                            #treeNode
+                            *ngFor="let rowNode of items; let firstChild = first; let lastChild = last; let index = index; trackBy: trackBy"
+                            [level]="rowNode.level"
+                            [rowNode]="rowNode"
+                            [node]="rowNode.node"
+                            [parentNode]="rowNode.parent"
+                            [firstChild]="firstChild"
+                            [lastChild]="lastChild"
+                            [index]="getIndex(scrollerOptions, index)"
+                            [itemSize]="scrollerOptions.itemSize"
+                            [indentation]="indentation"
+                            [loadingMode]="loadingMode"
+                            [pt]="pt"
+                            [unstyled]="unstyled()"
+                        ></p-treeNode>
+                    </ul>
+                </ng-template>
+                <ng-container *ngIf="loaderTemplate || _loaderTemplate">
+                    <ng-template #loader let-scrollerOptions="options">
+                        <ng-container *ngTemplateOutlet="loaderTemplate || _loaderTemplate; context: { options: scrollerOptions }"></ng-container>
+                    </ng-template>
+                </ng-container>
+            </p-scroller>
+            <ng-container *ngIf="!virtualScroll">
+                <div #wrapper [class]="cx('wrapper')" [style.max-height]="scrollHeight" [pBind]="ptm('wrapper')" [attr.data-p]="wrapperDataP">
+                    <ul #content [class]="cx('rootChildren')" *ngIf="getRootNode()" role="tree" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="ariaLabelledBy" [pBind]="ptm('rootChildren')">
+                        <p-treeNode
+                            *ngFor="let node of getRootNode(); let firstChild = first; let lastChild = last; let index = index; trackBy: trackBy.bind(this)"
+                            [node]="node"
+                            [firstChild]="firstChild"
+                            [lastChild]="lastChild"
+                            [index]="index"
+                            [level]="0"
+                            [loadingMode]="loadingMode"
+                            [pt]="pt"
+                            [unstyled]="unstyled()"
+                        ></p-treeNode>
+                    </ul>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <div [class]="cx('emptyMessage')" *ngIf="!loading && (getRootNode() == null || getRootNode().length === 0)" [pBind]="ptm('emptyMessage')">
+            <ng-container *ngIf="!emptyTemplate && !_emptyTemplate; else emptyFilter">
+                {{ emptyMessageLabel }}
+            </ng-container>
+            <ng-template #emptyFilter *ngTemplateOutlet="emptyTemplate || _emptyTemplate"></ng-template>
+        </div>
+        <ng-container *ngTemplateOutlet="footerTemplate || _footerTemplate"></ng-container>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TreeStyle, { provide: TREE_INSTANCE, useExisting: Tree }, { provide: PARENT_INSTANCE, useExisting: Tree }],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)",
+                        '[attr.data-p]': 'containerDataP'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], ctorParameters: () => [{ type: i4.TreeDragDropService, decorators: [{
+                    type: Optional
+                }] }], propDecorators: { value: [{
+                type: Input
+            }], selectionMode: [{
+                type: Input
+            }], loadingMode: [{
+                type: Input
+            }], selection: [{ type: i0.Input, args: [{ isSignal: true, alias: "selection", required: false }] }, { type: i0.Output, args: ["selectionChange"] }], styleClass: [{
+                type: Input
+            }], contextMenu: [{
+                type: Input
+            }], contextMenuSelectionMode: [{
+                type: Input
+            }], contextMenuSelection: [{ type: i0.Input, args: [{ isSignal: true, alias: "contextMenuSelection", required: false }] }, { type: i0.Output, args: ["contextMenuSelectionChange"] }], draggableScope: [{
+                type: Input
+            }], droppableScope: [{
+                type: Input
+            }], draggableNodes: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], droppableNodes: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], metaKeySelection: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], propagateSelectionUp: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], propagateSelectionDown: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], loading: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], loadingIcon: [{
+                type: Input
+            }], emptyMessage: [{
+                type: Input
+            }], ariaLabel: [{
+                type: Input
+            }], togglerAriaLabel: [{
+                type: Input
+            }], ariaLabelledBy: [{
+                type: Input
+            }], validateDrop: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], filter: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], filterInputAutoFocus: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], filterBy: [{
+                type: Input
+            }], filterMode: [{
+                type: Input
+            }], filterOptions: [{
+                type: Input
+            }], filterPlaceholder: [{
+                type: Input
+            }], filteredNodes: [{
+                type: Input
+            }], filterLocale: [{
+                type: Input
+            }], scrollHeight: [{
+                type: Input
+            }], lazy: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], virtualScroll: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], virtualScrollItemSize: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], virtualScrollOptions: [{
+                type: Input
+            }], indentation: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], _templateMap: [{
+                type: Input
+            }], trackBy: [{
+                type: Input
+            }], highlightOnSelect: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], onNodeSelect: [{
+                type: Output
+            }], onNodeUnselect: [{
+                type: Output
+            }], onNodeExpand: [{
+                type: Output
+            }], onNodeCollapse: [{
+                type: Output
+            }], onNodeContextMenuSelect: [{
+                type: Output
+            }], onNodeDoubleClick: [{
+                type: Output
+            }], onNodeDrop: [{
+                type: Output
+            }], onLazyLoad: [{
+                type: Output
+            }], onScroll: [{
+                type: Output
+            }], onScrollIndexChange: [{
+                type: Output
+            }], onFilter: [{
+                type: Output
+            }], filterTemplate: [{
+                type: ContentChild,
+                args: ['filter', { descendants: false }]
+            }], nodeTemplate: [{
+                type: ContentChild,
+                args: ['node', { descendants: false }]
+            }], headerTemplate: [{
+                type: ContentChild,
+                args: ['header', { descendants: false }]
+            }], footerTemplate: [{
+                type: ContentChild,
+                args: ['footer', { descendants: false }]
+            }], loaderTemplate: [{
+                type: ContentChild,
+                args: ['loader', { descendants: false }]
+            }], emptyTemplate: [{
+                type: ContentChild,
+                args: ['empty', { descendants: false }]
+            }], togglerIconTemplate: [{
+                type: ContentChild,
+                args: ['togglericon', { descendants: false }]
+            }], checkboxIconTemplate: [{
+                type: ContentChild,
+                args: ['checkboxicon', { descendants: false }]
+            }], loadingIconTemplate: [{
+                type: ContentChild,
+                args: ['loadingicon', { descendants: false }]
+            }], filterIconTemplate: [{
+                type: ContentChild,
+                args: ['filtericon', { descendants: false }]
+            }], filterViewChild: [{
+                type: ViewChild,
+                args: ['filter']
+            }], scroller: [{
+                type: ViewChild,
+                args: ['scroller']
+            }], wrapperViewChild: [{
+                type: ViewChild,
+                args: ['wrapper']
+            }], contentViewChild: [{
+                type: ViewChild,
+                args: ['content']
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }], handleDropEvent: [{
+                type: HostListener,
+                args: ['drop', ['$event']]
+            }], handleDragOverEvent: [{
+                type: HostListener,
+                args: ['dragover', ['$event']]
+            }], handleDragEnterEvent: [{
+                type: HostListener,
+                args: ['dragenter']
+            }], handleDragLeaveEvent: [{
+                type: HostListener,
+                args: ['dragleave', ['$event']]
+            }] } });
+class TreeModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TreeModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: TreeModule, imports: [Tree, SharedModule], exports: [Tree, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TreeModule, imports: [Tree, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TreeModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Tree, SharedModule],
+                    exports: [Tree, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Tree, TreeClasses, TreeModule, TreeStyle, UITreeNode };
+//# sourceMappingURL=primeng-tree.mjs.map

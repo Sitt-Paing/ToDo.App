@@ -1,0 +1,236 @@
+export * from 'primeng/types/timeline';
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, ContentChildren, ContentChild, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { style } from '@primeuix/styles/timeline';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: ({ instance }) => ['p-timeline p-component', 'p-timeline-' + instance.align, 'p-timeline-' + instance.layout],
+    event: 'p-timeline-event',
+    eventOpposite: 'p-timeline-event-opposite',
+    eventSeparator: 'p-timeline-event-separator',
+    eventMarker: 'p-timeline-event-marker',
+    eventConnector: 'p-timeline-event-connector',
+    eventContent: 'p-timeline-event-content'
+};
+class TimelineStyle extends BaseStyle {
+    name = 'timeline';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TimelineStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TimelineStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TimelineStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Timeline visualizes a series of chained events.
+ *
+ * [Live Demo](https://primeng.org/timeline)
+ *
+ * @module timelinestyle
+ *
+ */
+var TimelineClasses;
+(function (TimelineClasses) {
+    /**
+     * Class name of the root element
+     */
+    TimelineClasses["root"] = "p-timeline";
+    /**
+     * Class name of the event element
+     */
+    TimelineClasses["event"] = "p-timeline-event";
+    /**
+     * Class name of the event opposite element
+     */
+    TimelineClasses["eventOpposite"] = "p-timeline-event-opposite";
+    /**
+     * Class name of the event separator element
+     */
+    TimelineClasses["eventSeparator"] = "p-timeline-event-separator";
+    /**
+     * Class name of the event marker element
+     */
+    TimelineClasses["eventMarker"] = "p-timeline-event-marker";
+    /**
+     * Class name of the event connector element
+     */
+    TimelineClasses["eventConnector"] = "p-timeline-event-connector";
+    /**
+     * Class name of the event content element
+     */
+    TimelineClasses["eventContent"] = "p-timeline-event-content";
+})(TimelineClasses || (TimelineClasses = {}));
+
+const TIMELINE_INSTANCE = new InjectionToken('TIMELINE_INSTANCE');
+/**
+ * Timeline visualizes a series of chained events.
+ * @group Components
+ */
+class Timeline extends BaseComponent {
+    bindDirectiveInstance = inject(Bind, { self: true });
+    $pcTimeline = inject(TIMELINE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * An array of events to display.
+     * @group Props
+     */
+    value;
+    /**
+     * Style class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Position of the timeline bar relative to the content. Valid values are "left", "right" for vertical layout and "top", "bottom" for horizontal layout.
+     * @group Props
+     */
+    align = 'left';
+    /**
+     * Orientation of the timeline.
+     * @group Props
+     */
+    layout = 'vertical';
+    /**
+     * Custom content template.
+     * @group Templates
+     */
+    contentTemplate;
+    /**
+     * Custom opposite item template.
+     * @group Templates
+     */
+    oppositeTemplate;
+    /**
+     * Custom marker template.
+     * @group Templates
+     */
+    markerTemplate;
+    templates;
+    _contentTemplate;
+    _oppositeTemplate;
+    _markerTemplate;
+    _componentStyle = inject(TimelineStyle);
+    getBlockableElement() {
+        return this.el.nativeElement.children[0];
+    }
+    onAfterContentInit() {
+        this.templates.forEach((item) => {
+            switch (item.getType()) {
+                case 'content':
+                    this._contentTemplate = item.template;
+                    break;
+                case 'opposite':
+                    this._oppositeTemplate = item.template;
+                    break;
+                case 'marker':
+                    this._markerTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Timeline, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: Timeline, isStandalone: true, selector: "p-timeline", inputs: { value: "value", styleClass: "styleClass", align: "align", layout: "layout" }, host: { properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [TimelineStyle, { provide: TIMELINE_INSTANCE, useExisting: Timeline }, { provide: PARENT_INSTANCE, useExisting: Timeline }], queries: [{ propertyName: "contentTemplate", first: true, predicate: ["content"] }, { propertyName: "oppositeTemplate", first: true, predicate: ["opposite"] }, { propertyName: "markerTemplate", first: true, predicate: ["marker"] }, { propertyName: "templates", predicate: PrimeTemplate }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <div [pBind]="ptm('event')" *ngFor="let event of value; let last = last" [class]="cx('event')">
+            <div [pBind]="ptm('eventOpposite')" [class]="cx('eventOpposite')">
+                <ng-container *ngTemplateOutlet="oppositeTemplate || _oppositeTemplate; context: { $implicit: event }"></ng-container>
+            </div>
+            <div [pBind]="ptm('eventSeparator')" [class]="cx('eventSeparator')">
+                <ng-container *ngIf="markerTemplate || _markerTemplate; else marker">
+                    <ng-container *ngTemplateOutlet="markerTemplate || _markerTemplate; context: { $implicit: event }"></ng-container>
+                </ng-container>
+                <ng-template #marker>
+                    <div [pBind]="ptm('eventMarker')" [class]="cx('eventMarker')"></div>
+                </ng-template>
+                <div [pBind]="ptm('eventConnector')" *ngIf="!last" [class]="cx('eventConnector')"></div>
+            </div>
+            <div [pBind]="ptm('eventContent')" [class]="cx('eventContent')">
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: event }"></ng-container>
+            </div>
+        </div>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Timeline, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-timeline',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, Bind],
+                    template: `
+        <div [pBind]="ptm('event')" *ngFor="let event of value; let last = last" [class]="cx('event')">
+            <div [pBind]="ptm('eventOpposite')" [class]="cx('eventOpposite')">
+                <ng-container *ngTemplateOutlet="oppositeTemplate || _oppositeTemplate; context: { $implicit: event }"></ng-container>
+            </div>
+            <div [pBind]="ptm('eventSeparator')" [class]="cx('eventSeparator')">
+                <ng-container *ngIf="markerTemplate || _markerTemplate; else marker">
+                    <ng-container *ngTemplateOutlet="markerTemplate || _markerTemplate; context: { $implicit: event }"></ng-container>
+                </ng-container>
+                <ng-template #marker>
+                    <div [pBind]="ptm('eventMarker')" [class]="cx('eventMarker')"></div>
+                </ng-template>
+                <div [pBind]="ptm('eventConnector')" *ngIf="!last" [class]="cx('eventConnector')"></div>
+            </div>
+            <div [pBind]="ptm('eventContent')" [class]="cx('eventContent')">
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate; context: { $implicit: event }"></ng-container>
+            </div>
+        </div>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TimelineStyle, { provide: TIMELINE_INSTANCE, useExisting: Timeline }, { provide: PARENT_INSTANCE, useExisting: Timeline }],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { value: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], align: [{
+                type: Input
+            }], layout: [{
+                type: Input
+            }], contentTemplate: [{
+                type: ContentChild,
+                args: ['content', { descendants: false }]
+            }], oppositeTemplate: [{
+                type: ContentChild,
+                args: ['opposite', { descendants: false }]
+            }], markerTemplate: [{
+                type: ContentChild,
+                args: ['marker', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class TimelineModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TimelineModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: TimelineModule, imports: [Timeline, SharedModule], exports: [Timeline, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TimelineModule, imports: [Timeline, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TimelineModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Timeline, SharedModule],
+                    exports: [Timeline, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Timeline, TimelineClasses, TimelineModule, TimelineStyle };
+//# sourceMappingURL=primeng-timeline.mjs.map

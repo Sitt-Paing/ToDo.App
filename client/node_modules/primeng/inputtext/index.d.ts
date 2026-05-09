@@ -1,0 +1,97 @@
+import * as i0 from '@angular/core';
+import { NgControl } from '@angular/forms';
+import { BaseModelHolder } from 'primeng/basemodelholder';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { Fluid } from 'primeng/fluid';
+import { InputTextPassThrough } from 'primeng/types/inputtext';
+import { BaseStyle } from 'primeng/base';
+
+/**
+ *
+ * InputText renders a text field to enter data.
+ *
+ * [Live Demo](https://www.primeng.org/inputtext/)
+ *
+ * @module inputtextstyle
+ *
+ */
+declare enum InputTextClasses {
+    /**
+     * The class of root element
+     */
+    root = "p-inputtext"
+}
+declare class InputTextStyle extends BaseStyle {
+    name: string;
+    style: string;
+    classes: {
+        root: ({ instance }: {
+            instance: any;
+        }) => (string | {
+            'p-filled': any;
+            'p-inputtext-sm': boolean;
+            'p-inputtext-lg': boolean;
+            'p-invalid': any;
+            'p-variant-filled': boolean;
+            'p-inputtext-fluid': any;
+        })[];
+    };
+    static ɵfac: i0.ɵɵFactoryDeclaration<InputTextStyle, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<InputTextStyle>;
+}
+interface InputTextStyle extends BaseStyle {
+}
+
+/**
+ * InputText directive is an extension to standard input element with theming.
+ * @group Components
+ */
+declare class InputText extends BaseModelHolder<InputTextPassThrough> {
+    hostName: any;
+    ptInputText: i0.InputSignal<any>;
+    bindDirectiveInstance: Bind;
+    $pcInputText: InputText | undefined;
+    ngControl: NgControl | null;
+    pcFluid: Fluid | null;
+    /**
+     * Defines the size of the component.
+     * @group Props
+     */
+    pSize: 'large' | 'small';
+    /**
+     * Specifies the input variant of the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    variant: i0.InputSignal<"filled" | "outlined" | undefined>;
+    /**
+     * Spans 100% width of the container when enabled.
+     * @defaultValue undefined
+     * @group Props
+     */
+    fluid: i0.InputSignalWithTransform<boolean | undefined, unknown>;
+    /**
+     * When present, it specifies that the component should have invalid state style.
+     * @defaultValue false
+     * @group Props
+     */
+    invalid: i0.InputSignalWithTransform<boolean | undefined, unknown>;
+    $variant: i0.Signal<"filled" | "outlined" | null>;
+    _componentStyle: InputTextStyle;
+    constructor();
+    onAfterViewInit(): void;
+    onAfterViewChecked(): void;
+    onDoCheck(): void;
+    onInput(): void;
+    get hasFluid(): boolean;
+    static ɵfac: i0.ɵɵFactoryDeclaration<InputText, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<InputText, "[pInputText]", never, { "hostName": { "alias": "hostName"; "required": false; }; "ptInputText": { "alias": "ptInputText"; "required": false; "isSignal": true; }; "pSize": { "alias": "pSize"; "required": false; }; "variant": { "alias": "variant"; "required": false; "isSignal": true; }; "fluid": { "alias": "fluid"; "required": false; "isSignal": true; }; "invalid": { "alias": "invalid"; "required": false; "isSignal": true; }; }, {}, never, never, true, [{ directive: typeof i1.Bind; inputs: {}; outputs: {}; }]>;
+}
+declare class InputTextModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<InputTextModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<InputTextModule, never, [typeof InputText], [typeof InputText]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<InputTextModule>;
+}
+
+export { InputText, InputTextClasses, InputTextModule, InputTextStyle };

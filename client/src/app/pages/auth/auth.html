@@ -1,0 +1,138 @@
+<div class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-8 sm:px-6 lg:px-8">
+    <div
+      class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/85 shadow-[0_30px_80px_-35px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+      <div
+        class="absolute inset-x-0 top-0 h-64 bg-gradient-to-r from-cyan-500/20 via-sky-500/10 to-violet-500/20 blur-3xl"
+        aria-hidden="true"></div>
+      <div class="relative grid gap-8 p-6 sm:grid-cols-[1.15fr_0.85fr] sm:p-10">
+        <section class="space-y-6">
+          <div class="max-w-xl">
+            <p class="text-sm uppercase tracking-[0.35em] text-cyan-300/80">ToDoApp</p>
+            <h1 class="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+              {{ isLogin ? 'Welcome back' : 'Create your account' }}
+            </h1>
+            <p class="mt-4 text-sm leading-6 text-slate-300">
+              {{ isLogin
+              ? 'Sign in to manage your tasks, track progress, and stay productive every day.'
+              : 'Register now to save tasks, schedule reminders, and keep your life organized.' }}
+            </p>
+          </div>
+
+          <div
+            class="rounded-3xl border border-white/5 bg-white/5 p-6 text-sm text-slate-300 shadow-lg shadow-slate-950/20">
+            <h2 class="text-base font-semibold text-white">What you get</h2>
+            <ul class="mt-4 space-y-3">
+              <li class="flex gap-3">
+                <span
+                  class="mt-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">✓</span>
+                <span class="mt-2">Fast access to all your tasks in one place.</span>
+              </li>
+              <li class="flex gap-3">
+                <span
+                  class="mt-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-sky-500/15 text-sky-300">✓</span>
+                <span class="mt-2">Secure auth backed by tokens and refresh control.</span>
+              </li>
+              <li class="flex gap-3">
+                <span
+                  class="mt-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-violet-500/15 text-violet-300">✓</span>
+                <span class="mt-2">Responsive design for desktop and mobile users.</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section
+          class="rounded-[1.75rem] border border-white/10 bg-slate-950/95 p-8 shadow-[0_30px_120px_-60px_rgba(0,0,0,0.55)]">
+          <div class="mb-6 flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.35em] text-cyan-400/80">Safe login</p>
+              <h2 class="mt-2 text-2xl font-semibold text-white">
+                {{ isLogin ? 'Sign in' : 'Get started' }}
+              </h2>
+            </div>
+            <span class="rounded-full bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/70">
+              {{ isLogin ? 'Login' : 'Register' }}
+            </span>
+          </div>
+
+          <div *ngIf="errorMessage"
+            class="mb-6 rounded-3xl border border-red-500/15 bg-red-500/10 p-4 text-sm text-red-100">
+            <p-message severity="error" [text]="errorMessage"></p-message>
+          </div>
+
+          <form *ngIf="isLogin" (ngSubmit)="onLogin()" #loginForm="ngForm" class="space-y-5">
+            <div class="space-y-2">
+              <label for="login-username" class="block text-sm font-medium text-slate-200">Username / Email /
+                Phone</label>
+              <input pInputText id="login-username" name="userNameOrEmailOrPhone"
+                [(ngModel)]="loginData.userNameOrEmailOrPhone" placeholder="Enter your credentials" required
+                class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/10" />
+            </div>
+
+            <div class="space-y-2">
+              <label for="login-password" class="block text-sm font-medium text-slate-200">Password</label>
+              <p-password id="login-password" name="password" [(ngModel)]="loginData.password" [feedback]="false"
+                [toggleMask]="true" placeholder="Enter your password" styleClass="w-full relative"
+                inputStyleClass="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/10"
+                required></p-password>
+            </div>
+
+            <p-button label="Login" type="submit" [loading]="loading" [disabled]="!loginForm.form.valid"
+              class="w-full rounded-3xl bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-lg shadow-cyan-500/20 py-2"
+              styleClass="w-full"></p-button>
+
+            <div class="text-center text-sm text-slate-400 mt-3">
+              Don't have an account?
+              <button type="button" (click)="toggleMode()" class="font-semibold text-white hover:text-cyan-300">
+                Register
+              </button>
+            </div>
+          </form>
+
+          <form *ngIf="!isLogin" (ngSubmit)="onRegister()" #registerForm="ngForm" class="space-y-5">
+            <div class="space-y-2">
+              <label for="reg-username" class="block text-sm font-medium text-slate-200">Username</label>
+              <input pInputText id="reg-username" name="userName" [(ngModel)]="registerData.userName"
+                placeholder="Choose a username" required
+                class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/10" />
+            </div>
+
+            <div class="space-y-2">
+              <label for="reg-email" class="block text-sm font-medium text-slate-200">Email</label>
+              <input pInputText id="reg-email" name="email" type="email" [(ngModel)]="registerData.email"
+                placeholder="Enter your email" required
+                class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/10" />
+            </div>
+
+            <div class="space-y-2">
+              <label for="reg-phone" class="block text-sm font-medium text-slate-200">Phone Number</label>
+              <input pInputText id="reg-phone" name="phoneNumber" [(ngModel)]="registerData.phoneNumber"
+                placeholder="Enter your phone number" required
+                class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/10" />
+            </div>
+
+            <div class="space-y-2">
+              <label for="reg-password" class="block text-sm font-medium text-slate-200">Password</label>
+              <p-password id="reg-password" name="password" [(ngModel)]="registerData.password" [toggleMask]="true"
+                placeholder="Choose a password" styleClass="w-full"
+                inputStyleClass="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-cyan-400 focus:ring-4 focus:ring-cyan-500/10"
+                required></p-password>
+            </div>
+
+            <p-button label="Register" type="submit" [loading]="loading" [disabled]="!registerForm.form.valid"
+              class="w-full rounded-3xl bg-gradient-to-r from-cyan-500 to-sky-500 text-white shadow-lg shadow-cyan-500/20 py-2"
+              styleClass="w-full"></p-button>
+
+            <div class="text-center text-sm text-slate-400 mt-3">
+              Already have an account?
+              <button type="button" (click)="toggleMode()" class="font-semibold text-white hover:text-cyan-300">
+                Login
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

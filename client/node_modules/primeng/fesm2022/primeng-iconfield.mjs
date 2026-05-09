@@ -1,0 +1,113 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, Input, ChangeDetectionStrategy, ViewEncapsulation, Component, NgModule } from '@angular/core';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style } from '@primeuix/styles/iconfield';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: ({ instance }) => [
+        'p-iconfield',
+        {
+            'p-iconfield-left': instance.iconPosition == 'left',
+            'p-iconfield-right': instance.iconPosition == 'right'
+        }
+    ]
+};
+class IconFieldStyle extends BaseStyle {
+    name = 'iconfield';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconFieldStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconFieldStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconFieldStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * IconField wraps an input and an icon.
+ *
+ * [Live Demo](https://www.primeng.org/iconfield/)
+ *
+ * @module iconfieldstyle
+ *
+ */
+var IconFieldClasses;
+(function (IconFieldClasses) {
+    /**
+     * Class name of the root element
+     */
+    IconFieldClasses["root"] = "p-iconfield";
+})(IconFieldClasses || (IconFieldClasses = {}));
+
+const ICONFIELD_INSTANCE = new InjectionToken('ICONFIELD_INSTANCE');
+/**
+ * IconField wraps an input and an icon.
+ * @group Components
+ */
+class IconField extends BaseComponent {
+    hostName = '';
+    _componentStyle = inject(IconFieldStyle);
+    $pcIconField = inject(ICONFIELD_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Position of the icon.
+     * @group Props
+     */
+    iconPosition = 'left';
+    /**
+     * Style class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconField, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: IconField, isStandalone: true, selector: "p-iconfield, p-iconField, p-icon-field", inputs: { hostName: "hostName", iconPosition: "iconPosition", styleClass: "styleClass" }, host: { properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [IconFieldStyle, { provide: ICONFIELD_INSTANCE, useExisting: IconField }, { provide: PARENT_INSTANCE, useExisting: IconField }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content>`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconField, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-iconfield, p-iconField, p-icon-field',
+                    standalone: true,
+                    imports: [CommonModule, BindModule],
+                    template: ` <ng-content></ng-content>`,
+                    providers: [IconFieldStyle, { provide: ICONFIELD_INSTANCE, useExisting: IconField }, { provide: PARENT_INSTANCE, useExisting: IconField }],
+                    encapsulation: ViewEncapsulation.None,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { hostName: [{
+                type: Input
+            }], iconPosition: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }] } });
+class IconFieldModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconFieldModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: IconFieldModule, imports: [IconField], exports: [IconField] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconFieldModule, imports: [IconField] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IconFieldModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [IconField],
+                    exports: [IconField]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { IconField, IconFieldClasses, IconFieldModule, IconFieldStyle };
+//# sourceMappingURL=primeng-iconfield.mjs.map

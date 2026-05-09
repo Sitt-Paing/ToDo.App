@@ -1,0 +1,384 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, input, effect, Input, Directive, booleanAttribute, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { isEmpty, isNotEmpty, uuid, hasClass, removeClass, addClass, createElement } from '@primeuix/utils';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style as style$1 } from '@primeuix/styles/badge';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /* For PrimeNG (directive)*/
+    .p-overlay-badge {
+        position: relative;
+    }
+
+    .p-overlay-badge > .p-badge {
+        position: absolute;
+        top: 0;
+        inset-inline-end: 0;
+        transform: translate(50%, -50%);
+        transform-origin: 100% 0;
+        margin: 0;
+    }
+`;
+const classes = {
+    root: ({ instance }) => {
+        const value = typeof instance.value === 'function' ? instance.value() : instance.value;
+        const size = typeof instance.size === 'function' ? instance.size() : instance.size;
+        const badgeSize = typeof instance.badgeSize === 'function' ? instance.badgeSize() : instance.badgeSize;
+        const severity = typeof instance.severity === 'function' ? instance.severity() : instance.severity;
+        return [
+            'p-badge p-component',
+            {
+                'p-badge-circle': isNotEmpty(value) && String(value).length === 1,
+                'p-badge-dot': isEmpty(value),
+                'p-badge-sm': size === 'small' || badgeSize === 'small',
+                'p-badge-lg': size === 'large' || badgeSize === 'large',
+                'p-badge-xl': size === 'xlarge' || badgeSize === 'xlarge',
+                'p-badge-info': severity === 'info',
+                'p-badge-success': severity === 'success',
+                'p-badge-warn': severity === 'warn',
+                'p-badge-danger': severity === 'danger',
+                'p-badge-secondary': severity === 'secondary',
+                'p-badge-contrast': severity === 'contrast'
+            }
+        ];
+    }
+};
+class BadgeStyle extends BaseStyle {
+    name = 'badge';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Badge represents people using icons, labels and images.
+ *
+ * [Live Demo](https://www.primeng.org/badge)
+ *
+ * @module badgestyle
+ *
+ */
+var BadgeClasses;
+(function (BadgeClasses) {
+    /**
+     * Class name of the root element
+     */
+    BadgeClasses["root"] = "p-badge";
+})(BadgeClasses || (BadgeClasses = {}));
+
+const BADGE_INSTANCE = new InjectionToken('BADGE_INSTANCE');
+const BADGE_DIRECTIVE_INSTANCE = new InjectionToken('BADGE_DIRECTIVE_INSTANCE');
+/**
+ * Badge Directive is directive usage of badge component.
+ * @group Components
+ */
+class BadgeDirective extends BaseComponent {
+    $pcBadgeDirective = inject(BADGE_DIRECTIVE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    ptBadgeDirective = input(...(ngDevMode ? [undefined, { debugName: "ptBadgeDirective" }] : []));
+    /**
+     * When specified, disables the component.
+     * @group Props
+     */
+    disabled;
+    /**
+     * Size of the badge, valid options are "large" and "xlarge".
+     * @group Props
+     */
+    badgeSize;
+    /**
+     * Size of the badge, valid options are "large" and "xlarge".
+     * @group Props
+     * @deprecated use badgeSize instead.
+     */
+    set size(value) {
+        this._size = value;
+        console.log('size property is deprecated and will removed in v18, use badgeSize instead.');
+    }
+    get size() {
+        return this._size;
+    }
+    _size;
+    /**
+     * Severity type of the badge.
+     * @group Props
+     */
+    severity;
+    /**
+     * Value to display inside the badge.
+     * @group Props
+     */
+    value;
+    /**
+     * Inline style of the element.
+     * @group Props
+     */
+    badgeStyle;
+    /**
+     * Class of the element.
+     * @group Props
+     */
+    badgeStyleClass;
+    id;
+    badgeEl;
+    _componentStyle = inject(BadgeStyle);
+    get activeElement() {
+        return this.el.nativeElement.nodeName.indexOf('-') != -1 ? this.el.nativeElement.firstChild : this.el.nativeElement;
+    }
+    get canUpdateBadge() {
+        return isNotEmpty(this.id) && !this.disabled;
+    }
+    constructor() {
+        super();
+        effect(() => {
+            this.ptBadgeDirective() && this.directivePT.set(this.ptBadgeDirective());
+        });
+    }
+    onChanges(changes) {
+        const { value, size, severity, disabled, badgeStyle, badgeStyleClass } = changes;
+        if (disabled) {
+            this.toggleDisableState();
+        }
+        if (!this.canUpdateBadge) {
+            return;
+        }
+        if (severity) {
+            this.setSeverity(severity.previousValue);
+        }
+        if (size) {
+            this.setSizeClasses();
+        }
+        if (value) {
+            this.setValue();
+        }
+        if (badgeStyle || badgeStyleClass) {
+            this.applyStyles();
+        }
+    }
+    onAfterViewInit() {
+        this.id = uuid('pn_id_') + '_badge';
+        this.renderBadgeContent();
+    }
+    setValue(element) {
+        const badge = element ?? this.document.getElementById(this.id);
+        if (!badge) {
+            return;
+        }
+        if (this.value != null) {
+            if (hasClass(badge, 'p-badge-dot')) {
+                removeClass(badge, 'p-badge-dot');
+            }
+            if (this.value && String(this.value).length === 1) {
+                addClass(badge, 'p-badge-circle');
+            }
+            else {
+                removeClass(badge, 'p-badge-circle');
+            }
+        }
+        else {
+            if (!hasClass(badge, 'p-badge-dot')) {
+                addClass(badge, 'p-badge-dot');
+            }
+            removeClass(badge, 'p-badge-circle');
+        }
+        badge.textContent = '';
+        const badgeValue = this.value != null ? String(this.value) : '';
+        this.renderer.appendChild(badge, this.document.createTextNode(badgeValue));
+    }
+    setSizeClasses(element) {
+        const badge = element ?? this.document.getElementById(this.id);
+        if (!badge) {
+            return;
+        }
+        if (this.badgeSize) {
+            if (this.badgeSize === 'large') {
+                addClass(badge, 'p-badge-lg');
+                removeClass(badge, 'p-badge-xl');
+            }
+            if (this.badgeSize === 'xlarge') {
+                addClass(badge, 'p-badge-xl');
+                removeClass(badge, 'p-badge-lg');
+            }
+        }
+        else if (this.size && !this.badgeSize) {
+            if (this.size === 'large') {
+                addClass(badge, 'p-badge-lg');
+                removeClass(badge, 'p-badge-xl');
+            }
+            if (this.size === 'xlarge') {
+                addClass(badge, 'p-badge-xl');
+                removeClass(badge, 'p-badge-lg');
+            }
+        }
+        else {
+            removeClass(badge, 'p-badge-lg');
+            removeClass(badge, 'p-badge-xl');
+        }
+    }
+    renderBadgeContent() {
+        if (this.disabled) {
+            return;
+        }
+        const el = this.activeElement;
+        const badge = createElement('span', { class: this.cx('root'), id: this.id, 'p-bind': this.ptm('root') });
+        this.setSeverity(null, badge);
+        this.setSizeClasses(badge);
+        this.setValue(badge);
+        addClass(el, 'p-overlay-badge');
+        this.renderer.appendChild(el, badge);
+        this.badgeEl = badge;
+        this.applyStyles();
+    }
+    applyStyles() {
+        if (this.badgeEl && this.badgeStyle && typeof this.badgeStyle === 'object') {
+            for (const [key, value] of Object.entries(this.badgeStyle)) {
+                this.renderer.setStyle(this.badgeEl, key, value);
+            }
+        }
+        if (this.badgeEl && this.badgeStyleClass) {
+            this.badgeEl.classList.add(...this.badgeStyleClass.split(' '));
+        }
+    }
+    setSeverity(oldSeverity, element) {
+        const badge = element ?? this.document.getElementById(this.id);
+        if (!badge) {
+            return;
+        }
+        if (this.severity) {
+            addClass(badge, `p-badge-${this.severity}`);
+        }
+        if (oldSeverity) {
+            removeClass(badge, `p-badge-${oldSeverity}`);
+        }
+    }
+    toggleDisableState() {
+        if (!this.id) {
+            return;
+        }
+        if (this.disabled) {
+            const badge = this.activeElement?.querySelector(`#${this.id}`);
+            if (badge) {
+                this.renderer.removeChild(this.activeElement, badge);
+            }
+        }
+        else {
+            this.renderBadgeContent();
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeDirective, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.3.15", type: BadgeDirective, isStandalone: true, selector: "[pBadge]", inputs: { ptBadgeDirective: { classPropertyName: "ptBadgeDirective", publicName: "ptBadgeDirective", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "badgeDisabled", isSignal: false, isRequired: false, transformFunction: null }, badgeSize: { classPropertyName: "badgeSize", publicName: "badgeSize", isSignal: false, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: false, isRequired: false, transformFunction: null }, severity: { classPropertyName: "severity", publicName: "severity", isSignal: false, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: false, isRequired: false, transformFunction: null }, badgeStyle: { classPropertyName: "badgeStyle", publicName: "badgeStyle", isSignal: false, isRequired: false, transformFunction: null }, badgeStyleClass: { classPropertyName: "badgeStyleClass", publicName: "badgeStyleClass", isSignal: false, isRequired: false, transformFunction: null } }, providers: [BadgeStyle, { provide: BADGE_DIRECTIVE_INSTANCE, useExisting: BadgeDirective }, { provide: PARENT_INSTANCE, useExisting: BadgeDirective }], usesInheritance: true, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[pBadge]',
+                    providers: [BadgeStyle, { provide: BADGE_DIRECTIVE_INSTANCE, useExisting: BadgeDirective }, { provide: PARENT_INSTANCE, useExisting: BadgeDirective }],
+                    standalone: true
+                }]
+        }], ctorParameters: () => [], propDecorators: { ptBadgeDirective: [{ type: i0.Input, args: [{ isSignal: true, alias: "ptBadgeDirective", required: false }] }], disabled: [{
+                type: Input,
+                args: ['badgeDisabled']
+            }], badgeSize: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], severity: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], badgeStyle: [{
+                type: Input
+            }], badgeStyleClass: [{
+                type: Input
+            }] } });
+/**
+ * Badge is a small status indicator for another element.
+ * @group Components
+ */
+class Badge extends BaseComponent {
+    $pcBadge = inject(BADGE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass = input(...(ngDevMode ? [undefined, { debugName: "styleClass" }] : []));
+    /**
+     * Size of the badge, valid options are "large" and "xlarge".
+     * @group Props
+     */
+    badgeSize = input(...(ngDevMode ? [undefined, { debugName: "badgeSize" }] : []));
+    /**
+     * Size of the badge, valid options are "large" and "xlarge".
+     * @group Props
+     */
+    size = input(...(ngDevMode ? [undefined, { debugName: "size" }] : []));
+    /**
+     * Severity type of the badge.
+     * @group Props
+     */
+    severity = input(...(ngDevMode ? [undefined, { debugName: "severity" }] : []));
+    /**
+     * Value to display inside the badge.
+     * @group Props
+     */
+    value = input(...(ngDevMode ? [undefined, { debugName: "value" }] : []));
+    /**
+     * When specified, disables the component.
+     * @group Props
+     */
+    badgeDisabled = input(false, ...(ngDevMode ? [{ debugName: "badgeDisabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    _componentStyle = inject(BadgeStyle);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Badge, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "20.3.15", type: Badge, isStandalone: true, selector: "p-badge", inputs: { styleClass: { classPropertyName: "styleClass", publicName: "styleClass", isSignal: true, isRequired: false, transformFunction: null }, badgeSize: { classPropertyName: "badgeSize", publicName: "badgeSize", isSignal: true, isRequired: false, transformFunction: null }, size: { classPropertyName: "size", publicName: "size", isSignal: true, isRequired: false, transformFunction: null }, severity: { classPropertyName: "severity", publicName: "severity", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, badgeDisabled: { classPropertyName: "badgeDisabled", publicName: "badgeDisabled", isSignal: true, isRequired: false, transformFunction: null } }, host: { properties: { "class": "cn(cx('root'), styleClass())", "style.display": "badgeDisabled() ? \"none\" : null" } }, providers: [BadgeStyle, { provide: BADGE_INSTANCE, useExisting: Badge }, { provide: PARENT_INSTANCE, useExisting: Badge }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `{{ value() }}`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Badge, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-badge',
+                    template: `{{ value() }}`,
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [BadgeStyle, { provide: BADGE_INSTANCE, useExisting: Badge }, { provide: PARENT_INSTANCE, useExisting: Badge }],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass())",
+                        '[style.display]': 'badgeDisabled() ? "none" : null'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { styleClass: [{ type: i0.Input, args: [{ isSignal: true, alias: "styleClass", required: false }] }], badgeSize: [{ type: i0.Input, args: [{ isSignal: true, alias: "badgeSize", required: false }] }], size: [{ type: i0.Input, args: [{ isSignal: true, alias: "size", required: false }] }], severity: [{ type: i0.Input, args: [{ isSignal: true, alias: "severity", required: false }] }], value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }], badgeDisabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "badgeDisabled", required: false }] }] } });
+class BadgeModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: BadgeModule, imports: [Badge, BadgeDirective, SharedModule], exports: [Badge, BadgeDirective, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeModule, imports: [Badge, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: BadgeModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Badge, BadgeDirective, SharedModule],
+                    exports: [Badge, BadgeDirective, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Badge, BadgeClasses, BadgeDirective, BadgeModule, BadgeStyle };
+//# sourceMappingURL=primeng-badge.mjs.map

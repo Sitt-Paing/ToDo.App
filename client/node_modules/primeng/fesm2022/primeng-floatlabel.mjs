@@ -1,0 +1,112 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style as style$1 } from '@primeuix/styles/floatlabel';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /* For PrimeNG */
+    .p-floatlabel:has(.ng-invalid.ng-dirty) label {
+        color: dt('floatlabel.invalid.color');
+    }
+`;
+const classes = {
+    root: ({ instance }) => [
+        'p-floatlabel',
+        {
+            'p-floatlabel-over': instance.variant === 'over',
+            'p-floatlabel-on': instance.variant === 'on',
+            'p-floatlabel-in': instance.variant === 'in'
+        }
+    ]
+};
+class FloatLabelStyle extends BaseStyle {
+    name = 'floatlabel';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * FloatLabel visually integrates a label with its form element.
+ *
+ * [Live Demo](https://www.primeng.org/floatlabel/)
+ *
+ * @module floatlabelstyle
+ *
+ */
+var FloatLabelClasses;
+(function (FloatLabelClasses) {
+    /**
+     * Class name of the root element
+     */
+    FloatLabelClasses["root"] = "p-floatlabel";
+})(FloatLabelClasses || (FloatLabelClasses = {}));
+
+const FLOATLABEL_INSTANCE = new InjectionToken('FLOATLABEL_INSTANCE');
+/**
+ * FloatLabel appears on top of the input field when focused.
+ * @group Components
+ */
+class FloatLabel extends BaseComponent {
+    _componentStyle = inject(FloatLabelStyle);
+    $pcFloatLabel = inject(FLOATLABEL_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Defines the positioning of the label relative to the input.
+     * @group Props
+     */
+    variant = 'over';
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabel, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: FloatLabel, isStandalone: true, selector: "p-floatlabel, p-floatLabel, p-float-label", inputs: { variant: "variant" }, host: { properties: { "class": "cx('root')" } }, providers: [FloatLabelStyle, { provide: FLOATLABEL_INSTANCE, useExisting: FloatLabel }, { provide: PARENT_INSTANCE, useExisting: FloatLabel }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content> `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabel, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-floatlabel, p-floatLabel, p-float-label',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    template: ` <ng-content></ng-content> `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [FloatLabelStyle, { provide: FLOATLABEL_INSTANCE, useExisting: FloatLabel }, { provide: PARENT_INSTANCE, useExisting: FloatLabel }],
+                    host: {
+                        '[class]': "cx('root')"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { variant: [{
+                type: Input
+            }] } });
+class FloatLabelModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelModule, imports: [FloatLabel, SharedModule], exports: [FloatLabel, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelModule, imports: [FloatLabel, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: FloatLabelModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [FloatLabel, SharedModule],
+                    exports: [FloatLabel, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { FloatLabel, FloatLabelClasses, FloatLabelModule, FloatLabelStyle };
+//# sourceMappingURL=primeng-floatlabel.mjs.map

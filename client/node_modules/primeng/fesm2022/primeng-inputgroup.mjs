@@ -1,0 +1,135 @@
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, Input, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style as style$1 } from '@primeuix/styles/inputgroup';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /*For PrimeNG*/
+
+    .p-inputgroup > .p-component,
+    .p-inputgroup > .p-inputwrapper > .p-component,
+    .p-inputgroup:first-child > p-button > .p-button,
+    .p-inputgroup > .p-floatlabel > .p-component,
+    .p-inputgroup > .p-floatlabel > .p-inputwrapper > .p-component,
+    .p-inputgroup > .p-iftalabel > .p-component,
+    .p-inputgroup > .p-iftalabel > .p-inputwrapper > .p-component {
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .p-inputgroup p-button:first-child,
+    .p-inputgroup p-button:last-child {
+        display: inline-flex;
+    }
+
+    .p-inputgroup:has(> p-button:first-child) .p-button {
+        border-start-start-radius: dt('inputgroup.addon.border.radius');
+        border-end-start-radius: dt('inputgroup.addon.border.radius');
+    }
+
+    .p-inputgroup:has(> p-button:last-child) .p-button {
+        border-start-end-radius: dt('inputgroup.addon.border.radius');
+        border-end-end-radius: dt('inputgroup.addon.border.radius');
+    }
+
+    .p-inputgroup > p-inputmask > .p-inputtext {
+        width: 100%;
+    }
+`;
+const classes = {
+    root: ({ instance }) => [
+        'p-inputgroup',
+        {
+            'p-inputgroup-fluid': instance.fluid
+        }
+    ]
+};
+class InputGroupStyle extends BaseStyle {
+    name = 'inputgroup';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * InputGroup displays text, icon, buttons and other content can be grouped next to an input.
+ *
+ * [Live Demo](https://www.primeng.org/inputgroup/)
+ *
+ * @module inputgroupstyle
+ *
+ */
+var InputGroupClasses;
+(function (InputGroupClasses) {
+    /**
+     * Class name of the root element
+     */
+    InputGroupClasses["root"] = "p-inputgroup";
+})(InputGroupClasses || (InputGroupClasses = {}));
+
+const INPUTGROUP_INSTANCE = new InjectionToken('INPUTGROUP_INSTANCE');
+/**
+ * InputGroup displays text, icon, buttons and other content can be grouped next to an input.
+ * @group Components
+ */
+class InputGroup extends BaseComponent {
+    _componentStyle = inject(InputGroupStyle);
+    $pcInputGroup = inject(INPUTGROUP_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroup, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: InputGroup, isStandalone: true, selector: "p-inputgroup, p-inputGroup, p-input-group", inputs: { styleClass: "styleClass" }, host: { properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [InputGroupStyle, { provide: INPUTGROUP_INSTANCE, useExisting: InputGroup }, { provide: PARENT_INSTANCE, useExisting: InputGroup }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content> `, isInline: true, dependencies: [{ kind: "ngmodule", type: BindModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroup, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inputgroup, p-inputGroup, p-input-group',
+                    standalone: true,
+                    imports: [BindModule],
+                    template: ` <ng-content></ng-content> `,
+                    providers: [InputGroupStyle, { provide: INPUTGROUP_INSTANCE, useExisting: InputGroup }, { provide: PARENT_INSTANCE, useExisting: InputGroup }],
+                    hostDirectives: [Bind],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    }
+                }]
+        }], propDecorators: { styleClass: [{
+                type: Input
+            }] } });
+class InputGroupModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: InputGroupModule, imports: [InputGroup, SharedModule], exports: [InputGroup, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupModule, imports: [InputGroup, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [InputGroup, SharedModule],
+                    exports: [InputGroup, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { InputGroup, InputGroupClasses, InputGroupModule, InputGroupStyle };
+//# sourceMappingURL=primeng-inputgroup.mjs.map

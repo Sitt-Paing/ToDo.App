@@ -1,0 +1,567 @@
+export * from 'primeng/types/scrollpanel';
+import * as i2 from '@angular/common';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, NgZone, numberAttribute, ContentChildren, ContentChild, ViewChild, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { uuid, getHeight, addClass, removeClass } from '@primeuix/utils';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style as style$1 } from '@primeuix/styles/scrollpanel';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    .p-scrollpanel {
+        display: block;
+    }
+`;
+const classes = {
+    root: 'p-scrollpanel p-component',
+    contentContainer: 'p-scrollpanel-content-container',
+    content: 'p-scrollpanel-content',
+    barX: 'p-scrollpanel-bar p-scrollpanel-bar-x',
+    barY: 'p-scrollpanel-bar p-scrollpanel-bar-y'
+};
+class ScrollPanelStyle extends BaseStyle {
+    name = 'scrollpanel';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * ScrollPanel is a cross browser, lightweight and themable alternative to native browser scrollbar.
+ *
+ * [Live Demo](https://www.primeng.org/scrollpanel/)
+ *
+ * @module scrollpanelstyle
+ *
+ */
+var ScrollPanelClasses;
+(function (ScrollPanelClasses) {
+    /**
+     * Class name of the root element
+     */
+    ScrollPanelClasses["root"] = "p-scrollpanel";
+    /**
+     * Class name of the content container element
+     */
+    ScrollPanelClasses["contentContainer"] = "p-scrollpanel-content-container";
+    /**
+     * Class name of the content element
+     */
+    ScrollPanelClasses["content"] = "p-scrollpanel-content";
+    /**
+     * Class name of the bar x element
+     */
+    ScrollPanelClasses["barX"] = "p-scrollpanel-bar-x";
+    /**
+     * Class name of the bar y element
+     */
+    ScrollPanelClasses["barY"] = "p-scrollpanel-bar-y";
+})(ScrollPanelClasses || (ScrollPanelClasses = {}));
+
+const SCROLLPANEL_INSTANCE = new InjectionToken('SCROLLPANEL_INSTANCE');
+/**
+ * ScrollPanel is a cross browser, lightweight and themable alternative to native browser scrollbar.
+ * @group Components
+ */
+class ScrollPanel extends BaseComponent {
+    $pcScrollPanel = inject(SCROLLPANEL_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Style class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Step factor to scroll the content while pressing the arrow keys.
+     * @group Props
+     */
+    step = 5;
+    contentViewChild;
+    xBarViewChild;
+    yBarViewChild;
+    /**
+     * Defines template option for content.
+     * @group Templates
+     */
+    contentTemplate;
+    templates;
+    _contentTemplate;
+    scrollYRatio;
+    scrollXRatio;
+    timeoutFrame = (fn) => setTimeout(fn, 0);
+    initialized = false;
+    lastPageY;
+    lastPageX;
+    isXBarClicked = false;
+    isYBarClicked = false;
+    lastScrollLeft = 0;
+    lastScrollTop = 0;
+    orientation = 'vertical';
+    timer;
+    contentId;
+    windowResizeListener;
+    contentScrollListener;
+    mouseEnterListener;
+    xBarMouseDownListener;
+    yBarMouseDownListener;
+    documentMouseMoveListener;
+    documentMouseUpListener;
+    _componentStyle = inject(ScrollPanelStyle);
+    zone = inject(NgZone);
+    onInit() {
+        this.contentId = uuid('pn_id_') + '_content';
+    }
+    onAfterViewInit() {
+        if (isPlatformBrowser(this.platformId)) {
+            this.zone.runOutsideAngular(() => {
+                this.moveBar();
+                this.moveBar = this.moveBar.bind(this);
+                this.onXBarMouseDown = this.onXBarMouseDown.bind(this);
+                this.onYBarMouseDown = this.onYBarMouseDown.bind(this);
+                this.onDocumentMouseMove = this.onDocumentMouseMove.bind(this);
+                this.onDocumentMouseUp = this.onDocumentMouseUp.bind(this);
+                this.windowResizeListener = this.renderer.listen(window, 'resize', this.moveBar);
+                this.contentScrollListener = this.renderer.listen(this.contentViewChild.nativeElement, 'scroll', this.moveBar);
+                this.mouseEnterListener = this.renderer.listen(this.contentViewChild.nativeElement, 'mouseenter', this.moveBar);
+                this.xBarMouseDownListener = this.renderer.listen(this.xBarViewChild.nativeElement, 'mousedown', this.onXBarMouseDown);
+                this.yBarMouseDownListener = this.renderer.listen(this.yBarViewChild.nativeElement, 'mousedown', this.onYBarMouseDown);
+                this.calculateContainerHeight();
+                this.initialized = true;
+            });
+        }
+    }
+    onAfterContentInit() {
+        this.templates.forEach((item) => {
+            switch (item.getType()) {
+                case 'content':
+                    this._contentTemplate = item.template;
+                    break;
+                default:
+                    this._contentTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    calculateContainerHeight() {
+        let container = this.el.nativeElement;
+        let content = this.contentViewChild.nativeElement;
+        let xBar = this.xBarViewChild.nativeElement;
+        const window = this.document.defaultView;
+        let containerStyles = window.getComputedStyle(container), xBarStyles = window.getComputedStyle(xBar), pureContainerHeight = getHeight(container) - parseInt(xBarStyles['height'], 10);
+        if (containerStyles['max-height'] != 'none' && pureContainerHeight == 0) {
+            if (content.offsetHeight + parseInt(xBarStyles['height'], 10) > parseInt(containerStyles['max-height'], 10)) {
+                container.style.height = containerStyles['max-height'];
+            }
+            else {
+                container.style.height = content.offsetHeight + parseFloat(containerStyles.paddingTop) + parseFloat(containerStyles.paddingBottom) + parseFloat(containerStyles.borderTopWidth) + parseFloat(containerStyles.borderBottomWidth) + 'px';
+            }
+        }
+    }
+    moveBar() {
+        let container = this.el.nativeElement;
+        let content = this.contentViewChild.nativeElement;
+        /* horizontal scroll */
+        let xBar = this.xBarViewChild.nativeElement;
+        let totalWidth = content.scrollWidth;
+        let ownWidth = content.clientWidth;
+        let bottom = (container.clientHeight - xBar.clientHeight) * -1;
+        this.scrollXRatio = ownWidth / totalWidth;
+        /* vertical scroll */
+        let yBar = this.yBarViewChild.nativeElement;
+        let totalHeight = content.scrollHeight;
+        let ownHeight = content.clientHeight;
+        let right = (container.clientWidth - yBar.clientWidth) * -1;
+        this.scrollYRatio = ownHeight / totalHeight;
+        this.requestAnimationFrame(() => {
+            if (this.scrollXRatio >= 1) {
+                xBar.setAttribute('data-p-scrollpanel-hidden', 'true');
+                addClass(xBar, 'p-scrollpanel-hidden');
+            }
+            else {
+                xBar.setAttribute('data-p-scrollpanel-hidden', 'false');
+                removeClass(xBar, 'p-scrollpanel-hidden');
+                const xBarWidth = Math.max(this.scrollXRatio * 100, 10);
+                const xBarLeft = Math.abs((content.scrollLeft * (100 - xBarWidth)) / (totalWidth - ownWidth));
+                xBar.style.cssText = 'width:' + xBarWidth + '%; inset-inline-start:' + xBarLeft + '%;bottom:' + bottom + 'px;';
+            }
+            if (this.scrollYRatio >= 1) {
+                yBar.setAttribute('data-p-scrollpanel-hidden', 'true');
+                addClass(yBar, 'p-scrollpanel-hidden');
+            }
+            else {
+                yBar.setAttribute('data-p-scrollpanel-hidden', 'false');
+                removeClass(yBar, 'p-scrollpanel-hidden');
+                const yBarHeight = Math.max(this.scrollYRatio * 100, 10);
+                const yBarTop = (content.scrollTop * (100 - yBarHeight)) / (totalHeight - ownHeight);
+                yBar.style.cssText = 'height:' + yBarHeight + '%; top: calc(' + yBarTop + '% - ' + xBar.clientHeight + 'px); inset-inline-end:' + right + 'px;';
+            }
+        });
+        this.cd.markForCheck();
+    }
+    onScroll(event) {
+        if (this.lastScrollLeft !== event.target.scrollLeft) {
+            this.lastScrollLeft = event.target.scrollLeft;
+            this.orientation = 'horizontal';
+        }
+        else if (this.lastScrollTop !== event.target.scrollTop) {
+            this.lastScrollTop = event.target.scrollTop;
+            this.orientation = 'vertical';
+        }
+        this.moveBar();
+    }
+    onKeyDown(event) {
+        if (this.orientation === 'vertical') {
+            switch (event.code) {
+                case 'ArrowDown': {
+                    this.setTimer('scrollTop', this.step);
+                    event.preventDefault();
+                    break;
+                }
+                case 'ArrowUp': {
+                    this.setTimer('scrollTop', this.step * -1);
+                    event.preventDefault();
+                    break;
+                }
+                case 'ArrowLeft':
+                case 'ArrowRight': {
+                    event.preventDefault();
+                    break;
+                }
+                default:
+                    //no op
+                    break;
+            }
+        }
+        else if (this.orientation === 'horizontal') {
+            switch (event.code) {
+                case 'ArrowRight': {
+                    this.setTimer('scrollLeft', this.step);
+                    event.preventDefault();
+                    break;
+                }
+                case 'ArrowLeft': {
+                    this.setTimer('scrollLeft', this.step * -1);
+                    event.preventDefault();
+                    break;
+                }
+                case 'ArrowDown':
+                case 'ArrowUp': {
+                    event.preventDefault();
+                    break;
+                }
+                default:
+                    //no op
+                    break;
+            }
+        }
+    }
+    onKeyUp() {
+        this.clearTimer();
+    }
+    repeat(bar, step) {
+        this.contentViewChild?.nativeElement && (this.contentViewChild.nativeElement[bar] += step);
+        this.moveBar();
+    }
+    setTimer(bar, step) {
+        this.clearTimer();
+        this.timer = setTimeout(() => {
+            this.repeat(bar, step);
+        }, 40);
+    }
+    clearTimer() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+    }
+    bindDocumentMouseListeners() {
+        if (!this.documentMouseMoveListener) {
+            this.documentMouseMoveListener = (e) => {
+                this.onDocumentMouseMove(e);
+            };
+            this.document.addEventListener('mousemove', this.documentMouseMoveListener);
+        }
+        if (!this.documentMouseUpListener) {
+            this.documentMouseUpListener = (e) => {
+                this.onDocumentMouseUp(e);
+            };
+            this.document.addEventListener('mouseup', this.documentMouseUpListener);
+        }
+    }
+    unbindDocumentMouseListeners() {
+        if (this.documentMouseMoveListener) {
+            this.document.removeEventListener('mousemove', this.documentMouseMoveListener);
+            this.documentMouseMoveListener = null;
+        }
+        if (this.documentMouseUpListener) {
+            document.removeEventListener('mouseup', this.documentMouseUpListener);
+            this.documentMouseUpListener = null;
+        }
+    }
+    onYBarMouseDown(e) {
+        this.isYBarClicked = true;
+        this.yBarViewChild?.nativeElement?.focus();
+        this.lastPageY = e.pageY;
+        this.yBarViewChild?.nativeElement?.setAttribute('data-p-scrollpanel-grabbed', 'true');
+        addClass(this.yBarViewChild.nativeElement, 'p-scrollpanel-grabbed');
+        this.document.body.setAttribute('data-p-scrollpanel-grabbed', 'true');
+        addClass(this.document.body, 'p-scrollpanel-grabbed');
+        this.bindDocumentMouseListeners();
+        e.preventDefault();
+    }
+    onXBarMouseDown(e) {
+        this.isXBarClicked = true;
+        this.xBarViewChild?.nativeElement?.focus();
+        this.lastPageX = e.pageX;
+        this.xBarViewChild?.nativeElement?.setAttribute('data-p-scrollpanel-grabbed', 'false');
+        addClass(this.xBarViewChild.nativeElement, 'p-scrollpanel-grabbed');
+        this.document.body.setAttribute('data-p-scrollpanel-grabbed', 'false');
+        addClass(this.document.body, 'p-scrollpanel-grabbed');
+        this.bindDocumentMouseListeners();
+        e.preventDefault();
+    }
+    onDocumentMouseMove(e) {
+        if (this.isXBarClicked) {
+            this.onMouseMoveForXBar(e);
+        }
+        else if (this.isYBarClicked) {
+            this.onMouseMoveForYBar(e);
+        }
+        else {
+            this.onMouseMoveForXBar(e);
+            this.onMouseMoveForYBar(e);
+        }
+    }
+    onMouseMoveForXBar(e) {
+        let deltaX = e.pageX - this.lastPageX;
+        this.lastPageX = e.pageX;
+        this.requestAnimationFrame(() => {
+            this.contentViewChild.nativeElement.scrollLeft += deltaX / this.scrollXRatio;
+        });
+    }
+    onMouseMoveForYBar(e) {
+        let deltaY = e.pageY - this.lastPageY;
+        this.lastPageY = e.pageY;
+        this.requestAnimationFrame(() => {
+            this.contentViewChild.nativeElement.scrollTop += deltaY / this.scrollYRatio;
+        });
+    }
+    /**
+     * Scrolls the top location to the given value.
+     * @param scrollTop
+     * @group Method
+     */
+    scrollTop(scrollTop) {
+        let scrollableHeight = this.contentViewChild.nativeElement.scrollHeight - this.contentViewChild.nativeElement.clientHeight;
+        scrollTop = scrollTop > scrollableHeight ? scrollableHeight : scrollTop > 0 ? scrollTop : 0;
+        this.contentViewChild.nativeElement.scrollTop = scrollTop;
+    }
+    onFocus(event) {
+        if (this.xBarViewChild?.nativeElement?.isSameNode(event.target)) {
+            this.orientation = 'horizontal';
+        }
+        else if (this.yBarViewChild?.nativeElement?.isSameNode(event.target)) {
+            this.orientation = 'vertical';
+        }
+    }
+    onBlur() {
+        if (this.orientation === 'horizontal') {
+            this.orientation = 'vertical';
+        }
+    }
+    onDocumentMouseUp(e) {
+        this.yBarViewChild?.nativeElement?.setAttribute('data-p-scrollpanel-grabbed', 'false');
+        removeClass(this.yBarViewChild.nativeElement, 'p-scrollpanel-grabbed');
+        this.xBarViewChild?.nativeElement?.setAttribute('data-p-scrollpanel-grabbed', 'false');
+        removeClass(this.xBarViewChild.nativeElement, 'p-scrollpanel-grabbed');
+        this.document.body.setAttribute('data-p-scrollpanel-grabbed', 'false');
+        removeClass(this.document.body, 'p-scrollpanel-grabbed');
+        this.unbindDocumentMouseListeners();
+        this.isXBarClicked = false;
+        this.isYBarClicked = false;
+    }
+    requestAnimationFrame(f) {
+        let frame = window.requestAnimationFrame || this.timeoutFrame;
+        frame(f);
+    }
+    unbindListeners() {
+        if (this.windowResizeListener) {
+            this.windowResizeListener();
+            this.windowResizeListener = null;
+        }
+        if (this.contentScrollListener) {
+            this.contentScrollListener();
+            this.contentScrollListener = null;
+        }
+        if (this.mouseEnterListener) {
+            this.mouseEnterListener();
+            this.mouseEnterListener = null;
+        }
+        if (this.xBarMouseDownListener) {
+            this.xBarMouseDownListener();
+            this.xBarMouseDownListener = null;
+        }
+        if (this.yBarMouseDownListener) {
+            this.yBarMouseDownListener();
+            this.yBarMouseDownListener = null;
+        }
+    }
+    onDestroy() {
+        if (this.initialized) {
+            this.unbindListeners();
+        }
+    }
+    /**
+     * Refreshes the position and size of the scrollbar.
+     * @group Method
+     */
+    refresh() {
+        this.moveBar();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanel, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: ScrollPanel, isStandalone: true, selector: "p-scroll-panel, p-scrollPanel, p-scrollpanel", inputs: { styleClass: "styleClass", step: ["step", "step", numberAttribute] }, host: { properties: { "class": "cn(cx(\"root\"), styleClass)" } }, providers: [ScrollPanelStyle, { provide: SCROLLPANEL_INSTANCE, useExisting: ScrollPanel }, { provide: PARENT_INSTANCE, useExisting: ScrollPanel }], queries: [{ propertyName: "contentTemplate", first: true, predicate: ["content"] }, { propertyName: "templates", predicate: PrimeTemplate }], viewQueries: [{ propertyName: "contentViewChild", first: true, predicate: ["content"], descendants: true }, { propertyName: "xBarViewChild", first: true, predicate: ["xBar"], descendants: true }, { propertyName: "yBarViewChild", first: true, predicate: ["yBar"], descendants: true }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <div [pBind]="ptm('contentContainer')" [class]="cx('contentContainer')">
+            <div #content [pBind]="ptm('content')" [class]="cx('content')" (mouseenter)="moveBar()" (scroll)="onScroll($event)">
+                @if (!contentTemplate && !_contentTemplate) {
+                    <ng-content></ng-content>
+                }
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+            </div>
+        </div>
+        <div
+            #xBar
+            [pBind]="ptm('barX')"
+            [class]="cx('barX')"
+            tabindex="0"
+            role="scrollbar"
+            [attr.aria-orientation]="'horizontal'"
+            [attr.aria-valuenow]="lastScrollLeft"
+            [attr.aria-controls]="contentId"
+            (mousedown)="onXBarMouseDown($event)"
+            (keydown)="onKeyDown($event)"
+            (keyup)="onKeyUp()"
+            (focus)="onFocus($event)"
+            (blur)="onBlur()"
+        ></div>
+        <div
+            #yBar
+            [pBind]="ptm('barY')"
+            [class]="cx('barY')"
+            tabindex="0"
+            role="scrollbar"
+            [attr.aria-orientation]="'vertical'"
+            [attr.aria-valuenow]="lastScrollTop"
+            [attr.aria-controls]="contentId"
+            (mousedown)="onYBarMouseDown($event)"
+            (keydown)="onKeyDown($event)"
+            (keyup)="onKeyUp()"
+            (focus)="onFocus($event)"
+        ></div>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }, { kind: "directive", type: i1.Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanel, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-scroll-panel, p-scrollPanel, p-scrollpanel',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    template: `
+        <div [pBind]="ptm('contentContainer')" [class]="cx('contentContainer')">
+            <div #content [pBind]="ptm('content')" [class]="cx('content')" (mouseenter)="moveBar()" (scroll)="onScroll($event)">
+                @if (!contentTemplate && !_contentTemplate) {
+                    <ng-content></ng-content>
+                }
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+            </div>
+        </div>
+        <div
+            #xBar
+            [pBind]="ptm('barX')"
+            [class]="cx('barX')"
+            tabindex="0"
+            role="scrollbar"
+            [attr.aria-orientation]="'horizontal'"
+            [attr.aria-valuenow]="lastScrollLeft"
+            [attr.aria-controls]="contentId"
+            (mousedown)="onXBarMouseDown($event)"
+            (keydown)="onKeyDown($event)"
+            (keyup)="onKeyUp()"
+            (focus)="onFocus($event)"
+            (blur)="onBlur()"
+        ></div>
+        <div
+            #yBar
+            [pBind]="ptm('barY')"
+            [class]="cx('barY')"
+            tabindex="0"
+            role="scrollbar"
+            [attr.aria-orientation]="'vertical'"
+            [attr.aria-valuenow]="lastScrollTop"
+            [attr.aria-controls]="contentId"
+            (mousedown)="onYBarMouseDown($event)"
+            (keydown)="onKeyDown($event)"
+            (keyup)="onKeyUp()"
+            (focus)="onFocus($event)"
+        ></div>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [ScrollPanelStyle, { provide: SCROLLPANEL_INSTANCE, useExisting: ScrollPanel }, { provide: PARENT_INSTANCE, useExisting: ScrollPanel }],
+                    host: {
+                        '[class]': 'cn(cx("root"), styleClass)'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { styleClass: [{
+                type: Input
+            }], step: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], contentViewChild: [{
+                type: ViewChild,
+                args: ['content']
+            }], xBarViewChild: [{
+                type: ViewChild,
+                args: ['xBar']
+            }], yBarViewChild: [{
+                type: ViewChild,
+                args: ['yBar']
+            }], contentTemplate: [{
+                type: ContentChild,
+                args: ['content', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class ScrollPanelModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelModule, imports: [ScrollPanel, SharedModule, BindModule], exports: [ScrollPanel, SharedModule, BindModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelModule, imports: [ScrollPanel, SharedModule, BindModule, SharedModule, BindModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ScrollPanelModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [ScrollPanel, SharedModule, BindModule],
+                    exports: [ScrollPanel, SharedModule, BindModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { ScrollPanel, ScrollPanelClasses, ScrollPanelModule, ScrollPanelStyle };
+//# sourceMappingURL=primeng-scrollpanel.mjs.map

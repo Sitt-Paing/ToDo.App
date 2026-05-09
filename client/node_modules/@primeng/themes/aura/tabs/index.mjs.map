@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/aura/tabs/index.ts"],"sourcesContent":["export * from '@primeuix/themes/aura/tabs';\nexport { default } from '@primeuix/themes/aura/tabs';\n"],"mappings":"AAAA,WAAc,6BACd,OAAS,WAAAA,MAAe","names":["default"]}

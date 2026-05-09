@@ -1,0 +1,202 @@
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, input, booleanAttribute, computed, EventEmitter, HostListener, Output, Input, Directive, NgModule } from '@angular/core';
+import { NgControl } from '@angular/forms';
+import { PARENT_INSTANCE } from 'primeng/basecomponent';
+import { BaseModelHolder } from 'primeng/basemodelholder';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { Fluid } from 'primeng/fluid';
+import { style as style$1 } from '@primeuix/styles/textarea';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /* For PrimeNG */
+    .p-textarea.ng-invalid.ng-dirty {
+        border-color: dt('textarea.invalid.border.color');
+    }
+    .p-textarea.ng-invalid.ng-dirty::placeholder {
+        color: dt('textarea.invalid.placeholder.color');
+    }
+`;
+const classes = {
+    root: ({ instance }) => [
+        'p-textarea p-component',
+        {
+            'p-filled': instance.$filled(),
+            'p-textarea-resizable ': instance.autoResize,
+            'p-variant-filled': instance.$variant() === 'filled',
+            'p-textarea-fluid': instance.hasFluid,
+            'p-inputfield-sm p-textarea-sm': instance.pSize === 'small',
+            'p-textarea-lg p-inputfield-lg': instance.pSize === 'large',
+            'p-invalid': instance.invalid()
+        }
+    ]
+};
+class TextareaStyle extends BaseStyle {
+    name = 'textarea';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TextareaStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TextareaStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TextareaStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Textarea is a multi-line text input element.
+ *
+ * [Live Demo](https://www.primeng.org/textarea/)
+ *
+ * @module textareastyle
+ *
+ */
+var TextareaClasses;
+(function (TextareaClasses) {
+    /**
+     * Class name of the root element
+     */
+    TextareaClasses["root"] = "p-textarea";
+})(TextareaClasses || (TextareaClasses = {}));
+
+const TEXTAREA_INSTANCE = new InjectionToken('TEXTAREA_INSTANCE');
+/**
+ * Textarea adds styling and autoResize functionality to standard textarea element.
+ * @group Components
+ */
+class Textarea extends BaseModelHolder {
+    bindDirectiveInstance = inject(Bind, { self: true });
+    $pcTextarea = inject(TEXTAREA_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    /**
+     * When present, textarea size changes as being typed.
+     * @group Props
+     */
+    autoResize;
+    /**
+     * Defines the size of the component.
+     * @group Props
+     */
+    pSize;
+    /**
+     * Specifies the input variant of the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    variant = input(...(ngDevMode ? [undefined, { debugName: "variant" }] : []));
+    /**
+     * Spans 100% width of the container when enabled.
+     * @defaultValue undefined
+     * @group Props
+     */
+    fluid = input(undefined, ...(ngDevMode ? [{ debugName: "fluid", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * When present, it specifies that the component should have invalid state style.
+     * @defaultValue false
+     * @group Props
+     */
+    invalid = input(undefined, ...(ngDevMode ? [{ debugName: "invalid", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    $variant = computed(() => this.variant() || this.config.inputStyle() || this.config.inputVariant(), ...(ngDevMode ? [{ debugName: "$variant" }] : []));
+    /**
+     * Callback to invoke on textarea resize.
+     * @param {(Event | {})} event - Custom resize event.
+     * @group Emits
+     */
+    onResize = new EventEmitter();
+    ngControlSubscription;
+    _componentStyle = inject(TextareaStyle);
+    ngControl = inject(NgControl, { optional: true, self: true });
+    pcFluid = inject(Fluid, { optional: true, host: true, skipSelf: true });
+    get hasFluid() {
+        return this.fluid() ?? !!this.pcFluid;
+    }
+    onInit() {
+        if (this.ngControl) {
+            this.ngControlSubscription = this.ngControl.valueChanges.subscribe(() => {
+                this.updateState();
+            });
+        }
+    }
+    onAfterViewInit() {
+        if (this.autoResize)
+            this.resize();
+        this.cd.detectChanges();
+    }
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+        if (this.autoResize) {
+            this.resize();
+        }
+        this.writeModelValue(this.ngControl?.value ?? this.el.nativeElement.value);
+    }
+    onInput(e) {
+        this.writeModelValue(e.target?.value);
+        this.updateState();
+    }
+    resize(event) {
+        this.el.nativeElement.style.height = 'auto';
+        this.el.nativeElement.style.height = this.el.nativeElement.scrollHeight + 'px';
+        if (parseFloat(this.el.nativeElement.style.height) >= parseFloat(this.el.nativeElement.style.maxHeight)) {
+            this.el.nativeElement.style.overflowY = 'scroll';
+            this.el.nativeElement.style.height = this.el.nativeElement.style.maxHeight;
+        }
+        else {
+            this.el.nativeElement.style.overflow = 'hidden';
+        }
+        this.onResize.emit(event || {});
+    }
+    updateState() {
+        if (this.autoResize) {
+            this.resize();
+        }
+    }
+    onDestroy() {
+        if (this.ngControlSubscription) {
+            this.ngControlSubscription.unsubscribe();
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Textarea, deps: null, target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "17.1.0", version: "20.3.15", type: Textarea, isStandalone: true, selector: "[pTextarea], [pInputTextarea]", inputs: { autoResize: { classPropertyName: "autoResize", publicName: "autoResize", isSignal: false, isRequired: false, transformFunction: booleanAttribute }, pSize: { classPropertyName: "pSize", publicName: "pSize", isSignal: false, isRequired: false, transformFunction: null }, variant: { classPropertyName: "variant", publicName: "variant", isSignal: true, isRequired: false, transformFunction: null }, fluid: { classPropertyName: "fluid", publicName: "fluid", isSignal: true, isRequired: false, transformFunction: null }, invalid: { classPropertyName: "invalid", publicName: "invalid", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { onResize: "onResize" }, host: { listeners: { "input": "onInput($event)" }, properties: { "class": "cx('root')" } }, providers: [TextareaStyle, { provide: TEXTAREA_INSTANCE, useExisting: Textarea }, { provide: PARENT_INSTANCE, useExisting: Textarea }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Textarea, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: '[pTextarea], [pInputTextarea]',
+                    standalone: true,
+                    host: {
+                        '[class]': "cx('root')"
+                    },
+                    providers: [TextareaStyle, { provide: TEXTAREA_INSTANCE, useExisting: Textarea }, { provide: PARENT_INSTANCE, useExisting: Textarea }],
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { autoResize: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], pSize: [{
+                type: Input
+            }], variant: [{ type: i0.Input, args: [{ isSignal: true, alias: "variant", required: false }] }], fluid: [{ type: i0.Input, args: [{ isSignal: true, alias: "fluid", required: false }] }], invalid: [{ type: i0.Input, args: [{ isSignal: true, alias: "invalid", required: false }] }], onResize: [{
+                type: Output
+            }], onInput: [{
+                type: HostListener,
+                args: ['input', ['$event']]
+            }] } });
+class TextareaModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TextareaModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: TextareaModule, imports: [Textarea], exports: [Textarea] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TextareaModule });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TextareaModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Textarea],
+                    exports: [Textarea]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Textarea, TextareaClasses, TextareaModule, TextareaStyle };
+//# sourceMappingURL=primeng-textarea.mjs.map

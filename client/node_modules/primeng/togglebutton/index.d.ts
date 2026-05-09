@@ -1,0 +1,199 @@
+import { ToggleButtonPassThrough, ToggleButtonChangeEvent } from 'primeng/types/togglebutton';
+export * from 'primeng/types/togglebutton';
+import { BaseStyle } from 'primeng/base';
+import * as i0 from '@angular/core';
+import { EventEmitter, TemplateRef, QueryList } from '@angular/core';
+import * as i3 from 'primeng/api';
+import { PrimeTemplate } from 'primeng/api';
+import { BaseEditableHolder } from 'primeng/baseeditableholder';
+import * as i2 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { Nullable } from 'primeng/ts-helpers';
+import * as i1 from 'primeng/ripple';
+
+/**
+ *
+ * ToggleButton is used to select a boolean value using a button.
+ *
+ * [Live Demo](https://www.primeng.org/togglebutton/)
+ *
+ * @module togglebuttonstyle
+ *
+ */
+declare enum ToggleButtonClasses {
+    /**
+     * Class name of the root element
+     */
+    root = "p-togglebutton",
+    /**
+     * Class name of the icon element
+     */
+    icon = "p-togglebutton-icon",
+    /**
+     * Class name of the left icon
+     */
+    iconLeft = "p-togglebutton-icon-left",
+    /**
+     * Class name of the right icon
+     */
+    iconRight = "p-togglebutton-icon-right",
+    /**
+     * Class name of the label element
+     */
+    label = "p-togglebutton-label"
+}
+declare class ToggleButtonStyle extends BaseStyle {
+    name: string;
+    style: string;
+    classes: {
+        root: ({ instance }: {
+            instance: any;
+        }) => (string | {
+            'p-togglebutton-checked': any;
+            'p-invalid': any;
+            'p-disabled': any;
+            'p-togglebutton-sm p-inputfield-sm': boolean;
+            'p-togglebutton-lg p-inputfield-lg': boolean;
+            'p-togglebutton-fluid': any;
+        })[];
+        content: string;
+        icon: string;
+        iconLeft: string;
+        iconRight: string;
+        label: string;
+    };
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToggleButtonStyle, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ToggleButtonStyle>;
+}
+interface ToggleButtonStyle extends BaseStyle {
+}
+
+declare const TOGGLEBUTTON_VALUE_ACCESSOR: any;
+/**
+ * ToggleButton is used to select a boolean value using a button.
+ * @group Components
+ */
+declare class ToggleButton extends BaseEditableHolder<ToggleButtonPassThrough> {
+    $pcToggleButton: ToggleButton | undefined;
+    bindDirectiveInstance: Bind;
+    onAfterViewChecked(): void;
+    onKeyDown(event: KeyboardEvent): void;
+    toggle(event: Event): void;
+    /**
+     * Label for the on state.
+     * @group Props
+     */
+    onLabel: string;
+    /**
+     * Label for the off state.
+     * @group Props
+     */
+    offLabel: string;
+    /**
+     * Icon for the on state.
+     * @group Props
+     */
+    onIcon: string | undefined;
+    /**
+     * Icon for the off state.
+     * @group Props
+     */
+    offIcon: string | undefined;
+    /**
+     * Defines a string that labels the input for accessibility.
+     * @group Props
+     */
+    ariaLabel: string | undefined;
+    /**
+     * Establishes relationships between the component and label(s) where its value should be one or more element IDs.
+     * @group Props
+     */
+    ariaLabelledBy: string | undefined;
+    /**
+     * Style class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass: string | undefined;
+    /**
+     * Identifier of the focus input to match a label defined for the component.
+     * @group Props
+     */
+    inputId: string | undefined;
+    /**
+     * Index of the element in tabbing order.
+     * @group Props
+     */
+    tabindex: number | undefined;
+    /**
+     * Position of the icon.
+     * @group Props
+     */
+    iconPos: 'left' | 'right';
+    /**
+     * When present, it specifies that the component should automatically get focus on load.
+     * @group Props
+     */
+    autofocus: boolean | undefined;
+    /**
+     * Defines the size of the component.
+     * @group Props
+     */
+    size: 'large' | 'small';
+    /**
+     * Whether selection can not be cleared.
+     * @group Props
+     */
+    allowEmpty: boolean | undefined;
+    /**
+     * Spans 100% width of the container when enabled.
+     * @defaultValue undefined
+     * @group Props
+     */
+    fluid: i0.InputSignalWithTransform<boolean | undefined, unknown>;
+    /**
+     * Callback to invoke on value change.
+     * @param {ToggleButtonChangeEvent} event - Custom change event.
+     * @group Emits
+     */
+    onChange: EventEmitter<ToggleButtonChangeEvent>;
+    /**
+     * Custom icon template.
+     * @group Templates
+     */
+    iconTemplate: Nullable<TemplateRef<any>>;
+    /**
+     * Custom content template.
+     * @group Templates
+     */
+    contentTemplate: Nullable<TemplateRef<any>>;
+    templates: QueryList<PrimeTemplate>;
+    checked: boolean;
+    onInit(): void;
+    _componentStyle: ToggleButtonStyle;
+    onBlur(): void;
+    get hasOnLabel(): boolean;
+    get hasOffLabel(): boolean;
+    get active(): boolean;
+    _iconTemplate: TemplateRef<any> | undefined;
+    _contentTemplate: TemplateRef<any> | undefined;
+    onAfterContentInit(): void;
+    /**
+     * @override
+     *
+     * @see {@link BaseEditableHolder.writeControlValue}
+     * Writes the value to the control.
+     */
+    writeControlValue(value: any, setModelValue: (value: any) => void): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToggleButton, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ToggleButton, "p-toggleButton, p-togglebutton, p-toggle-button", never, { "onLabel": { "alias": "onLabel"; "required": false; }; "offLabel": { "alias": "offLabel"; "required": false; }; "onIcon": { "alias": "onIcon"; "required": false; }; "offIcon": { "alias": "offIcon"; "required": false; }; "ariaLabel": { "alias": "ariaLabel"; "required": false; }; "ariaLabelledBy": { "alias": "ariaLabelledBy"; "required": false; }; "styleClass": { "alias": "styleClass"; "required": false; }; "inputId": { "alias": "inputId"; "required": false; }; "tabindex": { "alias": "tabindex"; "required": false; }; "iconPos": { "alias": "iconPos"; "required": false; }; "autofocus": { "alias": "autofocus"; "required": false; }; "size": { "alias": "size"; "required": false; }; "allowEmpty": { "alias": "allowEmpty"; "required": false; }; "fluid": { "alias": "fluid"; "required": false; "isSignal": true; }; }, { "onChange": "onChange"; }, ["iconTemplate", "contentTemplate", "templates"], never, true, [{ directive: typeof i1.Ripple; inputs: {}; outputs: {}; }, { directive: typeof i2.Bind; inputs: {}; outputs: {}; }]>;
+    static ngAcceptInputType_tabindex: unknown;
+    static ngAcceptInputType_autofocus: unknown;
+}
+declare class ToggleButtonModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToggleButtonModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ToggleButtonModule, never, [typeof ToggleButton, typeof i3.SharedModule], [typeof ToggleButton, typeof i3.SharedModule]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<ToggleButtonModule>;
+}
+
+export { TOGGLEBUTTON_VALUE_ACCESSOR, ToggleButton, ToggleButtonClasses, ToggleButtonModule, ToggleButtonStyle };

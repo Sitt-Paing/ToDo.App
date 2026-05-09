@@ -1,0 +1,190 @@
+export * from 'primeng/types/avatar';
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, EventEmitter, Output, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { style } from '@primeuix/styles/avatar';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: ({ instance }) => [
+        'p-avatar p-component',
+        {
+            'p-avatar-image': instance.image != null,
+            'p-avatar-circle': instance.shape === 'circle',
+            'p-avatar-lg': instance.size === 'large',
+            'p-avatar-xl': instance.size === 'xlarge'
+        }
+    ],
+    label: 'p-avatar-label',
+    icon: 'p-avatar-icon'
+};
+class AvatarStyle extends BaseStyle {
+    name = 'avatar';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AvatarStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AvatarStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AvatarStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Avatar represents people using icons, labels and images.
+ *
+ * - [Live Demo](https://primeng.org/avatar)
+ *
+ * @module avatarstyle
+ *
+ */
+var AvatarClasses;
+(function (AvatarClasses) {
+    /**
+     * Class name of the root element
+     */
+    AvatarClasses["root"] = "p-avatar";
+    /**
+     * Class name of the label element
+     */
+    AvatarClasses["label"] = "p-avatar-label";
+    /**
+     * Class name of the icon element
+     */
+    AvatarClasses["icon"] = "p-avatar-icon";
+})(AvatarClasses || (AvatarClasses = {}));
+
+const AVATAR_INSTANCE = new InjectionToken('AVATAR_INSTANCE');
+/**
+ * Avatar represents people using icons, labels and images.
+ * @group Components
+ */
+class Avatar extends BaseComponent {
+    $pcAvatar = inject(AVATAR_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Defines the text to display.
+     * @group Props
+     */
+    label;
+    /**
+     * Defines the icon to display.
+     * @group Props
+     */
+    icon;
+    /**
+     * Defines the image to display.
+     * @group Props
+     */
+    image;
+    /**
+     * Size of the element.
+     * @group Props
+     */
+    size = 'normal';
+    /**
+     * Shape of the element.
+     * @group Props
+     */
+    shape = 'square';
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Establishes a string value that labels the component.
+     * @group Props
+     */
+    ariaLabel;
+    /**
+     * Establishes relationships between the component and label(s) where its value should be one or more element IDs.
+     * @group Props
+     */
+    ariaLabelledBy;
+    /**
+     * This event is triggered if an error occurs while loading an image file.
+     * @param {Event} event - Browser event.
+     * @group Emits
+     */
+    onImageError = new EventEmitter();
+    _componentStyle = inject(AvatarStyle);
+    imageError(event) {
+        this.onImageError.emit(event);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Avatar, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: Avatar, isStandalone: true, selector: "p-avatar", inputs: { label: "label", icon: "icon", image: "image", size: "size", shape: "shape", styleClass: "styleClass", ariaLabel: "ariaLabel", ariaLabelledBy: "ariaLabelledBy" }, outputs: { onImageError: "onImageError" }, host: { properties: { "class": "cn(cx('root'), styleClass)", "attr.aria-label": "ariaLabel", "attr.aria-labelledby": "ariaLabelledBy" } }, providers: [AvatarStyle, { provide: AVATAR_INSTANCE, useExisting: Avatar }, { provide: PARENT_INSTANCE, useExisting: Avatar }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <ng-content></ng-content>
+        <span [pBind]="ptm('label')" [class]="cx('label')" *ngIf="label; else iconTemplate">{{ label }}</span>
+        <ng-template #iconTemplate><span [pBind]="ptm('icon')" [class]="icon" [ngClass]="cx('icon')" *ngIf="icon; else imageTemplate"></span></ng-template>
+        <ng-template #imageTemplate><img [pBind]="ptm('image')" [src]="image" *ngIf="image" (error)="imageError($event)" [attr.aria-label]="ariaLabel" /></ng-template>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgClass, selector: "[ngClass]", inputs: ["class", "ngClass"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Avatar, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-avatar',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, Bind],
+                    template: `
+        <ng-content></ng-content>
+        <span [pBind]="ptm('label')" [class]="cx('label')" *ngIf="label; else iconTemplate">{{ label }}</span>
+        <ng-template #iconTemplate><span [pBind]="ptm('icon')" [class]="icon" [ngClass]="cx('icon')" *ngIf="icon; else imageTemplate"></span></ng-template>
+        <ng-template #imageTemplate><img [pBind]="ptm('image')" [src]="image" *ngIf="image" (error)="imageError($event)" [attr.aria-label]="ariaLabel" /></ng-template>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)",
+                        '[attr.aria-label]': 'ariaLabel',
+                        '[attr.aria-labelledby]': 'ariaLabelledBy'
+                    },
+                    providers: [AvatarStyle, { provide: AVATAR_INSTANCE, useExisting: Avatar }, { provide: PARENT_INSTANCE, useExisting: Avatar }],
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { label: [{
+                type: Input
+            }], icon: [{
+                type: Input
+            }], image: [{
+                type: Input
+            }], size: [{
+                type: Input
+            }], shape: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], ariaLabel: [{
+                type: Input
+            }], ariaLabelledBy: [{
+                type: Input
+            }], onImageError: [{
+                type: Output
+            }] } });
+class AvatarModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AvatarModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: AvatarModule, imports: [Avatar, SharedModule], exports: [Avatar, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AvatarModule, imports: [Avatar, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AvatarModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Avatar, SharedModule],
+                    exports: [Avatar, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Avatar, AvatarClasses, AvatarModule, AvatarStyle };
+//# sourceMappingURL=primeng-avatar.mjs.map

@@ -1,0 +1,275 @@
+import { ToastPassThrough, ToastItemCloseEvent, ToastPositionType, ToastCloseEvent } from 'primeng/types/toast';
+export * from 'primeng/types/toast';
+import { AnimationEvent } from '@angular/animations';
+import * as i0 from '@angular/core';
+import { TemplateRef, EventEmitter, NgZone, QueryList } from '@angular/core';
+import * as i2 from 'primeng/api';
+import { ToastMessageOptions, MessageService, PrimeTemplate } from 'primeng/api';
+import { BaseComponent } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { Subscription } from 'rxjs';
+import * as _primeuix_styled from '@primeuix/styled';
+import { BaseStyle } from 'primeng/base';
+
+/**
+ *
+ * Toast is used to display messages in an overlay.
+ *
+ * [Live Demo](https://www.primeng.org/toast/)
+ *
+ * @module toaststyle
+ *
+ */
+declare enum ToastClasses {
+    /**
+     * Class name of the root element
+     */
+    root = "p-toast",
+    /**
+     * Class name of the message element
+     */
+    message = "p-toast-message",
+    /**
+     * Class name of the message content element
+     */
+    messageContent = "p-toast-message-content",
+    /**
+     * Class name of the message icon element
+     */
+    messageIcon = "p-toast-message-icon",
+    /**
+     * Class name of the message text element
+     */
+    messageText = "p-toast-message-text",
+    /**
+     * Class name of the summary element
+     */
+    summary = "p-toast-summary",
+    /**
+     * Class name of the detail element
+     */
+    detail = "p-toast-detail",
+    /**
+     * Class name of the close button element
+     */
+    closeButton = "p-toast-close-button",
+    /**
+     * Class name of the close icon element
+     */
+    closeIcon = "p-toast-close-icon"
+}
+declare class ToastStyle extends BaseStyle {
+    name: string;
+    style: _primeuix_styled.StyleType;
+    classes: {
+        root: ({ instance }: {
+            instance: any;
+        }) => string[];
+        message: ({ instance }: {
+            instance: any;
+        }) => {
+            'p-toast-message': boolean;
+            'p-toast-message-info': boolean;
+            'p-toast-message-warn': boolean;
+            'p-toast-message-error': boolean;
+            'p-toast-message-success': boolean;
+            'p-toast-message-secondary': boolean;
+            'p-toast-message-contrast': boolean;
+        };
+        messageContent: string;
+        messageIcon: ({ instance }: {
+            instance: any;
+        }) => {
+            [x: string]: boolean;
+            'p-toast-message-icon': boolean;
+        };
+        messageText: string;
+        summary: string;
+        detail: string;
+        closeButton: string;
+        closeIcon: ({ instance }: {
+            instance: any;
+        }) => {
+            [x: string]: boolean;
+            'p-toast-close-icon': boolean;
+        };
+    };
+    inlineStyles: {
+        root: ({ instance }: {
+            instance: any;
+        }) => {
+            position: string;
+            top: string | null;
+            right: string | false;
+            bottom: string | false;
+            left: string | null;
+        };
+    };
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToastStyle, never>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ToastStyle>;
+}
+interface ToastStyle extends BaseStyle {
+}
+
+declare class ToastItem extends BaseComponent<ToastPassThrough> {
+    private zone;
+    message: ToastMessageOptions | null | undefined;
+    index: number | null | undefined;
+    life: number;
+    template: TemplateRef<any> | undefined;
+    headlessTemplate: TemplateRef<any> | undefined;
+    showTransformOptions: string | undefined;
+    hideTransformOptions: string | undefined;
+    showTransitionOptions: string | undefined;
+    hideTransitionOptions: string | undefined;
+    onClose: EventEmitter<ToastItemCloseEvent>;
+    _componentStyle: ToastStyle;
+    timeout: any;
+    constructor(zone: NgZone);
+    onAfterViewInit(): void;
+    initTimeout(): void;
+    clearTimeout(): void;
+    onMouseEnter(): void;
+    onMouseLeave(): void;
+    onCloseIconClick: (event: Event) => void;
+    get closeAriaLabel(): string | undefined;
+    onDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToastItem, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<ToastItem, "p-toastItem", never, { "message": { "alias": "message"; "required": false; }; "index": { "alias": "index"; "required": false; }; "life": { "alias": "life"; "required": false; }; "template": { "alias": "template"; "required": false; }; "headlessTemplate": { "alias": "headlessTemplate"; "required": false; }; "showTransformOptions": { "alias": "showTransformOptions"; "required": false; }; "hideTransformOptions": { "alias": "hideTransformOptions"; "required": false; }; "showTransitionOptions": { "alias": "showTransitionOptions"; "required": false; }; "hideTransitionOptions": { "alias": "hideTransitionOptions"; "required": false; }; }, { "onClose": "onClose"; }, never, never, true, never>;
+    static ngAcceptInputType_index: unknown;
+    static ngAcceptInputType_life: unknown;
+}
+/**
+ * Toast is used to display messages in an overlay.
+ * @group Components
+ */
+declare class Toast extends BaseComponent<ToastPassThrough> {
+    $pcToast: Toast | undefined;
+    bindDirectiveInstance: Bind;
+    onAfterViewChecked(): void;
+    /**
+     * Key of the message in case message is targeted to a specific toast component.
+     * @group Props
+     */
+    key: string | undefined;
+    /**
+     * Whether to automatically manage layering.
+     * @group Props
+     */
+    autoZIndex: boolean;
+    /**
+     * Base zIndex value to use in layering.
+     * @group Props
+     */
+    baseZIndex: number;
+    /**
+     * The default time to display messages for in milliseconds.
+     * @group Props
+     */
+    life: number;
+    /**
+     * Inline class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass: string | undefined;
+    /**
+     * Position of the toast in viewport.
+     * @group Props
+     */
+    get position(): ToastPositionType;
+    set position(value: ToastPositionType);
+    /**
+     * It does not add the new message if there is already a toast displayed with the same content
+     * @group Props
+     */
+    preventOpenDuplicates: boolean;
+    /**
+     * Displays only once a message with the same content.
+     * @group Props
+     */
+    preventDuplicates: boolean;
+    /**
+     * Transform options of the show animation.
+     * @group Props
+     */
+    showTransformOptions: string;
+    /**
+     * Transform options of the hide animation.
+     * @group Props
+     */
+    hideTransformOptions: string;
+    /**
+     * Transition options of the show animation.
+     * @group Props
+     */
+    showTransitionOptions: string;
+    /**
+     * Transition options of the hide animation.
+     * @group Props
+     */
+    hideTransitionOptions: string;
+    /**
+     * Object literal to define styles per screen size.
+     * @group Props
+     */
+    breakpoints: {
+        [key: string]: any;
+    } | undefined;
+    /**
+     * Callback to invoke when a message is closed.
+     * @param {ToastCloseEvent} event - custom close event.
+     * @group Emits
+     */
+    onClose: EventEmitter<ToastCloseEvent>;
+    /**
+     * Custom template of message.
+     * @group Templates
+     */
+    template: TemplateRef<any> | undefined;
+    /**
+     * Custom headless template.
+     * @group Templates
+     */
+    headlessTemplate: TemplateRef<any> | undefined;
+    messageSubscription: Subscription | undefined;
+    clearSubscription: Subscription | undefined;
+    messages: ToastMessageOptions[] | null | undefined;
+    messagesArchieve: ToastMessageOptions[] | undefined;
+    _position: ToastPositionType;
+    messageService: MessageService;
+    _componentStyle: ToastStyle;
+    styleElement: any;
+    id: string;
+    templates: QueryList<PrimeTemplate> | undefined;
+    constructor();
+    onInit(): void;
+    _template: TemplateRef<any> | undefined;
+    _headlessTemplate: TemplateRef<any> | undefined;
+    onAfterContentInit(): void;
+    onAfterViewInit(): void;
+    add(messages: ToastMessageOptions[]): void;
+    canAdd(message: ToastMessageOptions): boolean;
+    containsMessage(collection: ToastMessageOptions[], message: ToastMessageOptions): boolean;
+    onMessageClose(event: ToastItemCloseEvent): void;
+    onAnimationStart(event: AnimationEvent): void;
+    onAnimationEnd(event: AnimationEvent): void;
+    createStyle(): void;
+    destroyStyle(): void;
+    onDestroy(): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<Toast, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<Toast, "p-toast", never, { "key": { "alias": "key"; "required": false; }; "autoZIndex": { "alias": "autoZIndex"; "required": false; }; "baseZIndex": { "alias": "baseZIndex"; "required": false; }; "life": { "alias": "life"; "required": false; }; "styleClass": { "alias": "styleClass"; "required": false; }; "position": { "alias": "position"; "required": false; }; "preventOpenDuplicates": { "alias": "preventOpenDuplicates"; "required": false; }; "preventDuplicates": { "alias": "preventDuplicates"; "required": false; }; "showTransformOptions": { "alias": "showTransformOptions"; "required": false; }; "hideTransformOptions": { "alias": "hideTransformOptions"; "required": false; }; "showTransitionOptions": { "alias": "showTransitionOptions"; "required": false; }; "hideTransitionOptions": { "alias": "hideTransitionOptions"; "required": false; }; "breakpoints": { "alias": "breakpoints"; "required": false; }; }, { "onClose": "onClose"; }, ["template", "headlessTemplate", "templates"], never, true, [{ directive: typeof i1.Bind; inputs: {}; outputs: {}; }]>;
+    static ngAcceptInputType_autoZIndex: unknown;
+    static ngAcceptInputType_baseZIndex: unknown;
+    static ngAcceptInputType_life: unknown;
+    static ngAcceptInputType_preventOpenDuplicates: unknown;
+    static ngAcceptInputType_preventDuplicates: unknown;
+}
+declare class ToastModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<ToastModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<ToastModule, never, [typeof Toast, typeof i2.SharedModule], [typeof Toast, typeof i2.SharedModule]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<ToastModule>;
+}
+
+export { Toast, ToastClasses, ToastItem, ToastModule, ToastStyle };

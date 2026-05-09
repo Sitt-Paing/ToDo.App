@@ -1,0 +1,89 @@
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, HostBinding, Input, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: 'p-inputgroupaddon'
+};
+class InputGroupAddonStyle extends BaseStyle {
+    name = 'inputgroupaddon';
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonStyle, decorators: [{
+            type: Injectable
+        }] });
+
+const INPUTGROUPADDON_INSTANCE = new InjectionToken('INPUTGROUPADDON_INSTANCE');
+/**
+ * InputGroupAddon displays text, icon, buttons and other content can be grouped next to an input.
+ * @group Components
+ */
+class InputGroupAddon extends BaseComponent {
+    _componentStyle = inject(InputGroupAddonStyle);
+    $pcInputGroupAddon = inject(INPUTGROUPADDON_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Inline style of the element.
+     * @group Props
+     */
+    style;
+    /**
+     * Class of the element.
+     * @group Props
+     */
+    styleClass;
+    get hostStyle() {
+        return this.style;
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddon, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: InputGroupAddon, isStandalone: true, selector: "p-inputgroup-addon, p-inputGroupAddon", inputs: { style: "style", styleClass: "styleClass" }, host: { properties: { "class": "cn(cx('root'), styleClass)", "style": "this.hostStyle" } }, providers: [InputGroupAddonStyle, { provide: INPUTGROUPADDON_INSTANCE, useExisting: InputGroupAddon }, { provide: PARENT_INSTANCE, useExisting: InputGroupAddon }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content> `, isInline: true, dependencies: [{ kind: "ngmodule", type: BindModule }] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddon, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-inputgroup-addon, p-inputGroupAddon',
+                    template: ` <ng-content></ng-content> `,
+                    standalone: true,
+                    imports: [BindModule],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    providers: [InputGroupAddonStyle, { provide: INPUTGROUPADDON_INSTANCE, useExisting: InputGroupAddon }, { provide: PARENT_INSTANCE, useExisting: InputGroupAddon }],
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { style: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], hostStyle: [{
+                type: HostBinding,
+                args: ['style']
+            }] } });
+class InputGroupAddonModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonModule, imports: [InputGroupAddon, SharedModule], exports: [InputGroupAddon, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonModule, imports: [InputGroupAddon, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: InputGroupAddonModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [InputGroupAddon, SharedModule],
+                    exports: [InputGroupAddon, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { InputGroupAddon, InputGroupAddonModule, InputGroupAddonStyle };
+//# sourceMappingURL=primeng-inputgroupaddon.mjs.map

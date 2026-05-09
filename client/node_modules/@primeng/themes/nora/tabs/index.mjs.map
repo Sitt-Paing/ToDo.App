@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/nora/tabs/index.ts"],"sourcesContent":["export * from '@primeuix/themes/nora/tabs';\nexport { default } from '@primeuix/themes/nora/tabs';\n"],"mappings":"AAAA,WAAc,6BACd,OAAS,WAAAA,MAAe","names":["default"]}

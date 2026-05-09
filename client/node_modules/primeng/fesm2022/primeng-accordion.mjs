@@ -1,0 +1,641 @@
+export * from 'primeng/types/accordion';
+import { trigger, state, transition, style as style$2, animate } from '@angular/animations';
+import * as i3 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, forwardRef, model, input, computed, ViewEncapsulation, ChangeDetectionStrategy, Component, HostListener, ContentChild, EventEmitter, signal, Output, Input, NgModule } from '@angular/core';
+import { findSingle, getAttribute, focus, uuid } from '@primeuix/utils';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { ChevronDownIcon, ChevronUpIcon } from 'primeng/icons';
+import * as i2 from 'primeng/ripple';
+import { Ripple } from 'primeng/ripple';
+import { transformToBoolean } from 'primeng/utils';
+import { style as style$1 } from '@primeuix/styles/accordion';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /*For PrimeNG*/
+    .p-accordionpanel:not(.p-accordionpanel-active) > .p-accordioncontent,
+    .p-accordioncontent-content.ng-animating {
+        overflow: hidden;
+    }
+
+    .p-accordionheader-toggle-icon.icon-start {
+        order: -1;
+    }
+
+    .p-accordionheader:has(.p-accordionheader-toggle-icon.icon-start) {
+        justify-content: flex-start;
+        gap: dt('accordion.header.padding');
+    }
+
+    .p-accordioncontent.ng-animating {
+        overflow: hidden;
+    }
+
+    .p-accordionheader.p-ripple {
+        overflow: hidden;
+        position: relative;
+    }
+`;
+const classes = {
+    root: 'p-accordion p-component',
+    panel: ({ instance }) => [
+        'p-accordionpanel',
+        {
+            'p-accordionpanel-active': instance.active(),
+            'p-disabled': instance.disabled()
+        }
+    ],
+    header: 'p-accordionheader',
+    toggleicon: 'p-accordionheader-toggle-icon',
+    contentContainer: 'p-accordioncontent',
+    content: 'p-accordioncontent-content'
+};
+class AccordionStyle extends BaseStyle {
+    name = 'accordion';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Accordion groups a collection of contents in tabs.
+ *
+ * [Live Demo](https://www.primeng.org/accordion/)
+ *
+ * @module accordionstyle
+ *
+ */
+var AccordionClasses;
+(function (AccordionClasses) {
+    /**
+     * Class name of the root element
+     */
+    AccordionClasses["root"] = "p-accordion";
+    /**
+     * Class name of the content wrapper
+     */
+    AccordionClasses["contentwrapper"] = "p-accordioncontent";
+    /**
+     * Class name of the content
+     */
+    AccordionClasses["content"] = "p-accordioncontent-content";
+    /**
+     * Class name of the header
+     */
+    AccordionClasses["header"] = "p-accordionheader";
+    /**
+     * Class name of the toggle icon
+     */
+    AccordionClasses["toggleicon"] = "p-accordionheader-toggle-icon";
+    /**
+     * Class name of the panel
+     */
+    AccordionClasses["panel"] = "p-accordionpanel";
+})(AccordionClasses || (AccordionClasses = {}));
+
+const ACCORDION_PANEL_INSTANCE = new InjectionToken('ACCORDION_PANEL_INSTANCE');
+const ACCORDION_HEADER_INSTANCE = new InjectionToken('ACCORDION_HEADER_INSTANCE');
+const ACCORDION_CONTENT_INSTANCE = new InjectionToken('ACCORDION_CONTENT_INSTANCE');
+const ACCORDION_INSTANCE = new InjectionToken('ACCORDION_INSTANCE');
+/**
+ * AccordionPanel is a helper component for Accordion component.
+ * @group Components
+ */
+class AccordionPanel extends BaseComponent {
+    $pcAccordionPanel = inject(ACCORDION_PANEL_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptm('root'));
+    }
+    pcAccordion = inject(forwardRef(() => Accordion));
+    /**
+     * Value of the active tab.
+     * @defaultValue undefined
+     * @group Props
+     */
+    value = model(undefined, ...(ngDevMode ? [{ debugName: "value" }] : []));
+    /**
+     * Disables the tab when enabled.
+     * @defaultValue false
+     * @group Props
+     */
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: (v) => transformToBoolean(v) }] : [{ transform: (v) => transformToBoolean(v) }]));
+    active = computed(() => (this.pcAccordion.multiple() ? this.valueEquals(this.pcAccordion.value(), this.value()) : this.pcAccordion.value() === this.value()), ...(ngDevMode ? [{ debugName: "active" }] : []));
+    valueEquals(currentValue, value) {
+        if (Array.isArray(currentValue)) {
+            return currentValue.includes(value);
+        }
+        return currentValue === value;
+    }
+    _componentStyle = inject(AccordionStyle);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionPanel, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "20.3.15", type: AccordionPanel, isStandalone: true, selector: "p-accordion-panel, p-accordionpanel", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { properties: { "class": "cx(\"panel\")", "attr.data-p-disabled": "disabled()", "attr.data-p-active": "active()" } }, providers: [AccordionStyle, { provide: ACCORDION_PANEL_INSTANCE, useExisting: AccordionPanel }, { provide: PARENT_INSTANCE, useExisting: AccordionPanel }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `<ng-content />`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionPanel, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-accordion-panel, p-accordionpanel',
+                    imports: [CommonModule, BindModule],
+                    standalone: true,
+                    template: `<ng-content />`,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': 'cx("panel")',
+                        '[attr.data-p-disabled]': 'disabled()',
+                        '[attr.data-p-active]': 'active()'
+                    },
+                    hostDirectives: [Bind],
+                    providers: [AccordionStyle, { provide: ACCORDION_PANEL_INSTANCE, useExisting: AccordionPanel }, { provide: PARENT_INSTANCE, useExisting: AccordionPanel }]
+                }]
+        }], propDecorators: { value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }, { type: i0.Output, args: ["valueChange"] }], disabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "disabled", required: false }] }] } });
+/**
+ * AccordionHeader is a helper component for Accordion component.
+ * @group Components
+ */
+class AccordionHeader extends BaseComponent {
+    $pcAccordionHeader = inject(ACCORDION_HEADER_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptm('root'));
+    }
+    pcAccordion = inject(forwardRef(() => Accordion));
+    pcAccordionPanel = inject(forwardRef(() => AccordionPanel));
+    id = computed(() => `${this.pcAccordion.id()}_accordionheader_${this.pcAccordionPanel.value()}`, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    active = computed(() => this.pcAccordionPanel.active(), ...(ngDevMode ? [{ debugName: "active" }] : []));
+    disabled = computed(() => this.pcAccordionPanel.disabled(), ...(ngDevMode ? [{ debugName: "disabled" }] : []));
+    ariaControls = computed(() => `${this.pcAccordion.id()}_accordioncontent_${this.pcAccordionPanel.value()}`, ...(ngDevMode ? [{ debugName: "ariaControls" }] : []));
+    /**
+     * Toggle icon template.
+     * @type {TemplateRef<AccordionToggleIconTemplateContext>} context - Context of the template
+     * @example
+     * ```html
+     * <ng-template #toggleicon let-active="active"> </ng-template>
+     * ```
+     * @see {@link AccordionToggleIconTemplateContext}
+     * @group Templates
+     */
+    toggleicon;
+    onClick(event) {
+        if (this.disabled()) {
+            return;
+        }
+        const wasActive = this.active();
+        this.changeActiveValue();
+        const isActive = this.active();
+        const index = this.pcAccordionPanel.value();
+        if (!wasActive && isActive) {
+            this.pcAccordion.onOpen.emit({ originalEvent: event, index });
+        }
+        else if (wasActive && !isActive) {
+            this.pcAccordion.onClose.emit({ originalEvent: event, index });
+        }
+    }
+    onFocus() {
+        if (!this.disabled() && this.pcAccordion.selectOnFocus()) {
+            this.changeActiveValue();
+        }
+    }
+    onKeydown(event) {
+        switch (event.code) {
+            case 'ArrowDown':
+                this.arrowDownKey(event);
+                break;
+            case 'ArrowUp':
+                this.arrowUpKey(event);
+                break;
+            case 'Home':
+                this.onHomeKey(event);
+                break;
+            case 'End':
+                this.onEndKey(event);
+                break;
+            case 'Enter':
+            case 'Space':
+            case 'NumpadEnter':
+                this.onEnterKey(event);
+                break;
+            default:
+                break;
+        }
+    }
+    _componentStyle = inject(AccordionStyle);
+    changeActiveValue() {
+        this.pcAccordion.updateValue(this.pcAccordionPanel.value());
+    }
+    findPanel(headerElement) {
+        return headerElement?.closest('[data-pc-name="accordionpanel"]');
+    }
+    findHeader(panelElement) {
+        return findSingle(panelElement, '[data-pc-name="accordionheader"]');
+    }
+    findNextPanel(panelElement, selfCheck = false) {
+        const element = selfCheck ? panelElement : panelElement.nextElementSibling;
+        return element ? (getAttribute(element, 'data-p-disabled') ? this.findNextPanel(element) : this.findHeader(element)) : null;
+    }
+    findPrevPanel(panelElement, selfCheck = false) {
+        const element = selfCheck ? panelElement : panelElement.previousElementSibling;
+        return element ? (getAttribute(element, 'data-p-disabled') ? this.findPrevPanel(element) : this.findHeader(element)) : null;
+    }
+    findFirstPanel() {
+        return this.findNextPanel(this.pcAccordion.el.nativeElement.firstElementChild, true);
+    }
+    findLastPanel() {
+        return this.findPrevPanel(this.pcAccordion.el.nativeElement.lastElementChild, true);
+    }
+    changeFocusedPanel(event, element) {
+        focus(element);
+    }
+    arrowDownKey(event) {
+        const nextPanel = this.findNextPanel(this.findPanel(event.currentTarget));
+        nextPanel ? this.changeFocusedPanel(event, nextPanel) : this.onHomeKey(event);
+        event.preventDefault();
+    }
+    arrowUpKey(event) {
+        const prevPanel = this.findPrevPanel(this.findPanel(event.currentTarget));
+        prevPanel ? this.changeFocusedPanel(event, prevPanel) : this.onEndKey(event);
+        event.preventDefault();
+    }
+    onHomeKey(event) {
+        const firstPanel = this.findFirstPanel();
+        this.changeFocusedPanel(event, firstPanel);
+        event.preventDefault();
+    }
+    onEndKey(event) {
+        const lastPanel = this.findLastPanel();
+        this.changeFocusedPanel(event, lastPanel);
+        event.preventDefault();
+    }
+    onEnterKey(event) {
+        if (!this.disabled()) {
+            this.changeActiveValue();
+        }
+        event.preventDefault();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionHeader, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: AccordionHeader, isStandalone: true, selector: "p-accordion-header, p-accordionheader", host: { listeners: { "click": "onClick($event)", "focus": "onFocus($event)", "keydown": "onKeydown($event)" }, properties: { "class": "cx('header')", "attr.id": "id()", "attr.aria-expanded": "active()", "attr.aria-controls": "ariaControls()", "attr.aria-disabled": "disabled()", "attr.role": "\"button\"", "attr.tabindex": "disabled()?\"-1\":\"0\"", "attr.data-p-active": "active()", "attr.data-p-disabled": "disabled()", "style.user-select": "\"none\"" } }, providers: [AccordionStyle, { provide: ACCORDION_HEADER_INSTANCE, useExisting: AccordionHeader }, { provide: PARENT_INSTANCE, useExisting: AccordionHeader }], queries: [{ propertyName: "toggleicon", first: true, predicate: ["toggleicon"], descendants: true }], usesInheritance: true, hostDirectives: [{ directive: i2.Ripple }, { directive: i1.Bind }], ngImport: i0, template: `
+        <ng-content />
+        @if (toggleicon) {
+            <ng-template *ngTemplateOutlet="toggleicon; context: { active: active() }"></ng-template>
+        } @else {
+            <ng-container *ngIf="active()">
+                <span *ngIf="pcAccordion.collapseIcon" [class]="cn(cx('toggleicon'), pcAccordion.collapseIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
+                <svg data-p-icon="chevron-up" *ngIf="!pcAccordion.collapseIcon" [class]="cx('toggleicon')" [pBind]="ptm('toggleicon')" [attr.aria-hidden]="true" />
+            </ng-container>
+            <ng-container *ngIf="!active()">
+                <span *ngIf="pcAccordion.expandIcon" [class]="cn(cx('toggleicon'), pcAccordion.expandIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
+                <svg data-p-icon="chevron-down" *ngIf="!pcAccordion.expandIcon" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')" />
+            </ng-container>
+        }
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i3.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i3.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "component", type: ChevronDownIcon, selector: "[data-p-icon=\"chevron-down\"]" }, { kind: "component", type: ChevronUpIcon, selector: "[data-p-icon=\"chevron-up\"]" }, { kind: "ngmodule", type: BindModule }, { kind: "directive", type: i1.Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionHeader, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-accordion-header, p-accordionheader',
+                    imports: [CommonModule, ChevronDownIcon, ChevronUpIcon, BindModule],
+                    standalone: true,
+                    template: `
+        <ng-content />
+        @if (toggleicon) {
+            <ng-template *ngTemplateOutlet="toggleicon; context: { active: active() }"></ng-template>
+        } @else {
+            <ng-container *ngIf="active()">
+                <span *ngIf="pcAccordion.collapseIcon" [class]="cn(cx('toggleicon'), pcAccordion.collapseIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
+                <svg data-p-icon="chevron-up" *ngIf="!pcAccordion.collapseIcon" [class]="cx('toggleicon')" [pBind]="ptm('toggleicon')" [attr.aria-hidden]="true" />
+            </ng-container>
+            <ng-container *ngIf="!active()">
+                <span *ngIf="pcAccordion.expandIcon" [class]="cn(cx('toggleicon'), pcAccordion.expandIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
+                <svg data-p-icon="chevron-down" *ngIf="!pcAccordion.expandIcon" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')" />
+            </ng-container>
+        }
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': "cx('header')",
+                        '[attr.id]': 'id()',
+                        '[attr.aria-expanded]': 'active()',
+                        '[attr.aria-controls]': 'ariaControls()',
+                        '[attr.aria-disabled]': 'disabled()',
+                        '[attr.role]': '"button"',
+                        '[attr.tabindex]': 'disabled()?"-1":"0"',
+                        '[attr.data-p-active]': 'active()',
+                        '[attr.data-p-disabled]': 'disabled()',
+                        '[style.user-select]': '"none"'
+                    },
+                    hostDirectives: [Ripple, Bind],
+                    providers: [AccordionStyle, { provide: ACCORDION_HEADER_INSTANCE, useExisting: AccordionHeader }, { provide: PARENT_INSTANCE, useExisting: AccordionHeader }]
+                }]
+        }], propDecorators: { toggleicon: [{
+                type: ContentChild,
+                args: ['toggleicon']
+            }], onClick: [{
+                type: HostListener,
+                args: ['click', ['$event']]
+            }], onFocus: [{
+                type: HostListener,
+                args: ['focus', ['$event']]
+            }], onKeydown: [{
+                type: HostListener,
+                args: ['keydown', ['$event']]
+            }] } });
+class AccordionContent extends BaseComponent {
+    $pcAccordionContent = inject(ACCORDION_CONTENT_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptm('root'));
+    }
+    pcAccordion = inject(forwardRef(() => Accordion));
+    pcAccordionPanel = inject(forwardRef(() => AccordionPanel));
+    active = computed(() => this.pcAccordionPanel.active(), ...(ngDevMode ? [{ debugName: "active" }] : []));
+    ariaLabelledby = computed(() => `${this.pcAccordion.id()}_accordionheader_${this.pcAccordionPanel.value()}`, ...(ngDevMode ? [{ debugName: "ariaLabelledby" }] : []));
+    id = computed(() => `${this.pcAccordion.id()}_accordioncontent_${this.pcAccordionPanel.value()}`, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    _componentStyle = inject(AccordionStyle);
+    ptParams = computed(() => ({ context: this.active() }), ...(ngDevMode ? [{ debugName: "ptParams" }] : []));
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionContent, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: AccordionContent, isStandalone: true, selector: "p-accordion-content, p-accordioncontent", host: { properties: { "class": "cx(\"contentContainer\")", "attr.id": "id()", "attr.role": "\"region\"", "attr.data-p-active": "active()", "attr.aria-labelledby": "ariaLabelledby()" } }, providers: [AccordionStyle, { provide: ACCORDION_CONTENT_INSTANCE, useExisting: AccordionContent }, { provide: PARENT_INSTANCE, useExisting: AccordionContent }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `<div
+        [class]="cx('content')"
+        [@content]="active() ? { value: 'visible', params: { transitionParams: pcAccordion.transitionOptions } } : { value: 'hidden', params: { transitionParams: pcAccordion.transitionOptions } }"
+        [pBind]="ptm('content', ptParams())"
+    >
+        <ng-content />
+    </div>`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: BindModule }, { kind: "directive", type: i1.Bind, selector: "[pBind]", inputs: ["pBind"] }], animations: [
+            trigger('content', [
+                state('hidden', style$2({
+                    height: '0',
+                    // To prevent memory leak, Angular issue. https://github.com/primefaces/primeng/issues/18546
+                    paddingBlockStart: '0',
+                    paddingBlockEnd: '0',
+                    borderBlockStartWidth: '0',
+                    borderBlockEndWidth: '0',
+                    //
+                    visibility: 'hidden'
+                })),
+                state('visible', style$2({
+                    height: '*'
+                })),
+                transition('visible <=> hidden', [animate('{{transitionParams}}')]),
+                transition('void => *', animate(0))
+            ])
+        ], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionContent, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-accordion-content, p-accordioncontent',
+                    imports: [CommonModule, BindModule],
+                    standalone: true,
+                    template: `<div
+        [class]="cx('content')"
+        [@content]="active() ? { value: 'visible', params: { transitionParams: pcAccordion.transitionOptions } } : { value: 'hidden', params: { transitionParams: pcAccordion.transitionOptions } }"
+        [pBind]="ptm('content', ptParams())"
+    >
+        <ng-content />
+    </div>`,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': 'cx("contentContainer")',
+                        '[attr.id]': 'id()',
+                        '[attr.role]': '"region"',
+                        '[attr.data-p-active]': 'active()',
+                        '[attr.aria-labelledby]': 'ariaLabelledby()'
+                    },
+                    hostDirectives: [Bind],
+                    animations: [
+                        trigger('content', [
+                            state('hidden', style$2({
+                                height: '0',
+                                // To prevent memory leak, Angular issue. https://github.com/primefaces/primeng/issues/18546
+                                paddingBlockStart: '0',
+                                paddingBlockEnd: '0',
+                                borderBlockStartWidth: '0',
+                                borderBlockEndWidth: '0',
+                                //
+                                visibility: 'hidden'
+                            })),
+                            state('visible', style$2({
+                                height: '*'
+                            })),
+                            transition('visible <=> hidden', [animate('{{transitionParams}}')]),
+                            transition('void => *', animate(0))
+                        ])
+                    ],
+                    providers: [AccordionStyle, { provide: ACCORDION_CONTENT_INSTANCE, useExisting: AccordionContent }, { provide: PARENT_INSTANCE, useExisting: AccordionContent }]
+                }]
+        }] });
+/**
+ * Accordion groups a collection of contents in tabs.
+ * @group Components
+ */
+class Accordion extends BaseComponent {
+    $pcAccordion = inject(ACCORDION_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptm('root'));
+    }
+    /**
+     * Value of the active tab.
+     * @defaultValue undefined
+     * @group Props
+     */
+    value = model(undefined, ...(ngDevMode ? [{ debugName: "value" }] : []));
+    /**
+     * When enabled, multiple tabs can be activated at the same time.
+     * @defaultValue false
+     * @group Props
+     */
+    multiple = input(false, ...(ngDevMode ? [{ debugName: "multiple", transform: (v) => transformToBoolean(v) }] : [{ transform: (v) => transformToBoolean(v) }]));
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Icon of a collapsed tab.
+     * @group Props
+     */
+    expandIcon;
+    /**
+     * Icon of an expanded tab.
+     * @group Props
+     */
+    collapseIcon;
+    /**
+     * When enabled, the focused tab is activated.
+     * @defaultValue false
+     * @group Props
+     */
+    selectOnFocus = input(false, ...(ngDevMode ? [{ debugName: "selectOnFocus", transform: (v) => transformToBoolean(v) }] : [{ transform: (v) => transformToBoolean(v) }]));
+    /**
+     * Transition options of the animation.
+     * @group Props
+     */
+    transitionOptions = '400ms cubic-bezier(0.86, 0, 0.07, 1)';
+    /**
+     * Callback to invoke when an active tab is collapsed by clicking on the header.
+     * @param {AccordionTabCloseEvent} event - Custom tab close event.
+     * @group Emits
+     */
+    onClose = new EventEmitter();
+    /**
+     * Callback to invoke when a tab gets expanded.
+     * @param {AccordionTabOpenEvent} event - Custom tab open event.
+     * @group Emits
+     */
+    onOpen = new EventEmitter();
+    id = signal(uuid('pn_id_'), ...(ngDevMode ? [{ debugName: "id" }] : []));
+    _componentStyle = inject(AccordionStyle);
+    onKeydown(event) {
+        switch (event.code) {
+            case 'ArrowDown':
+                this.onTabArrowDownKey(event);
+                break;
+            case 'ArrowUp':
+                this.onTabArrowUpKey(event);
+                break;
+            case 'Home':
+                if (!event.shiftKey) {
+                    this.onTabHomeKey(event);
+                }
+                break;
+            case 'End':
+                if (!event.shiftKey) {
+                    this.onTabEndKey(event);
+                }
+                break;
+        }
+    }
+    onTabArrowDownKey(event) {
+        const nextHeaderAction = this.findNextHeaderAction(event.target.parentElement);
+        nextHeaderAction ? this.changeFocusedTab(nextHeaderAction) : this.onTabHomeKey(event);
+        event.preventDefault();
+    }
+    onTabArrowUpKey(event) {
+        const prevHeaderAction = this.findPrevHeaderAction(event.target.parentElement);
+        prevHeaderAction ? this.changeFocusedTab(prevHeaderAction) : this.onTabEndKey(event);
+        event.preventDefault();
+    }
+    onTabHomeKey(event) {
+        const firstHeaderAction = this.findFirstHeaderAction();
+        this.changeFocusedTab(firstHeaderAction);
+        event.preventDefault();
+    }
+    changeFocusedTab(element) {
+        if (element) {
+            focus(element);
+        }
+    }
+    findNextHeaderAction(tabElement, selfCheck = false) {
+        const nextTabElement = selfCheck ? tabElement : tabElement.nextElementSibling;
+        const headerElement = findSingle(nextTabElement, '[data-pc-section="accordionheader"]');
+        return headerElement ? (getAttribute(headerElement, 'data-p-disabled') ? this.findNextHeaderAction(headerElement.parentElement) : findSingle(headerElement.parentElement, '[data-pc-section="accordionheader"]')) : null;
+    }
+    findPrevHeaderAction(tabElement, selfCheck = false) {
+        const prevTabElement = selfCheck ? tabElement : tabElement.previousElementSibling;
+        const headerElement = findSingle(prevTabElement, '[data-pc-section="accordionheader"]');
+        return headerElement ? (getAttribute(headerElement, 'data-p-disabled') ? this.findPrevHeaderAction(headerElement.parentElement) : findSingle(headerElement.parentElement, '[data-pc-section="accordionheader"]')) : null;
+    }
+    findFirstHeaderAction() {
+        const firstEl = this.el.nativeElement.firstElementChild;
+        return this.findNextHeaderAction(firstEl, true);
+    }
+    findLastHeaderAction() {
+        const lastEl = this.el.nativeElement.lastElementChild;
+        return this.findPrevHeaderAction(lastEl, true);
+    }
+    onTabEndKey(event) {
+        const lastHeaderAction = this.findLastHeaderAction();
+        this.changeFocusedTab(lastHeaderAction);
+        event.preventDefault();
+    }
+    getBlockableElement() {
+        return this.el.nativeElement.children[0];
+    }
+    updateValue(value) {
+        const currentValue = this.value();
+        if (this.multiple()) {
+            const newValue = Array.isArray(currentValue) ? [...currentValue] : [];
+            const index = newValue.indexOf(value);
+            if (index !== -1) {
+                newValue.splice(index, 1);
+            }
+            else {
+                newValue.push(value);
+            }
+            this.value.set(newValue);
+        }
+        else {
+            if (currentValue === value) {
+                this.value.set(undefined);
+            }
+            else {
+                this.value.set(value);
+            }
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Accordion, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "20.3.15", type: Accordion, isStandalone: true, selector: "p-accordion", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, multiple: { classPropertyName: "multiple", publicName: "multiple", isSignal: true, isRequired: false, transformFunction: null }, styleClass: { classPropertyName: "styleClass", publicName: "styleClass", isSignal: false, isRequired: false, transformFunction: null }, expandIcon: { classPropertyName: "expandIcon", publicName: "expandIcon", isSignal: false, isRequired: false, transformFunction: null }, collapseIcon: { classPropertyName: "collapseIcon", publicName: "collapseIcon", isSignal: false, isRequired: false, transformFunction: null }, selectOnFocus: { classPropertyName: "selectOnFocus", publicName: "selectOnFocus", isSignal: true, isRequired: false, transformFunction: null }, transitionOptions: { classPropertyName: "transitionOptions", publicName: "transitionOptions", isSignal: false, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange", onClose: "onClose", onOpen: "onOpen" }, host: { listeners: { "keydown": "onKeydown($event)" }, properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [AccordionStyle, { provide: ACCORDION_INSTANCE, useExisting: Accordion }, { provide: PARENT_INSTANCE, useExisting: Accordion }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content /> `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Accordion, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-accordion',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    template: ` <ng-content /> `,
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind],
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    providers: [AccordionStyle, { provide: ACCORDION_INSTANCE, useExisting: Accordion }, { provide: PARENT_INSTANCE, useExisting: Accordion }]
+                }]
+        }], propDecorators: { value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }, { type: i0.Output, args: ["valueChange"] }], multiple: [{ type: i0.Input, args: [{ isSignal: true, alias: "multiple", required: false }] }], styleClass: [{
+                type: Input
+            }], expandIcon: [{
+                type: Input
+            }], collapseIcon: [{
+                type: Input
+            }], selectOnFocus: [{ type: i0.Input, args: [{ isSignal: true, alias: "selectOnFocus", required: false }] }], transitionOptions: [{
+                type: Input
+            }], onClose: [{
+                type: Output
+            }], onOpen: [{
+                type: Output
+            }], onKeydown: [{
+                type: HostListener,
+                args: ['keydown', ['$event']]
+            }] } });
+class AccordionModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: AccordionModule, imports: [Accordion, SharedModule, AccordionPanel, AccordionHeader, AccordionContent, BindModule], exports: [Accordion, SharedModule, AccordionPanel, AccordionHeader, AccordionContent, BindModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionModule, imports: [Accordion, SharedModule, AccordionPanel, AccordionHeader, AccordionContent, BindModule, SharedModule, BindModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: AccordionModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Accordion, SharedModule, AccordionPanel, AccordionHeader, AccordionContent, BindModule],
+                    exports: [Accordion, SharedModule, AccordionPanel, AccordionHeader, AccordionContent, BindModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Accordion, AccordionClasses, AccordionContent, AccordionHeader, AccordionModule, AccordionPanel, AccordionStyle };
+//# sourceMappingURL=primeng-accordion.mjs.map

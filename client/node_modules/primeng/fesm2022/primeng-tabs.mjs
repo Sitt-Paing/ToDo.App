@@ -1,0 +1,905 @@
+import * as i2 from '@angular/common';
+import { isPlatformBrowser, CommonModule, NgTemplateOutlet } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, forwardRef, signal, computed, effect, ViewChild, ContentChildren, ContentChild, ViewEncapsulation, ChangeDetectionStrategy, Component, model, input, booleanAttribute, ElementRef, HostListener, contentChild, numberAttribute, NgModule } from '@angular/core';
+import { getWidth, isRTL, findSingle, getOuterWidth, getOffset, equals, getAttribute, focus, uuid } from '@primeuix/utils';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style } from '@primeuix/styles/tabs';
+import { BaseStyle } from 'primeng/base';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import * as i3 from 'primeng/ripple';
+import { RippleModule, Ripple } from 'primeng/ripple';
+import { ChevronLeftIcon, ChevronRightIcon } from 'primeng/icons';
+
+const classes$4 = {
+    root: ({ instance }) => [
+        'p-tabs p-component',
+        {
+            'p-tabs-scrollable': instance.scrollable()
+        }
+    ]
+};
+class TabsStyle extends BaseStyle {
+    name = 'tabs';
+    style = style;
+    classes = classes$4;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabsStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabsStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabsStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tabs facilitates seamless switching between different views.
+ *
+ * [Live Demo](https://www.primeng.org/tabs/)
+ *
+ * @module tabsstyle
+ *
+ */
+var TabsClasses;
+(function (TabsClasses) {
+    /**
+     * Class name of the root element
+     */
+    TabsClasses["root"] = "p-tabs";
+    /**
+     * Class name of the wrapper element
+     */
+    TabsClasses["list"] = "p-tablist";
+    /**
+     * Class name of the content element
+     */
+    TabsClasses["content"] = "p-tablist-content";
+    /**
+     * Class name of the tab list element
+     */
+    TabsClasses["tablist"] = "p-tablist-tab-list";
+    /**
+     * Class name of the tab list element
+     */
+    TabsClasses["tab"] = "p-tab";
+    /**
+     * Class name of the inkbar element
+     */
+    TabsClasses["inkbar"] = "p-tablist-active-bar";
+    /**
+     * Class name of the navigation buttons
+     */
+    TabsClasses["button"] = "p-tablist-nav-button";
+    /**
+     * Class name of the tab panels wrapper
+     */
+    TabsClasses["tabpanels"] = "p-tabpanels";
+    /**
+     * Class name of the tab panel element
+     */
+    TabsClasses["tabpanel"] = "p-tabs-panel";
+})(TabsClasses || (TabsClasses = {}));
+
+const classes$3 = {
+    root: ({ instance }) => [
+        'p-tab',
+        {
+            'p-tab-active': instance.active(),
+            'p-disabled': instance.disabled()
+        }
+    ]
+};
+class TabStyle extends BaseStyle {
+    name = 'tab';
+    classes = classes$3;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tabs facilitates seamless switching between different views.
+ *
+ * [Live Demo](https://www.primeng.org/tabs/)
+ *
+ * @module tabsstyle
+ *
+ */
+var TabClasses;
+(function (TabClasses) {
+    /**
+     * Class name of the tab list element
+     */
+    TabClasses["tab"] = "p-tab";
+})(TabClasses || (TabClasses = {}));
+
+const classes$2 = {
+    root: 'p-tablist',
+    content: 'p-tablist-content p-tablist-viewport',
+    tabList: 'p-tablist-tab-list',
+    activeBar: 'p-tablist-active-bar',
+    prevButton: 'p-tablist-prev-button p-tablist-nav-button',
+    nextButton: 'p-tablist-next-button p-tablist-nav-button'
+};
+class TabListStyle extends BaseStyle {
+    name = 'tablist';
+    classes = classes$2;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabListStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabListStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabListStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tabs facilitates seamless switching between different views.
+ *
+ * [Live Demo](https://www.primeng.org/tabs/)
+ *
+ * @module tabliststyle
+ *
+ */
+var TabListClasses;
+(function (TabListClasses) {
+    /**
+     * Class name of the root element
+     */
+    TabListClasses["root"] = "p-tablist";
+    /**
+     * Class name of the content element
+     */
+    TabListClasses["content"] = "p-tablist-content";
+    /**
+     * Class name of the tabs element
+     */
+    TabListClasses["tabList"] = "p-tablist-tab-list";
+    /**
+     * Class name of the activebar element
+     */
+    TabListClasses["activeBar"] = "p-tablist-active-bar";
+    /**
+     * Class name of the previous button element
+     */
+    TabListClasses["prevButton"] = "p-tablist-prev-button";
+    /**
+     * Class name of the next button element
+     */
+    TabListClasses["nextButton"] = "p-tablist-next-button";
+})(TabListClasses || (TabListClasses = {}));
+
+const TABLIST_INSTANCE = new InjectionToken('TABLIST_INSTANCE');
+/**
+ * TabList is a helper component for Tabs component.
+ * @group Components
+ */
+class TabList extends BaseComponent {
+    $pcTabList = inject(TABLIST_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * A template reference variable that represents the previous icon in a UI component.
+     * @type {TemplateRef<any> | undefined}
+     * @group Templates
+     */
+    prevIconTemplate;
+    /**
+     * A template reference variable that represents the next icon in a UI component.
+     * @type {TemplateRef<any> | undefined}
+     * @group Templates
+     */
+    nextIconTemplate;
+    templates;
+    content;
+    prevButton;
+    nextButton;
+    inkbar;
+    tabs;
+    pcTabs = inject(forwardRef(() => Tabs));
+    isPrevButtonEnabled = signal(false, ...(ngDevMode ? [{ debugName: "isPrevButtonEnabled" }] : []));
+    isNextButtonEnabled = signal(false, ...(ngDevMode ? [{ debugName: "isNextButtonEnabled" }] : []));
+    resizeObserver;
+    showNavigators = computed(() => this.pcTabs.showNavigators(), ...(ngDevMode ? [{ debugName: "showNavigators" }] : []));
+    tabindex = computed(() => this.pcTabs.tabindex(), ...(ngDevMode ? [{ debugName: "tabindex" }] : []));
+    scrollable = computed(() => this.pcTabs.scrollable(), ...(ngDevMode ? [{ debugName: "scrollable" }] : []));
+    _componentStyle = inject(TabListStyle);
+    constructor() {
+        super();
+        effect(() => {
+            this.pcTabs.value();
+            if (isPlatformBrowser(this.platformId)) {
+                setTimeout(() => {
+                    this.updateInkBar();
+                });
+            }
+        });
+    }
+    get prevButtonAriaLabel() {
+        return this.config?.translation?.aria?.previous;
+    }
+    get nextButtonAriaLabel() {
+        return this.config?.translation?.aria?.next;
+    }
+    onAfterViewInit() {
+        if (this.showNavigators() && isPlatformBrowser(this.platformId)) {
+            this.updateButtonState();
+            this.bindResizeObserver();
+        }
+    }
+    _prevIconTemplate;
+    _nextIconTemplate;
+    onAfterContentInit() {
+        this.templates?.forEach((t) => {
+            switch (t.getType()) {
+                case 'previcon':
+                    this._prevIconTemplate = t.template;
+                    break;
+                case 'nexticon':
+                    this._nextIconTemplate = t.template;
+                    break;
+            }
+        });
+    }
+    onDestroy() {
+        this.unbindResizeObserver();
+    }
+    onScroll(event) {
+        this.showNavigators() && this.updateButtonState();
+        event.preventDefault();
+    }
+    onPrevButtonClick() {
+        const _content = this.content.nativeElement;
+        const width = getWidth(_content);
+        const pos = Math.abs(_content.scrollLeft) - width;
+        const scrollLeft = pos <= 0 ? 0 : pos;
+        _content.scrollLeft = isRTL(_content) ? -1 * scrollLeft : scrollLeft;
+    }
+    onNextButtonClick() {
+        const _content = this.content.nativeElement;
+        const width = getWidth(_content) - this.getVisibleButtonWidths();
+        const pos = _content.scrollLeft + width;
+        const lastPos = _content.scrollWidth - width;
+        const scrollLeft = pos >= lastPos ? lastPos : pos;
+        _content.scrollLeft = isRTL(_content) ? -1 * scrollLeft : scrollLeft;
+    }
+    updateButtonState() {
+        const _content = this.content?.nativeElement;
+        const _list = this.el?.nativeElement;
+        const { scrollWidth, offsetWidth } = _content;
+        const scrollLeft = Math.abs(_content.scrollLeft);
+        const width = getWidth(_content);
+        this.isPrevButtonEnabled.set(scrollLeft !== 0);
+        this.isNextButtonEnabled.set(_list.offsetWidth >= offsetWidth && Math.abs(scrollLeft - scrollWidth + width) > 1);
+    }
+    updateInkBar() {
+        const _content = this.content?.nativeElement;
+        const _inkbar = this.inkbar?.nativeElement;
+        const _tabs = this.tabs?.nativeElement;
+        const activeTab = findSingle(_content, '[data-pc-name="tab"][data-p-active="true"]');
+        if (_inkbar) {
+            _inkbar.style.width = getOuterWidth(activeTab) + 'px';
+            _inkbar.style.left = getOffset(activeTab).left - getOffset(_tabs).left + 'px';
+        }
+    }
+    getVisibleButtonWidths() {
+        const _prevBtn = this.prevButton?.nativeElement;
+        const _nextBtn = this.nextButton?.nativeElement;
+        return [_prevBtn, _nextBtn].reduce((acc, el) => (el ? acc + getWidth(el) : acc), 0);
+    }
+    bindResizeObserver() {
+        this.resizeObserver = new ResizeObserver(() => this.updateButtonState());
+        this.resizeObserver.observe(this.el.nativeElement);
+    }
+    unbindResizeObserver() {
+        if (this.resizeObserver) {
+            this.resizeObserver.unobserve(this.el.nativeElement);
+            this.resizeObserver = null;
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabList, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: TabList, isStandalone: true, selector: "p-tablist", host: { properties: { "class": "cx(\"root\")" } }, providers: [TabListStyle, { provide: TABLIST_INSTANCE, useExisting: TabList }, { provide: PARENT_INSTANCE, useExisting: TabList }], queries: [{ propertyName: "prevIconTemplate", first: true, predicate: ["previcon"] }, { propertyName: "nextIconTemplate", first: true, predicate: ["nexticon"] }, { propertyName: "templates", predicate: PrimeTemplate }], viewQueries: [{ propertyName: "content", first: true, predicate: ["content"], descendants: true }, { propertyName: "prevButton", first: true, predicate: ["prevButton"], descendants: true }, { propertyName: "nextButton", first: true, predicate: ["nextButton"], descendants: true }, { propertyName: "inkbar", first: true, predicate: ["inkbar"], descendants: true }, { propertyName: "tabs", first: true, predicate: ["tabs"], descendants: true }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        @if (showNavigators() && isPrevButtonEnabled()) {
+            <button
+                type="button"
+                #prevButton
+                pRipple
+                [pBind]="ptm('prevButton')"
+                [class]="cx('prevButton')"
+                [attr.aria-label]="prevButtonAriaLabel"
+                [attr.tabindex]="tabindex()"
+                [attr.data-pc-group-section]="'navigator'"
+                (click)="onPrevButtonClick()"
+            >
+                @if (prevIconTemplate || _prevIconTemplate) {
+                    <ng-container *ngTemplateOutlet="prevIconTemplate || _prevIconTemplate" />
+                } @else {
+                    <svg data-p-icon="chevron-left" />
+                }
+            </button>
+        }
+        <div #content [pBind]="ptm('content')" [class]="cx('content')" (scroll)="onScroll($event)">
+            <div #tabs [pBind]="ptm('tabList')" [class]="cx('tabList')" role="tablist">
+                <ng-content />
+                <span #inkbar [pBind]="ptm('activeBar')" role="presentation" [class]="cx('activeBar')"></span>
+            </div>
+        </div>
+        @if (showNavigators() && isNextButtonEnabled()) {
+            <button
+                type="button"
+                #nextButton
+                pRipple
+                [pBind]="ptm('nextButton')"
+                [class]="cx('nextButton')"
+                [attr.aria-label]="nextButtonAriaLabel"
+                [attr.tabindex]="tabindex()"
+                [attr.data-pc-group-section]="'navigator'"
+                (click)="onNextButtonClick()"
+            >
+                @if (nextIconTemplate || _nextIconTemplate) {
+                    <ng-container *ngTemplateOutlet="nextIconTemplate || _nextIconTemplate" />
+                } @else {
+                    <svg data-p-icon="chevron-right" />
+                }
+            </button>
+        }
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "component", type: ChevronLeftIcon, selector: "[data-p-icon=\"chevron-left\"]" }, { kind: "component", type: ChevronRightIcon, selector: "[data-p-icon=\"chevron-right\"]" }, { kind: "ngmodule", type: RippleModule }, { kind: "directive", type: i3.Ripple, selector: "[pRipple]" }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }, { kind: "directive", type: i1.Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabList, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tablist',
+                    standalone: true,
+                    imports: [CommonModule, ChevronLeftIcon, ChevronRightIcon, RippleModule, SharedModule, BindModule],
+                    template: `
+        @if (showNavigators() && isPrevButtonEnabled()) {
+            <button
+                type="button"
+                #prevButton
+                pRipple
+                [pBind]="ptm('prevButton')"
+                [class]="cx('prevButton')"
+                [attr.aria-label]="prevButtonAriaLabel"
+                [attr.tabindex]="tabindex()"
+                [attr.data-pc-group-section]="'navigator'"
+                (click)="onPrevButtonClick()"
+            >
+                @if (prevIconTemplate || _prevIconTemplate) {
+                    <ng-container *ngTemplateOutlet="prevIconTemplate || _prevIconTemplate" />
+                } @else {
+                    <svg data-p-icon="chevron-left" />
+                }
+            </button>
+        }
+        <div #content [pBind]="ptm('content')" [class]="cx('content')" (scroll)="onScroll($event)">
+            <div #tabs [pBind]="ptm('tabList')" [class]="cx('tabList')" role="tablist">
+                <ng-content />
+                <span #inkbar [pBind]="ptm('activeBar')" role="presentation" [class]="cx('activeBar')"></span>
+            </div>
+        </div>
+        @if (showNavigators() && isNextButtonEnabled()) {
+            <button
+                type="button"
+                #nextButton
+                pRipple
+                [pBind]="ptm('nextButton')"
+                [class]="cx('nextButton')"
+                [attr.aria-label]="nextButtonAriaLabel"
+                [attr.tabindex]="tabindex()"
+                [attr.data-pc-group-section]="'navigator'"
+                (click)="onNextButtonClick()"
+            >
+                @if (nextIconTemplate || _nextIconTemplate) {
+                    <ng-container *ngTemplateOutlet="nextIconTemplate || _nextIconTemplate" />
+                } @else {
+                    <svg data-p-icon="chevron-right" />
+                }
+            </button>
+        }
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': 'cx("root")'
+                    },
+                    providers: [TabListStyle, { provide: TABLIST_INSTANCE, useExisting: TabList }, { provide: PARENT_INSTANCE, useExisting: TabList }],
+                    hostDirectives: [Bind]
+                }]
+        }], ctorParameters: () => [], propDecorators: { prevIconTemplate: [{
+                type: ContentChild,
+                args: ['previcon', { descendants: false }]
+            }], nextIconTemplate: [{
+                type: ContentChild,
+                args: ['nexticon', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }], content: [{
+                type: ViewChild,
+                args: ['content']
+            }], prevButton: [{
+                type: ViewChild,
+                args: ['prevButton']
+            }], nextButton: [{
+                type: ViewChild,
+                args: ['nextButton']
+            }], inkbar: [{
+                type: ViewChild,
+                args: ['inkbar']
+            }], tabs: [{
+                type: ViewChild,
+                args: ['tabs']
+            }] } });
+
+const TAB_INSTANCE = new InjectionToken('TAB_INSTANCE');
+/**
+ * Defines valid properties in Tab component.
+ * @group Components
+ */
+class Tab extends BaseComponent {
+    $pcTab = inject(TAB_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Value of tab.
+     * @defaultValue undefined
+     * @group Props
+     */
+    value = model(...(ngDevMode ? [undefined, { debugName: "value" }] : []));
+    /**
+     * Whether the tab is disabled.
+     * @defaultValue false
+     * @group Props
+     */
+    disabled = input(false, ...(ngDevMode ? [{ debugName: "disabled", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    pcTabs = inject(forwardRef(() => Tabs));
+    pcTabList = inject(forwardRef(() => TabList));
+    el = inject(ElementRef);
+    _componentStyle = inject(TabStyle);
+    ripple = computed(() => this.config.ripple(), ...(ngDevMode ? [{ debugName: "ripple" }] : []));
+    id = computed(() => `${this.pcTabs.id()}_tab_${this.value()}`, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    ariaControls = computed(() => `${this.pcTabs.id()}_tabpanel_${this.value()}`, ...(ngDevMode ? [{ debugName: "ariaControls" }] : []));
+    active = computed(() => equals(this.pcTabs.value(), this.value()), ...(ngDevMode ? [{ debugName: "active" }] : []));
+    tabindex = computed(() => (this.disabled() ? -1 : this.active() ? this.pcTabs.tabindex() : -1), ...(ngDevMode ? [{ debugName: "tabindex" }] : []));
+    mutationObserver;
+    onFocus(event) {
+        if (!this.disabled()) {
+            this.pcTabs.selectOnFocus() && this.changeActiveValue();
+        }
+    }
+    onClick(event) {
+        if (!this.disabled()) {
+            this.changeActiveValue();
+        }
+    }
+    onKeyDown(event) {
+        switch (event.code) {
+            case 'ArrowRight':
+                this.onArrowRightKey(event);
+                break;
+            case 'ArrowLeft':
+                this.onArrowLeftKey(event);
+                break;
+            case 'Home':
+                this.onHomeKey(event);
+                break;
+            case 'End':
+                this.onEndKey(event);
+                break;
+            case 'PageDown':
+                this.onPageDownKey(event);
+                break;
+            case 'PageUp':
+                this.onPageUpKey(event);
+                break;
+            case 'Enter':
+            case 'NumpadEnter':
+            case 'Space':
+                this.onEnterKey(event);
+                break;
+            default:
+                break;
+        }
+        event.stopPropagation();
+    }
+    onAfterViewInit() {
+        this.bindMutationObserver();
+    }
+    onArrowRightKey(event) {
+        const nextTab = this.findNextTab(event.currentTarget);
+        nextTab ? this.changeFocusedTab(event, nextTab) : this.onHomeKey(event);
+        event.preventDefault();
+    }
+    onArrowLeftKey(event) {
+        const prevTab = this.findPrevTab(event.currentTarget);
+        prevTab ? this.changeFocusedTab(event, prevTab) : this.onEndKey(event);
+        event.preventDefault();
+    }
+    onHomeKey(event) {
+        const firstTab = this.findFirstTab();
+        this.changeFocusedTab(event, firstTab);
+        event.preventDefault();
+    }
+    onEndKey(event) {
+        const lastTab = this.findLastTab();
+        this.changeFocusedTab(event, lastTab);
+        event.preventDefault();
+    }
+    onPageDownKey(event) {
+        this.scrollInView(this.findLastTab());
+        event.preventDefault();
+    }
+    onPageUpKey(event) {
+        this.scrollInView(this.findFirstTab());
+        event.preventDefault();
+    }
+    onEnterKey(event) {
+        if (!this.disabled()) {
+            this.changeActiveValue();
+        }
+        event.preventDefault();
+    }
+    findNextTab(tabElement, selfCheck = false) {
+        const element = selfCheck ? tabElement : tabElement.nextElementSibling;
+        return element ? (getAttribute(element, 'data-p-disabled') || getAttribute(element, 'data-pc-section') === 'activebar' ? this.findNextTab(element) : element) : null;
+    }
+    findPrevTab(tabElement, selfCheck = false) {
+        const element = selfCheck ? tabElement : tabElement.previousElementSibling;
+        return element ? (getAttribute(element, 'data-p-disabled') || getAttribute(element, 'data-pc-section') === 'activebar' ? this.findPrevTab(element) : element) : null;
+    }
+    findFirstTab() {
+        return this.findNextTab(this.pcTabList?.tabs?.nativeElement?.firstElementChild, true);
+    }
+    findLastTab() {
+        return this.findPrevTab(this.pcTabList?.tabs?.nativeElement?.lastElementChild, true);
+    }
+    changeActiveValue() {
+        this.pcTabs.updateValue(this.value());
+    }
+    changeFocusedTab(event, element) {
+        focus(element);
+        this.scrollInView(element);
+    }
+    scrollInView(element) {
+        element?.scrollIntoView?.({ block: 'nearest' });
+    }
+    bindMutationObserver() {
+        if (isPlatformBrowser(this.platformId)) {
+            this.mutationObserver = new MutationObserver((mutations) => {
+                mutations.forEach(() => {
+                    if (this.active()) {
+                        this.pcTabList?.updateInkBar();
+                    }
+                });
+            });
+            this.mutationObserver.observe(this.el.nativeElement, { childList: true, characterData: true, subtree: true });
+        }
+    }
+    unbindMutationObserver() {
+        this.mutationObserver?.disconnect();
+    }
+    onDestroy() {
+        if (this.mutationObserver) {
+            this.unbindMutationObserver();
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tab, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "20.3.15", type: Tab, isStandalone: true, selector: "p-tab", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, disabled: { classPropertyName: "disabled", publicName: "disabled", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { listeners: { "focus": "onFocus($event)", "click": "onClick($event)", "keydown": "onKeyDown($event)" }, properties: { "class": "cx(\"root\")", "attr.id": "id()", "attr.aria-controls": "ariaControls()", "attr.role": "\"tab\"", "attr.aria-selected": "active()", "attr.aria-disabled": "disabled()", "attr.data-p-disabled": "disabled()", "attr.data-p-active": "active()", "attr.tabindex": "tabindex()" } }, providers: [TabStyle, { provide: TAB_INSTANCE, useExisting: Tab }, { provide: PARENT_INSTANCE, useExisting: Tab }], usesInheritance: true, hostDirectives: [{ directive: i3.Ripple }, { directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content>`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: SharedModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tab, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tab',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, BindModule],
+                    template: ` <ng-content></ng-content>`,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': 'cx("root")',
+                        '[attr.id]': 'id()',
+                        '[attr.aria-controls]': 'ariaControls()',
+                        '[attr.role]': '"tab"',
+                        '[attr.aria-selected]': 'active()',
+                        '[attr.aria-disabled]': 'disabled()',
+                        '[attr.data-p-disabled]': 'disabled()',
+                        '[attr.data-p-active]': 'active()',
+                        '[attr.tabindex]': 'tabindex()'
+                    },
+                    hostDirectives: [Ripple, Bind],
+                    providers: [TabStyle, { provide: TAB_INSTANCE, useExisting: Tab }, { provide: PARENT_INSTANCE, useExisting: Tab }]
+                }]
+        }], propDecorators: { value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }, { type: i0.Output, args: ["valueChange"] }], disabled: [{ type: i0.Input, args: [{ isSignal: true, alias: "disabled", required: false }] }], onFocus: [{
+                type: HostListener,
+                args: ['focus', ['$event']]
+            }], onClick: [{
+                type: HostListener,
+                args: ['click', ['$event']]
+            }], onKeyDown: [{
+                type: HostListener,
+                args: ['keydown', ['$event']]
+            }] } });
+
+const classes$1 = {
+    root: ({ instance }) => [
+        'p-tabpanel',
+        {
+            'p-tabpanel-active': instance.active()
+        }
+    ]
+};
+class TabPanelStyle extends BaseStyle {
+    name = 'tabpanel';
+    classes = classes$1;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanelStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanelStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanelStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tab is a helper component for Tabs component.
+ *
+ * [Live Demo](https://www.primeng.org/tabs/)
+ *
+ * @module tabstyle
+ *
+ */
+var TabPanelClasses;
+(function (TabPanelClasses) {
+    /**
+     * Class name of the root element
+     */
+    TabPanelClasses["root"] = "p-tabpanel";
+})(TabPanelClasses || (TabPanelClasses = {}));
+
+const TABPANEL_INSTANCE = new InjectionToken('TABPANEL_INSTANCE');
+/**
+ * TabPanel is a helper component for Tabs component.
+ * @group Components
+ */
+class TabPanel extends BaseComponent {
+    $pcTabPanel = inject(TABPANEL_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    pcTabs = inject(forwardRef(() => Tabs));
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * When enabled, tab is not rendered until activation.
+     * @type boolean
+     * @defaultValue false
+     * @group Props
+     */
+    lazy = input(false, ...(ngDevMode ? [{ debugName: "lazy", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * Value of the active tab.
+     * @defaultValue undefined
+     * @group Props
+     */
+    value = model(undefined, ...(ngDevMode ? [{ debugName: "value" }] : []));
+    /**
+     * Template for initializing complex content when lazy is enabled.
+     * @group Templates
+     */
+    content = contentChild('content', ...(ngDevMode ? [{ debugName: "content" }] : []));
+    id = computed(() => `${this.pcTabs.id()}_tabpanel_${this.value()}`, ...(ngDevMode ? [{ debugName: "id" }] : []));
+    ariaLabelledby = computed(() => `${this.pcTabs.id()}_tab_${this.value()}`, ...(ngDevMode ? [{ debugName: "ariaLabelledby" }] : []));
+    active = computed(() => equals(this.pcTabs.value(), this.value()), ...(ngDevMode ? [{ debugName: "active" }] : []));
+    isLazyEnabled = computed(() => this.pcTabs.lazy() || this.lazy(), ...(ngDevMode ? [{ debugName: "isLazyEnabled" }] : []));
+    hasBeenRendered = false;
+    shouldRender = computed(() => {
+        if (!this.isLazyEnabled() || this.hasBeenRendered) {
+            return true;
+        }
+        if (this.active()) {
+            this.hasBeenRendered = true;
+            return true;
+        }
+        return false;
+    }, ...(ngDevMode ? [{ debugName: "shouldRender" }] : []));
+    _componentStyle = inject(TabPanelStyle);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanel, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.0.0", version: "20.3.15", type: TabPanel, isStandalone: true, selector: "p-tabpanel", inputs: { lazy: { classPropertyName: "lazy", publicName: "lazy", isSignal: true, isRequired: false, transformFunction: null }, value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { properties: { "class": "cx(\"root\")", "attr.id": "id()", "attr.role": "\"tabpanel\"", "attr.aria-labelledby": "ariaLabelledby()", "attr.data-p-active": "active()", "hidden": "!active()" } }, providers: [TabPanelStyle, { provide: TABPANEL_INSTANCE, useExisting: TabPanel }, { provide: PARENT_INSTANCE, useExisting: TabPanel }], queries: [{ propertyName: "content", first: true, predicate: ["content"], descendants: true, isSignal: true }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <ng-template #defaultContent>
+            <ng-content />
+        </ng-template>
+
+        @if (shouldRender()) {
+            <ng-container *ngTemplateOutlet="content() ? content() : defaultContent" />
+        }
+    `, isInline: true, dependencies: [{ kind: "directive", type: NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanel, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tabpanel',
+                    standalone: true,
+                    imports: [NgTemplateOutlet, BindModule],
+                    template: `
+        <ng-template #defaultContent>
+            <ng-content />
+        </ng-template>
+
+        @if (shouldRender()) {
+            <ng-container *ngTemplateOutlet="content() ? content() : defaultContent" />
+        }
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TabPanelStyle, { provide: TABPANEL_INSTANCE, useExisting: TabPanel }, { provide: PARENT_INSTANCE, useExisting: TabPanel }],
+                    host: {
+                        '[class]': 'cx("root")',
+                        '[attr.id]': 'id()',
+                        '[attr.role]': '"tabpanel"',
+                        '[attr.aria-labelledby]': 'ariaLabelledby()',
+                        '[attr.data-p-active]': 'active()',
+                        '[hidden]': '!active()'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { lazy: [{ type: i0.Input, args: [{ isSignal: true, alias: "lazy", required: false }] }], value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }, { type: i0.Output, args: ["valueChange"] }], content: [{ type: i0.ContentChild, args: ['content', { isSignal: true }] }] } });
+
+const classes = {
+    root: 'p-tabpanels'
+};
+class TabPanelsStyle extends BaseStyle {
+    name = 'tabpanels';
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanelsStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanelsStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanelsStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Tab is a helper component for Tabs component.
+ *
+ * [Live Demo](https://www.primeng.org/tabs/)
+ *
+ * @module tabpanelstyle
+ *
+ */
+var TabPanelsClasses;
+(function (TabPanelsClasses) {
+    /**
+     * Class name of the root element
+     */
+    TabPanelsClasses["root"] = "p-tabpanels";
+})(TabPanelsClasses || (TabPanelsClasses = {}));
+
+const TABPANELS_INSTANCE = new InjectionToken('TABPANELS_INSTANCE');
+/**
+ * TabPanels is a helper component for Tabs component.
+ * @group Components
+ */
+class TabPanels extends BaseComponent {
+    $pcTabPanels = inject(TABPANELS_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    _componentStyle = inject(TabPanelsStyle);
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanels, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: TabPanels, isStandalone: true, selector: "p-tabpanels", host: { properties: { "class": "cx(\"root\")", "attr.role": "\"presentation\"" } }, providers: [TabPanelsStyle, { provide: TABPANELS_INSTANCE, useExisting: TabPanels }, { provide: PARENT_INSTANCE, useExisting: TabPanels }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content>`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabPanels, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tabpanels',
+                    standalone: true,
+                    imports: [CommonModule, BindModule],
+                    template: ` <ng-content></ng-content>`,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': 'cx("root")',
+                        '[attr.role]': '"presentation"'
+                    },
+                    providers: [TabPanelsStyle, { provide: TABPANELS_INSTANCE, useExisting: TabPanels }, { provide: PARENT_INSTANCE, useExisting: TabPanels }],
+                    hostDirectives: [Bind]
+                }]
+        }] });
+
+const TABS_INSTANCE = new InjectionToken('TABS_INSTANCE');
+/**
+ * Tabs facilitates seamless switching between different views.
+ * @group Components
+ */
+class Tabs extends BaseComponent {
+    $pcTabs = inject(TABS_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * Value of the active tab.
+     * @defaultValue undefined
+     * @group Props
+     */
+    value = model(undefined, ...(ngDevMode ? [{ debugName: "value" }] : []));
+    /**
+     * When specified, enables horizontal and/or vertical scrolling.
+     * @type boolean
+     * @defaultValue false
+     * @group Props
+     */
+    scrollable = input(false, ...(ngDevMode ? [{ debugName: "scrollable", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * When enabled, tabs are not rendered until activation.
+     * @type boolean
+     * @defaultValue false
+     * @group Props
+     */
+    lazy = input(false, ...(ngDevMode ? [{ debugName: "lazy", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * When enabled, the focused tab is activated.
+     * @type boolean
+     * @defaultValue false
+     * @group Props
+     */
+    selectOnFocus = input(false, ...(ngDevMode ? [{ debugName: "selectOnFocus", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * Whether to display navigation buttons in container when scrollable is enabled.
+     * @type boolean
+     * @defaultValue true
+     * @group Props
+     */
+    showNavigators = input(true, ...(ngDevMode ? [{ debugName: "showNavigators", transform: booleanAttribute }] : [{ transform: booleanAttribute }]));
+    /**
+     * Tabindex of the tab buttons.
+     * @type number
+     * @defaultValue 0
+     * @group Props
+     */
+    tabindex = input(0, ...(ngDevMode ? [{ debugName: "tabindex", transform: numberAttribute }] : [{ transform: numberAttribute }]));
+    id = signal(uuid('pn_id_'), ...(ngDevMode ? [{ debugName: "id" }] : []));
+    _componentStyle = inject(TabsStyle);
+    updateValue(newValue) {
+        this.value.update(() => newValue);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tabs, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "17.1.0", version: "20.3.15", type: Tabs, isStandalone: true, selector: "p-tabs", inputs: { value: { classPropertyName: "value", publicName: "value", isSignal: true, isRequired: false, transformFunction: null }, scrollable: { classPropertyName: "scrollable", publicName: "scrollable", isSignal: true, isRequired: false, transformFunction: null }, lazy: { classPropertyName: "lazy", publicName: "lazy", isSignal: true, isRequired: false, transformFunction: null }, selectOnFocus: { classPropertyName: "selectOnFocus", publicName: "selectOnFocus", isSignal: true, isRequired: false, transformFunction: null }, showNavigators: { classPropertyName: "showNavigators", publicName: "showNavigators", isSignal: true, isRequired: false, transformFunction: null }, tabindex: { classPropertyName: "tabindex", publicName: "tabindex", isSignal: true, isRequired: false, transformFunction: null } }, outputs: { value: "valueChange" }, host: { properties: { "class": "cx(\"root\")", "attr.id": "id()" } }, providers: [TabsStyle, { provide: TABS_INSTANCE, useExisting: Tabs }, { provide: PARENT_INSTANCE, useExisting: Tabs }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content>`, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Tabs, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-tabs',
+                    standalone: true,
+                    imports: [CommonModule, BindModule],
+                    template: ` <ng-content></ng-content>`,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TabsStyle, { provide: TABS_INSTANCE, useExisting: Tabs }, { provide: PARENT_INSTANCE, useExisting: Tabs }],
+                    host: {
+                        '[class]': 'cx("root")',
+                        '[attr.id]': 'id()'
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { value: [{ type: i0.Input, args: [{ isSignal: true, alias: "value", required: false }] }, { type: i0.Output, args: ["valueChange"] }], scrollable: [{ type: i0.Input, args: [{ isSignal: true, alias: "scrollable", required: false }] }], lazy: [{ type: i0.Input, args: [{ isSignal: true, alias: "lazy", required: false }] }], selectOnFocus: [{ type: i0.Input, args: [{ isSignal: true, alias: "selectOnFocus", required: false }] }], showNavigators: [{ type: i0.Input, args: [{ isSignal: true, alias: "showNavigators", required: false }] }], tabindex: [{ type: i0.Input, args: [{ isSignal: true, alias: "tabindex", required: false }] }] } });
+class TabsModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabsModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: TabsModule, imports: [Tabs, TabPanels, TabPanel, TabList, Tab, BindModule], exports: [Tabs, TabPanels, TabPanel, TabList, Tab, BindModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabsModule, imports: [Tabs, TabPanels, TabPanel, TabList, Tab, BindModule, BindModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TabsModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [Tabs, TabPanels, TabPanel, TabList, Tab, BindModule],
+                    exports: [Tabs, TabPanels, TabPanel, TabList, Tab, BindModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Tab, TabList, TabPanel, TabPanels, Tabs, TabsClasses, TabsModule, TabsStyle };
+//# sourceMappingURL=primeng-tabs.mjs.map

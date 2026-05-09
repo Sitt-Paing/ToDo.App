@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/material/inplace/index.ts"],"sourcesContent":["export * from '@primeuix/themes/material/inplace';\nexport { default } from '@primeuix/themes/material/inplace';\n"],"mappings":"AAAA,WAAc,oCACd,OAAS,WAAAA,MAAe","names":["default"]}

@@ -1,0 +1,172 @@
+import * as _angular_core from '@angular/core';
+import { InjectionToken, ElementRef, Injector, ChangeDetectorRef, Renderer2, SimpleChanges } from '@angular/core';
+import { cn } from '@primeuix/utils';
+import { Lifecycle, PassThroughOptions } from 'primeng/api';
+import { BaseStyle } from 'primeng/base';
+import { PrimeNG } from 'primeng/config';
+
+declare class BaseComponentStyle extends BaseStyle {
+    name: string;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<BaseComponentStyle, never>;
+    static ɵprov: _angular_core.ɵɵInjectableDeclaration<BaseComponentStyle>;
+}
+
+declare const PARENT_INSTANCE: InjectionToken<BaseComponent<any>>;
+declare class BaseComponent<PT = any> implements Lifecycle {
+    document: Document;
+    platformId: any;
+    el: ElementRef;
+    readonly injector: Injector;
+    readonly cd: ChangeDetectorRef;
+    renderer: Renderer2;
+    config: PrimeNG;
+    $parentInstance: BaseComponent | undefined;
+    baseComponentStyle: BaseComponentStyle;
+    baseStyle: BaseStyle;
+    scopedStyleEl: any;
+    parent: {
+        instance: any;
+    };
+    protected readonly cn: typeof cn;
+    private _themeScopedListener;
+    /******************** Inputs ********************/
+    /**
+     * Defines scoped design tokens of the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    dt: _angular_core.InputSignal<Object | undefined>;
+    /**
+     * Indicates whether the component should be rendered without styles.
+     *
+     * @experimental
+     * This property is not yet implemented. It will be available in a future release.
+     */
+    unstyled: _angular_core.InputSignal<boolean | undefined>;
+    /**
+     * Used to pass attributes to DOM elements inside the component.
+     * @defaultValue undefined
+     * @group Props
+     */
+    pt: _angular_core.InputSignal<PT | undefined>;
+    /**
+     * Used to configure passthrough(pt) options of the component.
+     * @group Props
+     * @defaultValue undefined
+     */
+    ptOptions: _angular_core.InputSignal<PassThroughOptions | undefined>;
+    /******************** Computed ********************/
+    $attrSelector: string;
+    get $name(): any;
+    private get $hostName();
+    $unstyled: _angular_core.Signal<boolean | undefined>;
+    $pt: _angular_core.Signal<any>;
+    directivePT: _angular_core.WritableSignal<any>;
+    get $globalPT(): any;
+    get $defaultPT(): any;
+    get $style(): any;
+    get $styleOptions(): {
+        nonce: string | undefined;
+    };
+    get $params(): {
+        instance: any;
+        parent: {
+            instance: any;
+        };
+    };
+    /******************** Lifecycle Hooks ********************/
+    onInit(): void;
+    onChanges(changes: SimpleChanges): void;
+    onDoCheck(): void;
+    onAfterContentInit(): void;
+    onAfterContentChecked(): void;
+    onAfterViewInit(): void;
+    onAfterViewChecked(): void;
+    onDestroy(): void;
+    /******************** Angular Lifecycle Hooks ********************/
+    constructor();
+    /**
+     * ⚠ Do not override ngOnInit!
+     *
+     * Use 'onInit()' in subclasses instead.
+     */
+    ngOnInit(): void;
+    /**
+     * ⚠ Do not override ngOnChanges!
+     *
+     * Use 'onChanges(changes: SimpleChanges)' in subclasses instead.
+     */
+    ngOnChanges(changes: SimpleChanges): void;
+    /**
+     * ⚠ Do not override ngDoCheck!
+     *
+     * Use 'onDoCheck()' in subclasses instead.
+     */
+    ngDoCheck(): void;
+    /**
+     * ⚠ Do not override ngAfterContentInit!
+     *
+     * Use 'onAfterContentInit()' in subclasses instead.
+     */
+    ngAfterContentInit(): void;
+    /**
+     * ⚠ Do not override ngAfterContentChecked!
+     *
+     * Use 'onAfterContentChecked()' in subclasses instead.
+     */
+    ngAfterContentChecked(): void;
+    /**
+     * ⚠ Do not override ngAfterViewInit!
+     *
+     * Use 'onAfterViewInit()' in subclasses instead.
+     */
+    ngAfterViewInit(): void;
+    /**
+     * ⚠ Do not override ngAfterViewChecked!
+     *
+     * Use 'onAfterViewChecked()' in subclasses instead.
+     */
+    ngAfterViewChecked(): void;
+    /**
+     * ⚠ Do not override ngOnDestroy!
+     *
+     * Use 'onDestroy()' in subclasses instead.
+     */
+    ngOnDestroy(): void;
+    /******************** Methods ********************/
+    private _mergeProps;
+    private _getHostInstance;
+    private _getPropValue;
+    private _getOptionValue;
+    private _hook;
+    /********** Load Styles **********/
+    private _load;
+    private _loadStyles;
+    private _loadGlobalStyles;
+    private _loadCoreStyles;
+    private _loadThemeStyles;
+    private _loadScopedThemeStyles;
+    private _unloadScopedThemeStyles;
+    private _themeChangeListener;
+    private _removeThemeListeners;
+    /********** Passthrough **********/
+    private _getPTValue;
+    private _getPTDatasets;
+    private _getPTClassValue;
+    private _getPT;
+    private _usePT;
+    private _useGlobalPT;
+    private _useDefaultPT;
+    /******************** Exposed API ********************/
+    ptm(key?: string, params?: {}): any;
+    ptms(keys: string[], params?: {}): {};
+    ptmo(obj?: {}, key?: string, params?: {}): any;
+    cx(key: string, params?: {}): string | undefined;
+    sx(key?: string, when?: boolean, params?: {}): {
+        [x: string]: any;
+    } | undefined;
+    static ɵfac: _angular_core.ɵɵFactoryDeclaration<BaseComponent<any>, never>;
+    static ɵdir: _angular_core.ɵɵDirectiveDeclaration<BaseComponent<any>, never, never, { "dt": { "alias": "dt"; "required": false; "isSignal": true; }; "unstyled": { "alias": "unstyled"; "required": false; "isSignal": true; }; "pt": { "alias": "pt"; "required": false; "isSignal": true; }; "ptOptions": { "alias": "ptOptions"; "required": false; "isSignal": true; }; }, {}, never, never, true, never>;
+}
+
+export { BaseComponent, BaseComponentStyle, PARENT_INSTANCE };

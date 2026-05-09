@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/presets/material/splitter/index.ts"],"sourcesContent":["export * from '@primeuix/themes/material/splitter';\nexport { default } from '@primeuix/themes/material/splitter';\n"],"mappings":"AAAA,WAAc,qCACd,OAAS,WAAAA,MAAe","names":["default"]}

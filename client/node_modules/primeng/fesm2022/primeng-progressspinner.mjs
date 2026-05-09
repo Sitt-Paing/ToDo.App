@@ -1,0 +1,147 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { style } from '@primeuix/styles/progressspinner';
+import { BaseStyle } from 'primeng/base';
+
+const classes = {
+    root: () => ['p-progressspinner'],
+    spin: 'p-progressspinner-spin',
+    circle: 'p-progressspinner-circle'
+};
+class ProgressSpinnerStyle extends BaseStyle {
+    name = 'progressspinner';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * ProgressSpinner is a process status indicator.
+ *
+ * [Live Demo](https://www.primeng.org/progressspinner)
+ *
+ * @module progressspinnerstyle
+ *
+ */
+var ProgressSpinnerClasses;
+(function (ProgressSpinnerClasses) {
+    /**
+     * Class name of the root element
+     */
+    ProgressSpinnerClasses["root"] = "p-progressspinner";
+    /**
+     * Class name of the spin element
+     */
+    ProgressSpinnerClasses["spin"] = "p-progressspinner-spin";
+    /**
+     * Class name of the circle element
+     */
+    ProgressSpinnerClasses["circle"] = "p-progressspinner-circle";
+})(ProgressSpinnerClasses || (ProgressSpinnerClasses = {}));
+
+const PROGRESSSPINNER_INSTANCE = new InjectionToken('PROGRESSSPINNER_INSTANCE');
+/**
+ * ProgressSpinner is a process status indicator.
+ * @group Components
+ */
+class ProgressSpinner extends BaseComponent {
+    $pcProgressSpinner = inject(PROGRESSSPINNER_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Width of the circle stroke.
+     * @group Props
+     */
+    strokeWidth = '2';
+    /**
+     * Color for the background of the circle.
+     * @group Props
+     */
+    fill = 'none';
+    /**
+     * Duration of the rotate animation.
+     * @group Props
+     */
+    animationDuration = '2s';
+    /**
+     * Used to define a aria label attribute the current element.
+     * @group Props
+     */
+    ariaLabel;
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    _componentStyle = inject(ProgressSpinnerStyle);
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinner, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: ProgressSpinner, isStandalone: true, selector: "p-progressSpinner, p-progress-spinner, p-progressspinner", inputs: { styleClass: "styleClass", strokeWidth: "strokeWidth", fill: "fill", animationDuration: "animationDuration", ariaLabel: "ariaLabel" }, host: { properties: { "attr.aria-label": "ariaLabel", "attr.role": "'progressbar'", "attr.aria-busy": "true", "class": "cn(cx('root'), styleClass)" } }, providers: [ProgressSpinnerStyle, { provide: PROGRESSSPINNER_INSTANCE, useExisting: ProgressSpinner }, { provide: PARENT_INSTANCE, useExisting: ProgressSpinner }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <svg [class]="cx('spin')" [pBind]="ptm('spin')" viewBox="25 25 50 50" [style.animation-duration]="animationDuration">
+            <circle [class]="cx('circle')" [pBind]="ptm('circle')" cx="50" cy="50" r="20" [attr.fill]="fill" [attr.stroke-width]="strokeWidth" stroke-miterlimit="10" />
+        </svg>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinner, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-progressSpinner, p-progress-spinner, p-progressspinner',
+                    standalone: true,
+                    imports: [CommonModule, SharedModule, Bind],
+                    template: `
+        <svg [class]="cx('spin')" [pBind]="ptm('spin')" viewBox="25 25 50 50" [style.animation-duration]="animationDuration">
+            <circle [class]="cx('circle')" [pBind]="ptm('circle')" cx="50" cy="50" r="20" [attr.fill]="fill" [attr.stroke-width]="strokeWidth" stroke-miterlimit="10" />
+        </svg>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [ProgressSpinnerStyle, { provide: PROGRESSSPINNER_INSTANCE, useExisting: ProgressSpinner }, { provide: PARENT_INSTANCE, useExisting: ProgressSpinner }],
+                    host: {
+                        '[attr.aria-label]': 'ariaLabel',
+                        '[attr.role]': "'progressbar'",
+                        '[attr.aria-busy]': 'true',
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { styleClass: [{
+                type: Input
+            }], strokeWidth: [{
+                type: Input
+            }], fill: [{
+                type: Input
+            }], animationDuration: [{
+                type: Input
+            }], ariaLabel: [{
+                type: Input
+            }] } });
+class ProgressSpinnerModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerModule, imports: [ProgressSpinner, SharedModule], exports: [ProgressSpinner, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerModule, imports: [ProgressSpinner, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: ProgressSpinnerModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [ProgressSpinner, SharedModule],
+                    exports: [ProgressSpinner, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { ProgressSpinner, ProgressSpinnerClasses, ProgressSpinnerModule, ProgressSpinnerStyle };
+//# sourceMappingURL=primeng-progressspinner.mjs.map

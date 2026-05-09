@@ -1,0 +1,260 @@
+export * from 'primeng/types/terminal';
+import * as i3 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, Input, HostListener, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import * as i4 from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { find } from '@primeuix/utils';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i2 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { style } from '@primeuix/styles/terminal';
+import { BaseStyle } from 'primeng/base';
+import { Subject } from 'rxjs';
+
+const classes = {
+    root: () => ['p-terminal p-component'],
+    welcomeMessage: 'p-terminal-welcome-message',
+    commandList: 'p-terminal-command-list',
+    command: 'p-terminal-command',
+    commandValue: 'p-terminal-command-value',
+    commandResponse: 'p-terminal-command-response',
+    prompt: 'p-terminal-prompt',
+    promptLabel: 'p-terminal-prompt-label',
+    promptValue: 'p-terminal-prompt-value'
+};
+class TerminalStyle extends BaseStyle {
+    name = 'terminal';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * Terminal is a text based user interface.
+ *
+ * [Live Demo](https://www.primeng.org/terminal)
+ *
+ * @module terminalstyle
+ *
+ */
+var TerminalClasses;
+(function (TerminalClasses) {
+    /**
+     * Class name of the root element
+     */
+    TerminalClasses["root"] = "p-terminal";
+    /**
+     * Class name of the welcome message element
+     */
+    TerminalClasses["welcomeMessage"] = "p-terminal-welcome-message";
+    /**
+     * Class name of the command list element
+     */
+    TerminalClasses["commandList"] = "p-terminal-command-list";
+    /**
+     * Class name of the command element
+     */
+    TerminalClasses["command"] = "p-terminal-command";
+    /**
+     * Class name of the command value element
+     */
+    TerminalClasses["commandValue"] = "p-terminal-command-value";
+    /**
+     * Class name of the command response element
+     */
+    TerminalClasses["commandResponse"] = "p-terminal-command-response";
+    /**
+     * Class name of the prompt element
+     */
+    TerminalClasses["prompt"] = "p-terminal-prompt";
+    /**
+     * Class name of the prompt label element
+     */
+    TerminalClasses["promptLabel"] = "p-terminal-prompt-label";
+    /**
+     * Class name of the prompt value element
+     */
+    TerminalClasses["promptValue"] = "p-terminal-prompt-value";
+})(TerminalClasses || (TerminalClasses = {}));
+
+class TerminalService {
+    commandSource = new Subject();
+    responseSource = new Subject();
+    commandHandler = this.commandSource.asObservable();
+    responseHandler = this.responseSource.asObservable();
+    sendCommand(command) {
+        if (command) {
+            this.commandSource.next(command);
+        }
+    }
+    sendResponse(response) {
+        if (response) {
+            this.responseSource.next(response);
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalService, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalService });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalService, decorators: [{
+            type: Injectable
+        }] });
+
+const TERMINAL_INSTANCE = new InjectionToken('TERMINAL_INSTANCE');
+/**
+ * Terminal is a text based user interface.
+ * @group Components
+ */
+class Terminal extends BaseComponent {
+    terminalService;
+    $pcTerminal = inject(TERMINAL_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    /**
+     * Initial text to display on terminal.
+     * @group Props
+     */
+    welcomeMessage;
+    /**
+     * Prompt text for each command.
+     * @group Props
+     */
+    prompt;
+    /**
+     * Style class of the component.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    commands = [];
+    command;
+    container;
+    commandProcessed;
+    subscription;
+    _componentStyle = inject(TerminalStyle);
+    inputRef;
+    onHostClick() {
+        this.focus(this.inputRef?.nativeElement);
+    }
+    constructor(terminalService) {
+        super();
+        this.terminalService = terminalService;
+        this.subscription = terminalService.responseHandler.subscribe((response) => {
+            this.commands[this.commands.length - 1].response = response;
+            this.commandProcessed = true;
+        });
+    }
+    onAfterViewInit() {
+        this.container = find(this.el.nativeElement, '.p-terminal')[0];
+    }
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+        if (this.commandProcessed) {
+            this.container.scrollTop = this.container.scrollHeight;
+            this.commandProcessed = false;
+        }
+    }
+    set response(value) {
+        if (value) {
+            this.commands[this.commands.length - 1].response = value;
+            this.commandProcessed = true;
+        }
+    }
+    handleCommand(event) {
+        if (event.keyCode == 13) {
+            this.commands.push({ text: this.command });
+            this.terminalService.sendCommand(this.command);
+            this.command = '';
+        }
+    }
+    focus(element) {
+        element.focus();
+    }
+    onDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Terminal, deps: [{ token: TerminalService }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: Terminal, isStandalone: true, selector: "p-terminal", inputs: { welcomeMessage: "welcomeMessage", prompt: "prompt", styleClass: "styleClass", response: "response" }, host: { listeners: { "click": "onHostClick()" }, properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [TerminalStyle, { provide: TERMINAL_INSTANCE, useExisting: Terminal }, { provide: PARENT_INSTANCE, useExisting: Terminal }], viewQueries: [{ propertyName: "inputRef", first: true, predicate: ["in"], descendants: true }], usesInheritance: true, hostDirectives: [{ directive: i2.Bind }], ngImport: i0, template: `
+        <div [class]="cx('welcomeMessage')" [pBind]="ptm('welcomeMessage')" *ngIf="welcomeMessage">{{ welcomeMessage }}</div>
+        <div [class]="cx('commandList')" [pBind]="ptm('commandList')">
+            <div [class]="cx('command')" [pBind]="ptm('command')" *ngFor="let command of commands">
+                <span [class]="cx('promptLabel')" [pBind]="ptm('promptLabel')">{{ prompt }}</span>
+                <span [class]="cx('commandValue')" [pBind]="ptm('commandValue')">{{ command.text }}</span>
+                <div [class]="cx('commandResponse')" [pBind]="ptm('commandResponse')" [attr.aria-live]="'polite'">{{ command.response }}</div>
+            </div>
+        </div>
+        <div [class]="cx('prompt')" [pBind]="ptm('prompt')">
+            <span [class]="cx('promptLabel')" [pBind]="ptm('promptLabel')">{{ prompt }}</span>
+            <input #in type="text" [(ngModel)]="command" [class]="cx('promptValue')" [pBind]="ptm('promptValue')" autocomplete="off" (keydown)="handleCommand($event)" autofocus />
+        </div>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i3.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i3.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i4.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i4.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i4.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: Terminal, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-terminal',
+                    standalone: true,
+                    imports: [CommonModule, FormsModule, SharedModule, Bind],
+                    template: `
+        <div [class]="cx('welcomeMessage')" [pBind]="ptm('welcomeMessage')" *ngIf="welcomeMessage">{{ welcomeMessage }}</div>
+        <div [class]="cx('commandList')" [pBind]="ptm('commandList')">
+            <div [class]="cx('command')" [pBind]="ptm('command')" *ngFor="let command of commands">
+                <span [class]="cx('promptLabel')" [pBind]="ptm('promptLabel')">{{ prompt }}</span>
+                <span [class]="cx('commandValue')" [pBind]="ptm('commandValue')">{{ command.text }}</span>
+                <div [class]="cx('commandResponse')" [pBind]="ptm('commandResponse')" [attr.aria-live]="'polite'">{{ command.response }}</div>
+            </div>
+        </div>
+        <div [class]="cx('prompt')" [pBind]="ptm('prompt')">
+            <span [class]="cx('promptLabel')" [pBind]="ptm('promptLabel')">{{ prompt }}</span>
+            <input #in type="text" [(ngModel)]="command" [class]="cx('promptValue')" [pBind]="ptm('promptValue')" autocomplete="off" (keydown)="handleCommand($event)" autofocus />
+        </div>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [TerminalStyle, { provide: TERMINAL_INSTANCE, useExisting: Terminal }, { provide: PARENT_INSTANCE, useExisting: Terminal }],
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], ctorParameters: () => [{ type: TerminalService }], propDecorators: { welcomeMessage: [{
+                type: Input
+            }], prompt: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], inputRef: [{
+                type: ViewChild,
+                args: ['in']
+            }], onHostClick: [{
+                type: HostListener,
+                args: ['click']
+            }], response: [{
+                type: Input
+            }] } });
+class TerminalModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: TerminalModule, imports: [Terminal, SharedModule], exports: [Terminal, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalModule, imports: [Terminal, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: TerminalModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    exports: [Terminal, SharedModule],
+                    imports: [Terminal, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { Terminal, TerminalClasses, TerminalModule, TerminalService, TerminalStyle };
+//# sourceMappingURL=primeng-terminal.mjs.map

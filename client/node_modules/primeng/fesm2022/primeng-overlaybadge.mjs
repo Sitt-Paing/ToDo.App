@@ -1,0 +1,160 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, booleanAttribute, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { SharedModule } from 'primeng/api';
+import * as i2 from 'primeng/badge';
+import { BadgeModule } from 'primeng/badge';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+.p-overlaybadge {
+    position: relative;
+}
+
+.p-overlaybadge .p-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    transform-origin: 100% 0;
+    margin: 0;
+    outline-width: dt('overlaybadge.outline.width');
+    outline-style: solid;
+    outline-color: dt('overlaybadge.outline.color');
+}
+`;
+const classes = {
+    root: 'p-overlaybadge'
+};
+class OverlayBadgeStyle extends BaseStyle {
+    name = 'overlaybadge';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeStyle, decorators: [{
+            type: Injectable
+        }] });
+
+const OVERLAYBADGE_INSTANCE = new InjectionToken('OVERLAYBADGE_INSTANCE');
+/**
+ * OverlayPanel is a container component positioned as connected to its target.
+ * @group Components
+ */
+class OverlayBadge extends BaseComponent {
+    $pcOverlayBadge = inject(OVERLAYBADGE_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    /**
+     * Class of the element.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Inline style of the element.
+     * @group Props
+     */
+    style;
+    /**
+     * Size of the badge, valid options are "large" and "xlarge".
+     * @group Props
+     */
+    badgeSize;
+    /**
+     * Severity type of the badge.
+     * @group Props
+     */
+    severity;
+    /**
+     * Value to display inside the badge.
+     * @group Props
+     */
+    value;
+    /**
+     * When specified, disables the component.
+     * @group Props
+     */
+    badgeDisabled = false;
+    /**
+     * Size of the badge, valid options are "large" and "xlarge".
+     * @group Props
+     * @deprecated use badgeSize instead.
+     */
+    set size(value) {
+        this._size = value;
+        !this.badgeSize && this.size && console.log('size property is deprecated and will removed in v18, use badgeSize instead.');
+    }
+    get size() {
+        return this._size;
+    }
+    _size;
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptm('host'));
+    }
+    _componentStyle = inject(OverlayBadgeStyle);
+    constructor() {
+        super();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadge, deps: [], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "16.1.0", version: "20.3.15", type: OverlayBadge, isStandalone: true, selector: "p-overlayBadge, p-overlay-badge, p-overlaybadge", inputs: { styleClass: "styleClass", style: "style", badgeSize: "badgeSize", severity: "severity", value: "value", badgeDisabled: ["badgeDisabled", "badgeDisabled", booleanAttribute], size: "size" }, providers: [OverlayBadgeStyle, { provide: OVERLAYBADGE_INSTANCE, useExisting: OverlayBadge }, { provide: PARENT_INSTANCE, useExisting: OverlayBadge }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <div [class]="cx('root')" [pBind]="ptm('root')">
+            <ng-content></ng-content>
+            <p-badge [pt]="ptm('pcBadge')" [styleClass]="styleClass" [style]="style" [badgeSize]="badgeSize" [severity]="severity" [value]="value" [badgeDisabled]="badgeDisabled" />
+        </div>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "ngmodule", type: BadgeModule }, { kind: "component", type: i2.Badge, selector: "p-badge", inputs: ["styleClass", "badgeSize", "size", "severity", "value", "badgeDisabled"] }, { kind: "ngmodule", type: SharedModule }, { kind: "directive", type: Bind, selector: "[pBind]", inputs: ["pBind"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadge, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-overlayBadge, p-overlay-badge, p-overlaybadge',
+                    standalone: true,
+                    imports: [CommonModule, BadgeModule, SharedModule, Bind],
+                    template: `
+        <div [class]="cx('root')" [pBind]="ptm('root')">
+            <ng-content></ng-content>
+            <p-badge [pt]="ptm('pcBadge')" [styleClass]="styleClass" [style]="style" [badgeSize]="badgeSize" [severity]="severity" [value]="value" [badgeDisabled]="badgeDisabled" />
+        </div>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [OverlayBadgeStyle, { provide: OVERLAYBADGE_INSTANCE, useExisting: OverlayBadge }, { provide: PARENT_INSTANCE, useExisting: OverlayBadge }],
+                    hostDirectives: [Bind]
+                }]
+        }], ctorParameters: () => [], propDecorators: { styleClass: [{
+                type: Input
+            }], style: [{
+                type: Input
+            }], badgeSize: [{
+                type: Input
+            }], severity: [{
+                type: Input
+            }], value: [{
+                type: Input
+            }], badgeDisabled: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], size: [{
+                type: Input
+            }] } });
+class OverlayBadgeModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeModule, imports: [OverlayBadge, SharedModule], exports: [OverlayBadge, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeModule, imports: [OverlayBadge, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: OverlayBadgeModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [OverlayBadge, SharedModule],
+                    exports: [OverlayBadge, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { OverlayBadge, OverlayBadgeModule, OverlayBadgeStyle };
+//# sourceMappingURL=primeng-overlaybadge.mjs.map

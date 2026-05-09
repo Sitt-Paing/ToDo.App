@@ -1,0 +1,615 @@
+export * from 'primeng/types/splitbutton';
+import * as i2 from '@angular/common';
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, EventEmitter, signal, booleanAttribute, numberAttribute, ContentChildren, ContentChild, ViewChild, Output, Input, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { uuid } from '@primeuix/utils';
+import { SharedModule, PrimeTemplate } from 'primeng/api';
+import { AutoFocus } from 'primeng/autofocus';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import { ButtonDirective } from 'primeng/button';
+import { ChevronDownIcon } from 'primeng/icons';
+import { Ripple } from 'primeng/ripple';
+import { TieredMenu } from 'primeng/tieredmenu';
+import * as i3 from 'primeng/tooltip';
+import { TooltipModule } from 'primeng/tooltip';
+import { style } from '@primeuix/styles/splitbutton';
+import { BaseStyle } from 'primeng/base';
+import * as i1 from 'primeng/bind';
+import { Bind } from 'primeng/bind';
+
+const classes = {
+    root: ({ instance }) => [
+        'p-splitbutton p-component',
+        {
+            'p-splitbutton-raised': instance.raised,
+            'p-splitbutton-rounded': instance.rounded,
+            'p-splitbutton-outlined': instance.outlined,
+            'p-splitbutton-text': instance.text,
+            [`p-splitbutton-${instance.size === 'small' ? 'sm' : 'lg'}`]: instance.size
+        }
+    ],
+    pcButton: 'p-splitbutton-button',
+    pcDropdown: 'p-splitbutton-dropdown p-button-icon-only'
+};
+class SplitButtonStyle extends BaseStyle {
+    name = 'splitbutton';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * SplitButton groups a set of commands in an overlay with a default command.
+ *
+ * [Live Demo](https://www.primeng.org/splitbutton/)
+ *
+ * @module splitbuttonstyle
+ *
+ */
+var SplitButtonClasses;
+(function (SplitButtonClasses) {
+    /**
+     * Class name of the root element
+     */
+    SplitButtonClasses["root"] = "p-splitbutton";
+    /**
+     * Class name of the button element
+     */
+    SplitButtonClasses["pcButton"] = "p-splitbutton-button";
+    /**
+     * Class name of the dropdown element
+     */
+    SplitButtonClasses["pcDropdown"] = "p-splitbutton-dropdown";
+})(SplitButtonClasses || (SplitButtonClasses = {}));
+
+const SPLITBUTTON_INSTANCE = new InjectionToken('SPLITBUTTON_INSTANCE');
+/**
+ * SplitButton groups a set of commands in an overlay with a default command.
+ * @group Components
+ */
+class SplitButton extends BaseComponent {
+    $pcSplitButton = inject(SPLITBUTTON_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    /**
+     * MenuModel instance to define the overlay items.
+     * @group Props
+     */
+    model;
+    /**
+     * Defines the style of the button.
+     * @group Props
+     */
+    severity;
+    /**
+     * Add a shadow to indicate elevation.
+     * @group Props
+     */
+    raised = false;
+    /**
+     * Add a circular border radius to the button.
+     * @group Props
+     */
+    rounded = false;
+    /**
+     * Add a textual class to the button without a background initially.
+     * @group Props
+     */
+    text = false;
+    /**
+     * Add a border class without a background initially.
+     * @group Props
+     */
+    outlined = false;
+    /**
+     * Defines the size of the button.
+     * @group Props
+     */
+    size = null;
+    /**
+     * Add a plain textual class to the button without a background initially.
+     * @group Props
+     */
+    plain = false;
+    /**
+     * Name of the icon.
+     * @group Props
+     */
+    icon;
+    /**
+     * Position of the icon.
+     * @group Props
+     */
+    iconPos = 'left';
+    /**
+     * Text of the button.
+     * @group Props
+     */
+    label;
+    /**
+     * Tooltip for the main button.
+     * @group Props
+     */
+    tooltip;
+    /**
+     * Tooltip options for the main button.
+     * @group Props
+     */
+    tooltipOptions;
+    /**
+     * Class of the element.
+     * @deprecated since v20.0.0, use `class` instead.
+     * @group Props
+     */
+    styleClass;
+    /**
+     * Inline style of the overlay menu.
+     * @group Props
+     */
+    menuStyle;
+    /**
+     * Style class of the overlay menu.
+     * @group Props
+     */
+    menuStyleClass;
+    /**
+     * Name of the dropdown icon.
+     * @group Props
+     */
+    dropdownIcon;
+    /**
+     *  Target element to attach the overlay, valid values are "body" or a local ng-template variable of another element (note: use binding with brackets for template variables, e.g. [appendTo]="mydiv" for a div element having #mydiv as variable name).
+     * @group Props
+     */
+    appendTo = 'body';
+    /**
+     * Indicates the direction of the element.
+     * @group Props
+     */
+    dir;
+    /**
+     * Defines a string that labels the expand button for accessibility.
+     * @group Props
+     */
+    expandAriaLabel;
+    /**
+     * Transition options of the show animation.
+     * @group Props
+     */
+    showTransitionOptions = '.12s cubic-bezier(0, 0, 0.2, 1)';
+    /**
+     * Transition options of the hide animation.
+     * @group Props
+     */
+    hideTransitionOptions = '.1s linear';
+    /**
+     * Button Props
+     */
+    buttonProps;
+    /**
+     * Menu Button Props
+     */
+    menuButtonProps;
+    /**
+     * When present, it specifies that the component should automatically get focus on load.
+     * @group Props
+     */
+    autofocus;
+    /**
+     * When present, it specifies that the element should be disabled.
+     * @group Props
+     */
+    set disabled(v) {
+        this._disabled = v ?? false;
+        this.buttonDisabled = v ?? false;
+        this.menuButtonDisabled = v ?? false;
+    }
+    get disabled() {
+        return this._disabled;
+    }
+    /**
+     * Index of the element in tabbing order.
+     * @group Props
+     */
+    tabindex;
+    /**
+     * When present, it specifies that the menu button element should be disabled.
+     * @group Props
+     */
+    menuButtonDisabled = false;
+    /**
+     * When present, it specifies that the button element should be disabled.
+     * @group Props
+     */
+    buttonDisabled = false;
+    /**
+     * Callback to invoke when default command button is clicked.
+     * @param {MouseEvent} event - Mouse event.
+     * @group Emits
+     */
+    onClick = new EventEmitter();
+    /**
+     * Callback to invoke when overlay menu is hidden.
+     * @group Emits
+     */
+    onMenuHide = new EventEmitter();
+    /**
+     * Callback to invoke when overlay menu is shown.
+     * @group Emits
+     */
+    onMenuShow = new EventEmitter();
+    /**
+     * Callback to invoke when dropdown button is clicked.
+     * @param {MouseEvent} event - Mouse event.
+     * @group Emits
+     */
+    onDropdownClick = new EventEmitter();
+    buttonViewChild;
+    menu;
+    /**
+     * Template of the content.
+     * @group Templates
+     */
+    contentTemplate;
+    /**
+     * Template of the dropdownicon.
+     * @group Templates
+     **/
+    dropdownIconTemplate;
+    templates;
+    ariaId;
+    isExpanded = signal(false, ...(ngDevMode ? [{ debugName: "isExpanded" }] : []));
+    _disabled;
+    _componentStyle = inject(SplitButtonStyle);
+    _contentTemplate;
+    _dropdownIconTemplate;
+    onInit() {
+        this.ariaId = uuid('pn_id_');
+    }
+    onAfterContentInit() {
+        this.templates?.forEach((item) => {
+            switch (item.getType()) {
+                case 'content':
+                    this._contentTemplate = item.template;
+                    break;
+                case 'dropdownicon':
+                    this._dropdownIconTemplate = item.template;
+                    break;
+                default:
+                    this._contentTemplate = item.template;
+                    break;
+            }
+        });
+    }
+    onDefaultButtonClick(event) {
+        this.onClick?.emit(event);
+        this.menu?.hide();
+    }
+    onDropdownButtonClick(event) {
+        this.onDropdownClick.emit(event);
+        this.menu?.toggle({ currentTarget: this.el?.nativeElement, relativeAlign: this.appendTo == null });
+    }
+    onDropdownButtonKeydown(event) {
+        if (event.code === 'ArrowDown' || event.code === 'ArrowUp') {
+            this.onDropdownButtonClick();
+            event.preventDefault();
+        }
+    }
+    onHide() {
+        this.isExpanded.set(false);
+        this.onMenuHide.emit();
+    }
+    onShow() {
+        this.isExpanded.set(true);
+        this.onMenuShow.emit();
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButton, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "16.1.0", version: "20.3.15", type: SplitButton, isStandalone: true, selector: "p-splitbutton, p-splitButton, p-split-button", inputs: { model: "model", severity: "severity", raised: ["raised", "raised", booleanAttribute], rounded: ["rounded", "rounded", booleanAttribute], text: ["text", "text", booleanAttribute], outlined: ["outlined", "outlined", booleanAttribute], size: "size", plain: ["plain", "plain", booleanAttribute], icon: "icon", iconPos: "iconPos", label: "label", tooltip: "tooltip", tooltipOptions: "tooltipOptions", styleClass: "styleClass", menuStyle: "menuStyle", menuStyleClass: "menuStyleClass", dropdownIcon: "dropdownIcon", appendTo: "appendTo", dir: "dir", expandAriaLabel: "expandAriaLabel", showTransitionOptions: "showTransitionOptions", hideTransitionOptions: "hideTransitionOptions", buttonProps: "buttonProps", menuButtonProps: "menuButtonProps", autofocus: ["autofocus", "autofocus", booleanAttribute], disabled: ["disabled", "disabled", booleanAttribute], tabindex: ["tabindex", "tabindex", numberAttribute], menuButtonDisabled: ["menuButtonDisabled", "menuButtonDisabled", booleanAttribute], buttonDisabled: ["buttonDisabled", "buttonDisabled", booleanAttribute] }, outputs: { onClick: "onClick", onMenuHide: "onMenuHide", onMenuShow: "onMenuShow", onDropdownClick: "onDropdownClick" }, host: { properties: { "class": "cn(cx('root'), styleClass)" } }, providers: [SplitButtonStyle, { provide: SPLITBUTTON_INSTANCE, useExisting: SplitButton }, { provide: PARENT_INSTANCE, useExisting: SplitButton }], queries: [{ propertyName: "contentTemplate", first: true, predicate: ["content"] }, { propertyName: "dropdownIconTemplate", first: true, predicate: ["dropdownicon"] }, { propertyName: "templates", predicate: PrimeTemplate }], viewQueries: [{ propertyName: "buttonViewChild", first: true, predicate: ["defaultbtn"], descendants: true }, { propertyName: "menu", first: true, predicate: ["menu"], descendants: true }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: `
+        <ng-container *ngIf="contentTemplate || _contentTemplate; else defaultButton">
+            <button
+                [class]="cx('pcButton')"
+                type="button"
+                pButton
+                pRipple
+                [severity]="severity"
+                [text]="text"
+                [outlined]="outlined"
+                [size]="size"
+                [icon]="icon"
+                [iconPos]="iconPos"
+                (click)="onDefaultButtonClick($event)"
+                [disabled]="disabled"
+                [attr.tabindex]="tabindex"
+                [attr.aria-label]="buttonProps?.['ariaLabel'] || label"
+                [pAutoFocus]="autofocus"
+                [pTooltip]="tooltip"
+                [tooltipOptions]="tooltipOptions"
+                [pt]="ptm('pcButton')"
+            >
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+            </button>
+        </ng-container>
+        <ng-template #defaultButton>
+            <button
+                #defaultbtn
+                [class]="cx('pcButton')"
+                type="button"
+                pButton
+                pRipple
+                [severity]="severity"
+                [text]="text"
+                [outlined]="outlined"
+                [size]="size"
+                [icon]="icon"
+                [iconPos]="iconPos"
+                [label]="label"
+                (click)="onDefaultButtonClick($event)"
+                [disabled]="buttonDisabled"
+                [attr.tabindex]="tabindex"
+                [attr.aria-label]="buttonProps?.['ariaLabel']"
+                [pAutoFocus]="autofocus"
+                [pTooltip]="tooltip"
+                [tooltipOptions]="tooltipOptions"
+                [pt]="ptm('pcButton')"
+            ></button>
+        </ng-template>
+        <button
+            type="button"
+            pButton
+            pRipple
+            [size]="size"
+            [severity]="severity"
+            [text]="text"
+            [outlined]="outlined"
+            [class]="cx('pcDropdown')"
+            (click)="onDropdownButtonClick($event)"
+            (keydown)="onDropdownButtonKeydown($event)"
+            [disabled]="menuButtonDisabled"
+            [attr.aria-label]="menuButtonProps?.['ariaLabel'] || expandAriaLabel"
+            [attr.aria-haspopup]="menuButtonProps?.['ariaHasPopup'] || true"
+            [attr.aria-expanded]="menuButtonProps?.['ariaExpanded'] || isExpanded()"
+            [attr.aria-controls]="menuButtonProps?.['ariaControls'] || ariaId"
+            [pt]="ptm('pcDropdown')"
+        >
+            <span *ngIf="dropdownIcon" [class]="dropdownIcon"></span>
+            <ng-container *ngIf="!dropdownIcon">
+                <svg data-p-icon="chevron-down" *ngIf="!dropdownIconTemplate && !_dropdownIconTemplate" />
+                <ng-template *ngTemplateOutlet="dropdownIconTemplate || _dropdownIconTemplate"></ng-template>
+            </ng-container>
+        </button>
+        <p-tieredmenu
+            [id]="ariaId"
+            #menu
+            [popup]="true"
+            [model]="model"
+            [style]="menuStyle"
+            [styleClass]="menuStyleClass"
+            [appendTo]="appendTo"
+            [showTransitionOptions]="showTransitionOptions"
+            [hideTransitionOptions]="hideTransitionOptions"
+            (onHide)="onHide()"
+            (onShow)="onShow()"
+            [pt]="ptm('pcMenu')"
+        ></p-tieredmenu>
+    `, isInline: true, dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "directive", type: i2.NgTemplateOutlet, selector: "[ngTemplateOutlet]", inputs: ["ngTemplateOutletContext", "ngTemplateOutlet", "ngTemplateOutletInjector"] }, { kind: "directive", type: ButtonDirective, selector: "[pButton]", inputs: ["ptButtonDirective", "hostName", "text", "plain", "raised", "size", "outlined", "rounded", "iconPos", "loadingIcon", "fluid", "label", "icon", "loading", "buttonProps", "severity"] }, { kind: "component", type: TieredMenu, selector: "p-tieredMenu, p-tieredmenu, p-tiered-menu", inputs: ["model", "popup", "style", "styleClass", "breakpoint", "autoZIndex", "baseZIndex", "autoDisplay", "showTransitionOptions", "hideTransitionOptions", "id", "ariaLabel", "ariaLabelledBy", "disabled", "tabindex", "appendTo"], outputs: ["onShow", "onHide"] }, { kind: "directive", type: AutoFocus, selector: "[pAutoFocus]", inputs: ["pAutoFocus"] }, { kind: "component", type: ChevronDownIcon, selector: "[data-p-icon=\"chevron-down\"]" }, { kind: "directive", type: Ripple, selector: "[pRipple]" }, { kind: "ngmodule", type: TooltipModule }, { kind: "directive", type: i3.Tooltip, selector: "[pTooltip]", inputs: ["tooltipPosition", "tooltipEvent", "positionStyle", "tooltipStyleClass", "tooltipZIndex", "escape", "showDelay", "hideDelay", "life", "positionTop", "positionLeft", "autoHide", "fitContent", "hideOnEscape", "pTooltip", "tooltipDisabled", "tooltipOptions", "appendTo", "ptTooltip"] }, { kind: "ngmodule", type: SharedModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButton, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-splitbutton, p-splitButton, p-split-button',
+                    standalone: true,
+                    imports: [CommonModule, ButtonDirective, TieredMenu, AutoFocus, ChevronDownIcon, Ripple, TooltipModule, SharedModule],
+                    template: `
+        <ng-container *ngIf="contentTemplate || _contentTemplate; else defaultButton">
+            <button
+                [class]="cx('pcButton')"
+                type="button"
+                pButton
+                pRipple
+                [severity]="severity"
+                [text]="text"
+                [outlined]="outlined"
+                [size]="size"
+                [icon]="icon"
+                [iconPos]="iconPos"
+                (click)="onDefaultButtonClick($event)"
+                [disabled]="disabled"
+                [attr.tabindex]="tabindex"
+                [attr.aria-label]="buttonProps?.['ariaLabel'] || label"
+                [pAutoFocus]="autofocus"
+                [pTooltip]="tooltip"
+                [tooltipOptions]="tooltipOptions"
+                [pt]="ptm('pcButton')"
+            >
+                <ng-container *ngTemplateOutlet="contentTemplate || _contentTemplate"></ng-container>
+            </button>
+        </ng-container>
+        <ng-template #defaultButton>
+            <button
+                #defaultbtn
+                [class]="cx('pcButton')"
+                type="button"
+                pButton
+                pRipple
+                [severity]="severity"
+                [text]="text"
+                [outlined]="outlined"
+                [size]="size"
+                [icon]="icon"
+                [iconPos]="iconPos"
+                [label]="label"
+                (click)="onDefaultButtonClick($event)"
+                [disabled]="buttonDisabled"
+                [attr.tabindex]="tabindex"
+                [attr.aria-label]="buttonProps?.['ariaLabel']"
+                [pAutoFocus]="autofocus"
+                [pTooltip]="tooltip"
+                [tooltipOptions]="tooltipOptions"
+                [pt]="ptm('pcButton')"
+            ></button>
+        </ng-template>
+        <button
+            type="button"
+            pButton
+            pRipple
+            [size]="size"
+            [severity]="severity"
+            [text]="text"
+            [outlined]="outlined"
+            [class]="cx('pcDropdown')"
+            (click)="onDropdownButtonClick($event)"
+            (keydown)="onDropdownButtonKeydown($event)"
+            [disabled]="menuButtonDisabled"
+            [attr.aria-label]="menuButtonProps?.['ariaLabel'] || expandAriaLabel"
+            [attr.aria-haspopup]="menuButtonProps?.['ariaHasPopup'] || true"
+            [attr.aria-expanded]="menuButtonProps?.['ariaExpanded'] || isExpanded()"
+            [attr.aria-controls]="menuButtonProps?.['ariaControls'] || ariaId"
+            [pt]="ptm('pcDropdown')"
+        >
+            <span *ngIf="dropdownIcon" [class]="dropdownIcon"></span>
+            <ng-container *ngIf="!dropdownIcon">
+                <svg data-p-icon="chevron-down" *ngIf="!dropdownIconTemplate && !_dropdownIconTemplate" />
+                <ng-template *ngTemplateOutlet="dropdownIconTemplate || _dropdownIconTemplate"></ng-template>
+            </ng-container>
+        </button>
+        <p-tieredmenu
+            [id]="ariaId"
+            #menu
+            [popup]="true"
+            [model]="model"
+            [style]="menuStyle"
+            [styleClass]="menuStyleClass"
+            [appendTo]="appendTo"
+            [showTransitionOptions]="showTransitionOptions"
+            [hideTransitionOptions]="hideTransitionOptions"
+            (onHide)="onHide()"
+            (onShow)="onShow()"
+            [pt]="ptm('pcMenu')"
+        ></p-tieredmenu>
+    `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    providers: [SplitButtonStyle, { provide: SPLITBUTTON_INSTANCE, useExisting: SplitButton }, { provide: PARENT_INSTANCE, useExisting: SplitButton }],
+                    encapsulation: ViewEncapsulation.None,
+                    host: {
+                        '[class]': "cn(cx('root'), styleClass)"
+                    },
+                    hostDirectives: [Bind]
+                }]
+        }], propDecorators: { model: [{
+                type: Input
+            }], severity: [{
+                type: Input
+            }], raised: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], rounded: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], text: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], outlined: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], size: [{
+                type: Input
+            }], plain: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], icon: [{
+                type: Input
+            }], iconPos: [{
+                type: Input
+            }], label: [{
+                type: Input
+            }], tooltip: [{
+                type: Input
+            }], tooltipOptions: [{
+                type: Input
+            }], styleClass: [{
+                type: Input
+            }], menuStyle: [{
+                type: Input
+            }], menuStyleClass: [{
+                type: Input
+            }], dropdownIcon: [{
+                type: Input
+            }], appendTo: [{
+                type: Input
+            }], dir: [{
+                type: Input
+            }], expandAriaLabel: [{
+                type: Input
+            }], showTransitionOptions: [{
+                type: Input
+            }], hideTransitionOptions: [{
+                type: Input
+            }], buttonProps: [{
+                type: Input
+            }], menuButtonProps: [{
+                type: Input
+            }], autofocus: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], disabled: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], tabindex: [{
+                type: Input,
+                args: [{ transform: numberAttribute }]
+            }], menuButtonDisabled: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], buttonDisabled: [{
+                type: Input,
+                args: [{ transform: booleanAttribute }]
+            }], onClick: [{
+                type: Output
+            }], onMenuHide: [{
+                type: Output
+            }], onMenuShow: [{
+                type: Output
+            }], onDropdownClick: [{
+                type: Output
+            }], buttonViewChild: [{
+                type: ViewChild,
+                args: ['defaultbtn']
+            }], menu: [{
+                type: ViewChild,
+                args: ['menu']
+            }], contentTemplate: [{
+                type: ContentChild,
+                args: ['content', { descendants: false }]
+            }], dropdownIconTemplate: [{
+                type: ContentChild,
+                args: ['dropdownicon', { descendants: false }]
+            }], templates: [{
+                type: ContentChildren,
+                args: [PrimeTemplate]
+            }] } });
+class SplitButtonModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonModule, imports: [SplitButton, SharedModule], exports: [SplitButton, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonModule, imports: [SplitButton, SharedModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: SplitButtonModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [SplitButton, SharedModule],
+                    exports: [SplitButton, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { SplitButton, SplitButtonClasses, SplitButtonModule, SplitButtonStyle };
+//# sourceMappingURL=primeng-splitbutton.mjs.map

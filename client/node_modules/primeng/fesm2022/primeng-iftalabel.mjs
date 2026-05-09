@@ -1,0 +1,99 @@
+import { CommonModule } from '@angular/common';
+import * as i0 from '@angular/core';
+import { Injectable, InjectionToken, inject, ViewEncapsulation, ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { SharedModule } from 'primeng/api';
+import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
+import * as i1 from 'primeng/bind';
+import { Bind, BindModule } from 'primeng/bind';
+import { style as style$1 } from '@primeuix/styles/iftalabel';
+import { BaseStyle } from 'primeng/base';
+
+const style = /*css*/ `
+    ${style$1}
+
+    /* For PrimeNG */
+    .p-iftalabel:has(.ng-invalid.ng-dirty) label {
+        color: dt('iftalabel.invalid.color');
+    }
+`;
+const classes = {
+    root: 'p-iftalabel'
+};
+class IftaLabelStyle extends BaseStyle {
+    name = 'iftalabel';
+    style = style;
+    classes = classes;
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelStyle, deps: null, target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelStyle });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelStyle, decorators: [{
+            type: Injectable
+        }] });
+/**
+ *
+ * IftaLabel visually integrates a label within its form element.
+ *
+ * [Live Demo](https://www.primeng.org/iftalabel/)
+ *
+ * @module iftalabelstyle
+ *
+ */
+var IftaLabelClasses;
+(function (IftaLabelClasses) {
+    /**
+     * Class name of the root element
+     */
+    IftaLabelClasses["root"] = "p-iftalabel";
+})(IftaLabelClasses || (IftaLabelClasses = {}));
+
+const IFTALABEL_INSTANCE = new InjectionToken('IFTALABEL_INSTANCE');
+/**
+ * IftaLabel is used to create infield top aligned labels.
+ * @group Components
+ */
+class IftaLabel extends BaseComponent {
+    _componentStyle = inject(IftaLabelStyle);
+    $pcIftaLabel = inject(IFTALABEL_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
+    bindDirectiveInstance = inject(Bind, { self: true });
+    onAfterViewChecked() {
+        this.bindDirectiveInstance.setAttrs(this.ptms(['host', 'root']));
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabel, deps: null, target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.15", type: IftaLabel, isStandalone: true, selector: "p-iftalabel, p-iftaLabel, p-ifta-label", host: { properties: { "class": "cx('root')" } }, providers: [IftaLabelStyle, { provide: IFTALABEL_INSTANCE, useExisting: IftaLabel }, { provide: PARENT_INSTANCE, useExisting: IftaLabel }], usesInheritance: true, hostDirectives: [{ directive: i1.Bind }], ngImport: i0, template: ` <ng-content></ng-content> `, isInline: true, dependencies: [{ kind: "ngmodule", type: BindModule }], changeDetection: i0.ChangeDetectionStrategy.OnPush, encapsulation: i0.ViewEncapsulation.None });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabel, decorators: [{
+            type: Component,
+            args: [{
+                    selector: 'p-iftalabel, p-iftaLabel, p-ifta-label',
+                    standalone: true,
+                    imports: [BindModule],
+                    template: ` <ng-content></ng-content> `,
+                    changeDetection: ChangeDetectionStrategy.OnPush,
+                    encapsulation: ViewEncapsulation.None,
+                    providers: [IftaLabelStyle, { provide: IFTALABEL_INSTANCE, useExisting: IftaLabel }, { provide: PARENT_INSTANCE, useExisting: IftaLabel }],
+                    hostDirectives: [Bind],
+                    host: {
+                        '[class]': "cx('root')"
+                    }
+                }]
+        }] });
+class IftaLabelModule {
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelModule, deps: [], target: i0.ɵɵFactoryTarget.NgModule });
+    static ɵmod = i0.ɵɵngDeclareNgModule({ minVersion: "14.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelModule, imports: [IftaLabel, CommonModule, SharedModule, RouterModule], exports: [IftaLabel, SharedModule] });
+    static ɵinj = i0.ɵɵngDeclareInjector({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelModule, imports: [IftaLabel, CommonModule, SharedModule, RouterModule, SharedModule] });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.15", ngImport: i0, type: IftaLabelModule, decorators: [{
+            type: NgModule,
+            args: [{
+                    imports: [IftaLabel, CommonModule, SharedModule, RouterModule],
+                    exports: [IftaLabel, SharedModule]
+                }]
+        }] });
+
+/**
+ * Generated bundle index. Do not edit.
+ */
+
+export { IftaLabel, IftaLabelClasses, IftaLabelModule, IftaLabelStyle };
+//# sourceMappingURL=primeng-iftalabel.mjs.map

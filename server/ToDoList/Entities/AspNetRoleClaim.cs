@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
@@ -18,6 +19,7 @@ public partial class AspNetRoleClaim
 
     public string? ClaimValue { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("RoleId")]
     [InverseProperty("AspNetRoleClaims")]
     public virtual AspNetRole Role { get; set; } = null!;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
@@ -19,9 +20,11 @@ public partial class AspNetRole
 
     public string? ConcurrencyStamp { get; set; }
 
+    [JsonIgnore]
     [InverseProperty("Role")]
     public virtual ICollection<AspNetRoleClaim> AspNetRoleClaims { get; set; } = new List<AspNetRoleClaim>();
 
+    [JsonIgnore]
     [ForeignKey("RoleId")]
     [InverseProperty("Roles")]
     public virtual ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();

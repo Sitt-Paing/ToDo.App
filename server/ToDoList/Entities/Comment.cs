@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
@@ -29,10 +30,12 @@ public partial class Comment
     [Column(TypeName = "datetime")]
     public DateTime? DeletedAt { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("PostId")]
     [InverseProperty("Comments")]
     public virtual Blog Post { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("UserId")]
     [InverseProperty("Comments")]
     public virtual AspNetUser User { get; set; } = null!;

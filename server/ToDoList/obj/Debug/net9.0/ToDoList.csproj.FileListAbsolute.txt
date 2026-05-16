@@ -511,3 +511,7 @@
 /home/spmt/repos/ToDoApp/server/ToDoList/obj/Debug/net9.0/ToDoList.pdb
 /home/spmt/repos/ToDoApp/server/ToDoList/obj/Debug/net9.0/ToDoList.genruntimeconfig.cache
 /home/spmt/repos/ToDoApp/server/ToDoList/obj/Debug/net9.0/ref/ToDoList.dll
+/home/spmt/repos/ToDoApp/server/ToDoList/bin/Debug/net9.0/Microsoft.AspNetCore.JsonPatch.dll
+/home/spmt/repos/ToDoApp/server/ToDoList/bin/Debug/net9.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+/home/spmt/repos/ToDoApp/server/ToDoList/bin/Debug/net9.0/Newtonsoft.Json.dll
+/home/spmt/repos/ToDoApp/server/ToDoList/bin/Debug/net9.0/Newtonsoft.Json.Bson.dll

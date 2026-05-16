@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
@@ -20,6 +21,7 @@ public partial class AspNetUserLogin
 
     public string UserId { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("UserId")]
     [InverseProperty("AspNetUserLogins")]
     public virtual AspNetUser User { get; set; } = null!;

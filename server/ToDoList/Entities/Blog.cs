@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
@@ -29,10 +30,12 @@ public partial class Blog
     [StringLength(450)]
     public string AuthorId { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("AuthorId")]
     [InverseProperty("Blogs")]
     public virtual AspNetUser Author { get; set; } = null!;
-
+    
+    [JsonIgnore]
     [InverseProperty("Post")]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

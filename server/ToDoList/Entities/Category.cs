@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Entities;
@@ -27,10 +28,12 @@ public partial class Category
     [StringLength(450)]
     public string? UserId { get; set; }
 
+    [JsonIgnore]
     [InverseProperty("Category")]
     public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 
     [ForeignKey("UserId")]
     [InverseProperty("Categories")]
+    [JsonIgnore]
     public virtual AspNetUser? User { get; set; }
 }

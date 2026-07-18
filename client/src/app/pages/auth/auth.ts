@@ -59,7 +59,7 @@ export class Auth{
     this.authService.login(this.loginData).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.loading = false;

@@ -66,7 +66,7 @@ public class BlogController(ToDoListDbContext context) : ControllerBase
             .ToListAsync();
 
         IQueryable<Blog> query = context.Blogs
-            .Where(b => followedUserIds.Contains(b.AuthorId) && b.DeletedAt == null)
+            .Where(b => followedUserIds.Contains(b.AuthorId) && !b.DeletedAt.HasValue)
             .OrderByDescending(b => b.CreatedAt);
 
         int totalCount = await query.CountAsync();
@@ -90,8 +90,8 @@ public class BlogController(ToDoListDbContext context) : ControllerBase
     public async Task<ActionResult<Blog>> GetBlog(int id)
     {
         Blog? blog = await context.Blogs
-            .Include(b => b.Comments.Where(c => c.DeletedAt == null))
-            .FirstOrDefaultAsync(b => b.Id == id && b.DeletedAt == null);
+            .Include(b => b.Comments.Where(c => !c.DeletedAt.HasValue))
+            .FirstOrDefaultAsync(b => b.Id == id && !b.DeletedAt.HasValue);
 
         if (blog == null) return NotFound();
 
@@ -124,7 +124,7 @@ public class BlogController(ToDoListDbContext context) : ControllerBase
     public async Task<IActionResult> UpdateBlog(int id, UpdateBlogDto dto)
     {
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        Blog? blog = await context.Blogs.FirstOrDefaultAsync(b => b.Id == id && b.AuthorId == userId && b.DeletedAt == null);
+        Blog? blog = await context.Blogs.FirstOrDefaultAsync(b => b.Id == id && b.AuthorId == userId && !b.DeletedAt.HasValue);
 
         if (blog == null) return NotFound();
 
